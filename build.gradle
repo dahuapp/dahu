@@ -1,0 +1,55 @@
+/***************************************
+ * Use JavaFX Gradle plugin
+ * 
+ * See: http://speling.shemnon.com/blog/2013/05/18/javafx-gradle-plugin-0-dot-3-0-released/
+ ***************************************/
+
+apply from: 'https://repository-javafx-gradle-plugin.forge.cloudbees.com/release/javafx.plugin'
+
+/***************************************
+ * Set Maven coordinates and build vars
+ ***************************************/
+
+group                   = 'io.dahuapp'
+archivesBaseName        = 'dahuapp'
+version                 = '0.1-SNAPSHOT'
+
+sourceCompatibility = '1.7'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+/***************************************
+ * Check environment
+ ***************************************/
+
+if(! System.env['JAVAFX_HOME'] ) {
+    println """Please set environment variable JAVAFX_HOME
+to the directory that contains /rt/lib/jfxrt.jar"""
+    System.exit 1
+}
+
+// environment is ok
+
+/***************************************
+ * The build script proper
+ ***************************************/
+
+repositories {
+    mavenCentral()
+    // You may define additional repositories, or even remove "mavenCentral()".
+    // Read more about repositories here:
+    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
+}
+
+dependencies {
+    // TODO: Add dependencies here ...
+    // You can read more about how to add dependency here:
+    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+    compile fileTree(dir: 'lib', includes: ['*.jar'])
+    runtime fileTree(dir: 'lib', includes: ['*.jar'])
+    testCompile group: 'junit', name: 'junit', version: '4.10'
+}
+
+javafx {
+    mainClass = 'io.dahuapp.editor.app.DahuApp'
+}
+
