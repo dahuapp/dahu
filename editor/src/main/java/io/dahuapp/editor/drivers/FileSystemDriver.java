@@ -113,8 +113,9 @@ public class FileSystemDriver implements Driver {
      * @return The absolute path of the chosen directory.
      */
     public String askForProjectDir() {
-        File file = directoryChooser.showDialog(null);
-        return file.getAbsolutePath();
+        // TO DO : check this
+        //File file = directoryChooser.showDialog(null);
+        return ".";//file.getAbsolutePath();
     }
 
     /**
