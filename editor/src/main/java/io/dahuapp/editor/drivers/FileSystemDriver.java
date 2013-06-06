@@ -93,7 +93,11 @@ public class FileSystemDriver implements Driver {
         String stringFile = "";
         try {
             BufferedReader br = new BufferedReader(new FileReader(fileName));
-            stringFile = stringFile + br.readLine();
+            String line = br.readLine();
+            while (line != null) {
+                stringFile += line;
+                line = br.readLine();
+            }
             LoggerProxy.info(getClass().getName(), "readFile",
                     "file " + fileName + " read");
             return stringFile;

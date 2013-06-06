@@ -89,7 +89,7 @@ var dahuapp = (function(dahuapp, $) {
             var drivers = dahuapp.drivers;
             switch (drivers.keyboard.keyToString(key).toLowerCase()) {
                 case "f8":
-                    img = dahuapp.drivers.screen.takeScreen(projectDir);
+                    var img = dahuapp.drivers.screen.takeScreen(projectDir);
                     var mouse = dahuapp.drivers.mouse;
                     dahuapp.editor.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
                     break;

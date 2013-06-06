@@ -24,6 +24,7 @@ var editor = (function(editor, $) {
          */
         self.loadJson = function loadJson(stringJson) {
             json = JSON.parse(stringJson);
+            // TO DO : actualise the id of the next slide (idSlide)
         };
         
         
@@ -71,7 +72,7 @@ var editor = (function(editor, $) {
          * Add an annotation for the presentation.
          * @param String annotation Annotation to add.
          */
-        self.addAnnotatio = function addAnnotation(annotation) {
+        self.addAnnotation = function addAnnotation(annotation) {
             json.annotation = annotation;
         };
 
