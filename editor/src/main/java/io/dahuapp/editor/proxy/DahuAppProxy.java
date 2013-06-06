@@ -48,10 +48,11 @@ public class DahuAppProxy implements Proxy {
     
     @Override
     public void onLoad() {
+        // more logical in logs than 'log.load' appears in the beginning
+        logger.onLoad();
         keyboard.onLoad();
         fileSystem.onLoad();
         screen.onLoad();
-        logger.onLoad();
     }
     
     @Override

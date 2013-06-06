@@ -1,7 +1,6 @@
 package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.ScreenDriver;
-import javafx.scene.web.WebEngine;
 
 /**
  * Proxy for the screen driver.

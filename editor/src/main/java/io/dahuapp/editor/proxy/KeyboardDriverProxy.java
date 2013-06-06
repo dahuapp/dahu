@@ -6,6 +6,8 @@ import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
+import org.jnativehook.keyboard.NativeKeyEvent;
+import static org.jnativehook.keyboard.NativeKeyEvent.*;
 
 /**
  * Proxy for the keyboard driver.
@@ -45,8 +47,8 @@ public class KeyboardDriverProxy implements Proxy {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
-                    JSObject engine = (JSObject) webEngine.executeScript("window.dahuapp.editor");
-                    engine.call(callback, keyCode);
+                    JSObject editor = (JSObject)webEngine.executeScript("window.dahuapp.editor");
+                    editor.call(callback, keyCode);
                 }
             });
         }
@@ -111,6 +113,22 @@ public class KeyboardDriverProxy implements Proxy {
                     KeyboardListener kl = listeners.remove(functionName);
                     driver.removeKeyListener(kl);
                 }
+        }
+    }
+    
+    /**
+     * Returns a string identifying the specified key code.
+     * @param keyCode Key code to identify with a string.
+     * @return A string identifying the specified keyCode.
+     */
+    public String keyToString(int keyCode) {
+        switch (keyCode) {
+            case VK_F8:
+                return "f8";
+            case VK_ESCAPE:
+                return "escape";
+            default:
+                return "unknown";
         }
     }
     

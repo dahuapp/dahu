@@ -21,6 +21,32 @@ var dahuapp = (function(dahuapp, $) {
          * @type Boolean
          */
         var captureMode = false;
+        
+        /*
+         * The absolute path of a directory.
+         * This directory has the following components (at least) :
+         * projectDir
+         *      |------- format.json
+         *      |------- screen1.png
+         *      |------- ...
+         *      |------- screen2.png
+         *      
+         * The default value must be discussed.
+         * @type String
+         */
+        var projectDir = ".";
+        
+        /*
+         * Changes the capture mode (if true => false, if false => true).
+         */
+        var switchCaptureMode = function() {
+            // the capture mode button gets a different style
+            $('#capture-mode').toggleClass('btn-primary');
+            $('#capture-mode').toggleClass('btn-success');
+            captureMode = !captureMode;
+        };
+        
+        /* public API */
 
         /*
          * Event handlers
@@ -33,20 +59,23 @@ var dahuapp = (function(dahuapp, $) {
         /*
          * Handle events relative to the capture mode.
          * Other events will be ignored.
-         * @param String type Type of the event.
+         * 
+         * Can be eventually set private if JSObject can be memorized by java.
+         * 
+         * @param int key Key that caused the event.
          */
-        function handleCaptureModeEvent(type) {
-            switch (type.toLowerCase()) {
-                case "capture":
-                    dahuapp.drivers.screen.takeScreen();
+        self.handleCaptureModeEvent = function handleCaptureModeEvent(key) {
+            // shortcut
+            var drivers = dahuapp.drivers;
+            switch (drivers.keyboard.keyToString(key).toLowerCase()) {
+                case "f8":
+                    dahuapp.drivers.screen.takeScreen(projectDir);
                     break;
                 case "escape":
-                    dahuapp.editor.exitCaptureMode();
+                    switchCaptureMode();
                     break;
             }
         };
-
-        /* public API */
         
         /*
          * Main function : by calling this function, we bind the
@@ -55,25 +84,17 @@ var dahuapp = (function(dahuapp, $) {
          * in the application window.
          */
         self.init = function init() {
-            /*
-             * We must remember who 'this' is, because in a jQuery statement
-             * the 'this' refers to the jQuery returns and not to the
-             * englobant object.
-             */
-            var self = this;
             
             $('#capture-mode').click(function() {
                 // shortcut
-                var driver = dahuapp.drivers.keyboard;
+                var keyboardDriver = dahuapp.drivers.keyboard;
                 // if we're in capture mode, we exit it, otherwise we enter it
-                if (!self.captureMode) {
-                    driver.addKeyCallback(handleCaptureModeEvent);
+                if (!captureMode) {
+                    keyboardDriver.addKeyListener(self.handleCaptureModeEvent);
                 } else {
-                    driver.removeKeyCallback(handleCaptureModeEvent);
+                    keyboardDriver.removeKeyListener(self.handleCaptureModeEvent);
                 }
-                // the capture mode button gets a different style
-                $('#capture-mode').toggleClass('btn-primary', 'btn-success');
-                self.captureMode = !self.captureMode;
+                switchCaptureMode();
             });
         };
         
