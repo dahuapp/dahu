@@ -1,25 +1,27 @@
 package io.dahuapp.editor.drivers;
 
 import io.dahuapp.editor.proxy.LoggerProxy;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Scanner;
 import javafx.stage.DirectoryChooser;
 
 /**
- * Driver of file system.
- * Writes data to files on disk, or read data from files or directories.
+ * Driver of file system. Writes data to files on disk, or read data from files
+ * or directories.
  */
 public class FileSystemDriver implements Driver {
-    
+
     /**
-     * Directory chooser used in case of opening an other project.
-     * Can be replaced if we choose a specific format for our projects.
-     * At the moment, our projects are just stored in simple directories.
+     * Directory chooser used in case of opening an other project. Can be
+     * replaced if we choose a specific format for our projects. At the moment,
+     * our projects are just stored in simple directories.
      */
     private DirectoryChooser directoryChooser = new DirectoryChooser();
-    
     /**
      * File filter to choose only png files.
      */
@@ -29,16 +31,18 @@ public class FileSystemDriver implements Driver {
             return name.matches(".*\\.png$");
         }
     };
+    private Scanner Scanner;
 
     /**
      * Creates a directory.
+     *
      * @param name Name of the directory.
      * @return True if the directory is created.
      */
     public boolean createDir(String name) {
         File dir = new File(name);
         if (dir.mkdirs()) {
-            LoggerProxy.fine(this.getClass().getName(), "createDir", 
+            LoggerProxy.fine(this.getClass().getName(), "createDir",
                     name + " directory created");
             return true;
         } else {
@@ -47,9 +51,10 @@ public class FileSystemDriver implements Driver {
             return false;
         }
     }
-    
+
     /**
      * Indicates if a specified file or directory exists.
+     *
      * @param name The name of the file (absolute or relative).
      * @return True if the file or directory exists.
      */
@@ -67,7 +72,7 @@ public class FileSystemDriver implements Driver {
      */
     public boolean writeFile(String fileName, String text) {
         try {
-            FileWriter fw = new FileWriter(fileName, true);
+            FileWriter fw = new FileWriter(fileName, false);
             fw.write(text);
             fw.close();
             LoggerProxy.info(getClass().getName(), "writeFile",
@@ -88,6 +93,26 @@ public class FileSystemDriver implements Driver {
     }
 
     /**
+     * Read a file.
+     *
+     * @param fileName The name of the file (and absolute path).
+     * @return String Returns the content of the file.
+     */
+    public String readFile(String fileName) {
+        String stringFile = "";
+        try {
+            BufferedReader br = new BufferedReader(new FileReader(fileName));
+            stringFile = stringFile + br.readLine();
+            LoggerProxy.info(getClass().getName(), "readFile",
+                    "file " + fileName + " read");
+            return stringFile;
+        } catch (IOException e) {
+            LoggerProxy.severe(getClass().getName(), "readFile", "Unable to read file: " + fileName, e.getCause());
+            return null;
+        }
+    }
+
+    /**
      * Let the user choose the project directory.
      *
      * @return The absolute path of the chosen directory.
@@ -104,6 +129,7 @@ public class FileSystemDriver implements Driver {
 
     /**
      * Returns a table containing the names of png files in a directory.
+     *
      * @param dir The directory to analyse.
      * @return The list of png files (absolute pathnames).
      */
