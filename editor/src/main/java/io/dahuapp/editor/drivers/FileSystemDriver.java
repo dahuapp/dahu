@@ -1,5 +1,6 @@
 package io.dahuapp.editor.drivers;
 
+import io.dahuapp.editor.proxy.LoggerProxy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
@@ -29,7 +30,15 @@ public class FileSystemDriver implements Driver {
      */
     public boolean createDir(String name) {
         File dir = new File(name);
-        return dir.mkdir();
+        if(dir.mkdir()) {
+            LoggerProxy.fine(this.getClass().getName(), "createDir", 
+                    name + " directory created");
+            return true;
+        } else {
+            LoggerProxy.severe(this.getClass().getName(), "createDir",
+                    "fail to create directory " + name);
+            return false;
+        }
     }
 
     /**
@@ -44,8 +53,12 @@ public class FileSystemDriver implements Driver {
             FileWriter fw = new FileWriter(fileName, true);
             fw.write(text);
             fw.close();
+            LoggerProxy.fine(this.getClass().getName(), "createFile",
+                    "file " + fileName + " created");
             return true;
         } catch (IOException e) {
+            LoggerProxy.fine(this.getClass().getName(), "createFile", 
+                    "fail to create file " + fileName);
             return false;
         }
     }
@@ -75,11 +88,16 @@ public class FileSystemDriver implements Driver {
             final String fileName = "screen" + count + ".png";
             final File imageFile = new File(projectDir + fileSep + fileName);
             if (ImageIO.write(image, "png", imageFile)) {
+                LoggerProxy.fine(getClass().getName(), "writeImage", 
+                        "png file " + fileName + " created");
                 return fileSep;
             } else {
+                LoggerProxy.severe(getClass().getName(), "writeImage", 
+                        "fail to create png file " + fileName);
                 return null;
             }
         } catch (IOException e) {
+            LoggerProxy.severe(getClass().getName(), "writeImage", e.getMessage(), e);
             return null;
         }
     }
@@ -90,9 +108,8 @@ public class FileSystemDriver implements Driver {
      * @return The path of the chosen directory.
      */
     public String getDir() {
-
         this.file = directoryChooser.showDialog(null);
-
+        LoggerProxy.config(getClass().getName(), "getDir", file.getAbsolutePath() + " selected");
         return file.getAbsolutePath() + "/";
     }
 
@@ -113,6 +130,8 @@ public class FileSystemDriver implements Driver {
             }
             return listFiles;
         } catch (Exception e) {
+            LoggerProxy.severe(getClass().getName(), "getFiles", 
+                    e.getMessage(), e);
             return null;
         }
     }
