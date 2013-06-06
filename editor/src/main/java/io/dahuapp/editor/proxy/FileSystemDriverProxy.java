@@ -1,5 +1,7 @@
 package io.dahuapp.editor.proxy;
 
+import io.dahuapp.editor.drivers.FileSystemDriver;
+
 /**
  * Proxy for the file system driver.
  */

@@ -1,6 +1,6 @@
 package io.dahuapp.editor.app;
 
-import io.dahuapp.editor.proxy.DahuAppDriverProxy;
+import io.dahuapp.editor.proxy.DahuAppProxy;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.scene.Scene;
@@ -76,7 +76,7 @@ public class DahuApp extends Application {
                 if (newState == State.SUCCEEDED) {
                     // load drivers
                     JSObject dahuapp = (JSObject) webview.getEngine().executeScript("window.dahuapp");
-                    dahuapp.setMember("drivers", new DahuAppDriverProxy(webview.getEngine()));
+                    dahuapp.setMember("drivers", new DahuAppProxy(webview.getEngine()));
                     
                     // init engine
                     webview.getEngine().executeScript("dahuapp.editor.init();");

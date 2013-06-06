@@ -1,5 +1,6 @@
 package io.dahuapp.editor.proxy;
 
+import io.dahuapp.editor.drivers.KeyboardDriver;
 import javafx.scene.web.WebEngine;
 
 /**
