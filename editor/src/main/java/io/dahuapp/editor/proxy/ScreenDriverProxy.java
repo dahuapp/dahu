@@ -13,6 +13,14 @@ public class ScreenDriverProxy implements Proxy {
      */
     private ScreenDriver driver = new ScreenDriver();
     
+    /**
+     * Takes a screenshot in the project directory.
+     * @param projectDir The project directory.
+     */
+    public void takeScreen(String projectDir) {
+        driver.takeScreen(projectDir);
+    }
+    
     @Override
     public void onLoad() {
         driver.onLoad();

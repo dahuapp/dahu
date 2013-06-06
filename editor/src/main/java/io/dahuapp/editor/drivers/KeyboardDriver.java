@@ -19,57 +19,39 @@ import org.jnativehook.keyboard.NativeKeyListener;
  * <li>takes a screenshot when a specific key is pressed</li>
  * <li>stops the capture mode when an other specific key is pressed</li>
  * </ul>
- * @author mathieu
  */
 public class KeyboardDriver implements Driver {
     
-    private WebEngine webEngine;
-    private ArrayList<String> callbacks = new ArrayList<>();
-    
     /**
-     * @warning in the new architecture driver should not be aware of
-     * webengine! driver must have proxy!!!
+     * Listeners for this driver.
      */
-    public KeyboardDriver(WebEngine webEngine) {
-        this.webEngine = webEngine;
+    public interface KeyboardListener {
+        public void keyTyped(int keyCode);
+        public void keyPressed(int keyCode);
+        public void keyReleased(int keyCode);
     }
     
     /**
-     * Add a callback function.
-     * 
-     * @param listener
-     * @throws JSException 
+     * List of listeners.
      */
-    public void addKeyCallback(JSObject listener) throws JSException {
-        System.out.println(listener);
-        final String functionName = listener.getMember("name").toString();
-        System.out.println(functionName);
-        switch (functionName) {
-            case "undefined":
-                throw new JSException("Callback function cannot be anonymous.");
-            case "":
-                throw new JSException("Callback function cannot be anonymous.");
-            default:
-                callbacks.add(functionName);
-        }
+    private ArrayList<KeyboardListener> listeners = new ArrayList<>();
+    
+    /**
+     * Add a listener to this driver.
+     * 
+     * @param listener Listener to add to this keyboard driver.
+     */
+    public void addKeyListener(KeyboardListener listener) {
+        listeners.add(listener);
     }
     
     /**
      * Remove a callback function.
      * 
-     * @param listener
-     * @throws JSException 
+     * @param listener Listener to remove to this keyboard driver.
      */
-    public void removeKeyCallback(JSObject listener) throws JSException {
-        final String functionName = listener.getMember("name").toString();
-        switch (functionName) {
-            case "undefined":
-                throw new JSException("Callback function cannot be anonymous.");
-            case "":
-                throw new JSException("Callback function cannot be anonymous.");
-            default:
-                callbacks.remove(functionName);
-        }
+    public void removeKeyListener(KeyboardListener listener) {
+        listeners.remove(listener);
     }
     
     @Override
@@ -85,46 +67,23 @@ public class KeyboardDriver implements Driver {
         GlobalScreen.getInstance().addNativeKeyListener(new NativeKeyListener() {
             @Override
             public void nativeKeyReleased(NativeKeyEvent nke) {
-                switch (nke.getKeyCode()) {
-                    
-                    case NativeKeyEvent.VK_F8:
-                        for (final String callback : callbacks) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    JSObject editor = (JSObject)webEngine.executeScript("window.dahuapp.editor");
-                                    System.out.println("F8 is pressed");
-                                    editor.call(callback, "capture");
-                                }
-                            });
-                        }
-                        break;
-                        
-                    case NativeKeyEvent.VK_ESCAPE:
-                        for (final String callback : callbacks) {
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    // escape will throw an exception of ClassCast but due to
-                                    // the fact it's undefined (see console println)
-                                    System.out.println("ESC is pressed");
-                                    JSObject editor = (JSObject)webEngine.executeScript("window.dahuapp.editor");
-                                    editor.call(callback, "escape");
-                                }
-                            });
-                        }
-                        break;
+                for (final KeyboardListener listener : listeners) {
+                    listener.keyReleased(nke.getKeyCode());
                 }
             }
             
             @Override
             public void nativeKeyTyped(NativeKeyEvent nke) {
-                // nothing to do
+                for (final KeyboardListener listener : listeners) {
+                    listener.keyTyped(nke.getKeyCode());
+                }
             }
             
             @Override
-            public void nativeKeyPressed(NativeKeyEvent e) {
-                // nothing to do
+            public void nativeKeyPressed(NativeKeyEvent nke) {
+                for (final KeyboardListener listener : listeners) {
+                    listener.keyPressed(nke.getKeyCode());
+                }
             }
         });
         Logger.getLogger(KeyboardDriver.class.getName()).log(Level.INFO, "Starting {0} driver", KeyboardDriver.class.getName());
