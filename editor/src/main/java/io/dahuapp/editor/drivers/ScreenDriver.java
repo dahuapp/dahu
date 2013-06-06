@@ -50,8 +50,12 @@ public class ScreenDriver implements Driver {
         final String fileName = projectDir + fileSep + "screen" + count + ".png";
         try {
             if (ImageIO.write(capture, "png", new File(fileName))) {
+                LoggerProxy.info(getClass().getName(), "takeScreen", 
+                        "create png file " + fileName);
                 return fileName;
             } else {
+                LoggerProxy.severe(getClass().getName(), "takeScreen", 
+                        "fail to create " + fileName);
                 return null;
             }
         } catch (IOException e) {

@@ -70,10 +70,11 @@ public class FileSystemDriver implements Driver {
             FileWriter fw = new FileWriter(fileName, true);
             fw.write(text);
             fw.close();
-            LoggerProxy.info("File \"" + fileName + "\" created.");
+            LoggerProxy.info(getClass().getName(), "writeFile",
+                    "file " + fileName + " created");
             return true;
         } catch (IOException e) {
-            LoggerProxy.severe("Unable to write file: " + e);
+            LoggerProxy.severe(getClass().getName(), "writeFile", "Unable to write file: " + fileName, e.getCause());
             return false;
         }
     }
@@ -87,7 +88,7 @@ public class FileSystemDriver implements Driver {
         File file = directoryChooser.showDialog(null);
         if (!file.exists()) {
             if (!createDir(file.getAbsolutePath())) {
-                LoggerProxy.severe("Unable to create directory: " + file.getAbsolutePath());
+                LoggerProxy.severe(getClass().getName(), "askForProjectDir", "Unable to create directory: " + file.getAbsolutePath());
             }
         }
         return file.getAbsolutePath();
