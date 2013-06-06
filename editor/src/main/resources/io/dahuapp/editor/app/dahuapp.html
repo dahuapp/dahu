@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <title>DahuApp</title>
         <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="dahuapp.css">
         <script src="jquery-1.9.1.min.js"></script>
         <!-- bootstrap's javascript uses jQuery -->
         <script src="bootstrap/js/bootstrap.min.js"></script>
@@ -11,15 +12,60 @@
     
     <body>
         <!-- Application -->
-        <header>
-            <button type="button" id="set-project-dir" class="btn btn-primary">
-                Répertoire du projet
-            </button>
-            <!-- To set capture mode -->
-            <button type="button" id="capture-mode" class="btn btn-primary">
-                Mode capture
-            </button>
-        </header>
+                <div class="container debug1" id="app-container">
+                    
+            <!-- Block for the navigation bar -->
+            <div class="debug2" id="navbar-container">
+
+                <div class="navbar">
+                    <div class="navbar-inner">
+                        <a class="brand" href="#">
+                            DahuApp
+                        </a>
+                        <ul class="nav">
+                           
+                            <!-- Set below the buttons of the navigation bar -->
+                            <li>
+                                <!-- To set the project directory -->
+                                <button class="btn btn-primary" id="set-project-dir" type="button">
+                                    set-project-dir
+                                </button>
+                            </li>
+                            <li>
+                                <!-- To set capture mode -->
+                                <button class="btn btn-primary" id="capture-mode" type="button">
+                                    capture-mode
+                                </button>
+                            </li>
+                            <li>
+                                <!-- To save the presentation -->
+                                <button class="btn btn-primary" id="save" type="button">
+                                    save
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+            
+            <!-- Main block -->
+            <div class="debug3" id="main-container">
+                <div class="debug4 scroll" id="image-bar-container">
+                    <ul class="thumbnails">
+                        <li class="span2 offset">
+                            <!-- here below, the list of screen following the model given -->
+                            <a class="thumbnail">
+                                <img src="" alt="FAIL !!!"/>
+                            </a>
+                        </li>
+                    </ul>
+                </div> 
+                <div class="debug5 scroll" id="current-image-container">
+                    <img src="" alt="FAIL !!!" />
+                </div>
+            </div>
+        </div>
         
         <!-- Including dahuapp -->
         <script src="dahuapp.js"></script>
