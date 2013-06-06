@@ -83,6 +83,14 @@ public class FileSystemDriver implements Driver {
             return false;
         }
     }
+    
+    /**
+     * Returns the file separator depending on the OS.
+     * @return The file separator string (depends on the OS).
+     */
+    public String getSeparator() {
+        return System.getProperty("file.separator");
+    }
 
     /**
      * Read a file.
