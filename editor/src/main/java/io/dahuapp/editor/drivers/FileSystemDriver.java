@@ -1,13 +1,11 @@
 package io.dahuapp.editor.drivers;
 
 import io.dahuapp.editor.proxy.LoggerProxy;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import javafx.stage.DirectoryChooser;
-import javax.imageio.ImageIO;
 
 /**
  * Driver of file system.
@@ -39,7 +37,15 @@ public class FileSystemDriver implements Driver {
      */
     public boolean createDir(String name) {
         File dir = new File(name);
-        return dir.mkdirs();
+        if (dir.mkdirs()) {
+            LoggerProxy.fine(this.getClass().getName(), "createDir", 
+                    name + " directory created");
+            return true;
+        } else {
+            LoggerProxy.severe(this.getClass().getName(), "createDir",
+                    "failed to create directory " + name);
+            return false;
+        }
     }
     
     /**

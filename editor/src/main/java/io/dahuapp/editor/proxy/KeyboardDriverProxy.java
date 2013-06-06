@@ -2,6 +2,7 @@ package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.KeyboardDriver;
 import java.util.ArrayList;
+import java.util.Objects;
 import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSException;

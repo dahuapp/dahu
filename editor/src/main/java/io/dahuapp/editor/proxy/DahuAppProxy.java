@@ -7,7 +7,7 @@ import javafx.scene.web.WebEngine;
  * Offers an interface between the javascript and the java
  * with access to some methods of the drivers.
  */
-public class DahuAppDriverProxy implements Proxy {
+public class DahuAppProxy implements Proxy {
     
     /**
      * Proxy for the different drivers.
@@ -15,13 +15,32 @@ public class DahuAppDriverProxy implements Proxy {
     public KeyboardDriverProxy keyboard;
     public FileSystemDriverProxy fileSystem;
     public ScreenDriverProxy screen;
+    /**
+     * Other Proxy.
+     */
+    public LoggerProxy logger;
+    
     
     /**
      * Constructor.
      * @param webEngine The webEngine associated with the webView.
      */
-    public DahuAppDriverProxy(WebEngine webEngine) {
+    public DahuAppProxy(WebEngine webEngine) {
         // init all proxies
+        logger = new LoggerProxy();
+        keyboard = new KeyboardDriverProxy(webEngine);
+        fileSystem = new FileSystemDriverProxy();
+        screen = new ScreenDriverProxy();
+    }
+    
+    /**
+     * Constructor.
+     * @param webEngine The webEngine associated with the webView
+     * @param loggerDirectory path of the file to log
+     */
+    public DahuAppProxy(WebEngine webEngine, String loggerDirectory) {
+        // init all proxies
+        logger = new LoggerProxy(loggerDirectory);
         keyboard = new KeyboardDriverProxy(webEngine);
         fileSystem = new FileSystemDriverProxy();
         screen = new ScreenDriverProxy();
@@ -32,6 +51,7 @@ public class DahuAppDriverProxy implements Proxy {
         keyboard.onLoad();
         fileSystem.onLoad();
         screen.onLoad();
+        logger.onLoad();
     }
     
     @Override
@@ -39,5 +59,6 @@ public class DahuAppDriverProxy implements Proxy {
         keyboard.onStop();
         fileSystem.onStop();
         screen.onStop();
+        logger.onStop();
     }
 }

@@ -1,12 +1,9 @@
 package io.dahuapp.editor.drivers;
 
+import io.dahuapp.editor.proxy.LoggerProxy;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.application.Platform;
-import javafx.scene.web.WebEngine;
-import netscape.javascript.JSException;
-import netscape.javascript.JSObject;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -43,6 +40,8 @@ public class KeyboardDriver implements Driver {
      */
     public void addKeyListener(KeyboardListener listener) {
         listeners.add(listener);
+        LoggerProxy.config(getClass().getName(), "addKeyListener",
+                listener.getClass().getName() + " added");
     }
     
     /**
@@ -52,6 +51,8 @@ public class KeyboardDriver implements Driver {
      */
     public void removeKeyListener(KeyboardListener listener) {
         listeners.remove(listener);
+        LoggerProxy.config(getClass().getName(), "removeKeyListener",
+                listener.getClass().getName() + " removed");
     }
     
     @Override
@@ -59,7 +60,9 @@ public class KeyboardDriver implements Driver {
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
-            Logger.getLogger(KeyboardDriver.class.getName()).log(Level.SEVERE, "There was a problem registering the native hook. {0}", ex.getMessage());
+            LoggerProxy.severe(getClass().getName(), "onLoad", 
+                    "There was a problem registering the native hook. " 
+                    + ex.getMessage(), ex);
             System.exit(1);
         }
         
@@ -86,12 +89,14 @@ public class KeyboardDriver implements Driver {
                 }
             }
         });
-        Logger.getLogger(KeyboardDriver.class.getName()).log(Level.INFO, "Starting {0} driver", KeyboardDriver.class.getName());
+        LoggerProxy.info(getClass().getName(), "onLoad",
+                "Starting " +  KeyboardDriver.class.getName() + " driver");
     }
 
     @Override
     public void onStop() {
         GlobalScreen.unregisterNativeHook();
-        Logger.getLogger(KeyboardDriver.class.getName()).log(Level.INFO, "Stopping {0} driver", KeyboardDriver.class.getName());
+        LoggerProxy.info(getClass().getName(), 
+                "onStop", "Stopping " + KeyboardDriver.class.getName() + " driver");
     }
 }
