@@ -1,0 +1,77 @@
+.scroll {
+    max-height: 100%;
+    overflow: hidden;
+    overflow-y: auto;
+}
+
+#app-container{
+    position: absolute;
+    top:0px;
+    left: 0px;
+    bottom: 0px;
+    right: 0px;
+    margin:0px;
+    width: 100%;
+    height: 100%;
+}
+
+#navbar-container{
+    position: absolute;
+    top: 0px;
+    height:40px;
+    margin:0px;
+    width:100%;
+}
+
+#main-container{
+    position: absolute;
+    top: 40px;
+    bottom: 0px;
+    margin: 0px;
+    width: 100%;
+}
+
+#image-bar-container{
+    position:absolute;
+    width: 200px;
+    top: 0px;
+    bottom: 0px;
+    margin: 0px;
+}
+
+#current-image-container{
+   position: absolute;
+   left: 200px;
+   top: 0px;
+   right: 0px;
+   bottom: 0px;
+   margin: 0px;
+   text-align: center;
+}
+
+.offset{
+    position: relative;
+    top: 20px;
+    left: 20px;
+}
+
+
+.debug1 {
+    background:blue;
+}
+
+.debug2 {
+    background:red;
+}
+
+.debug3 {
+    background:yellow;
+}
+
+.debug4 {
+    background:green;
+}
+
+.debug5 {
+    background:black;
+}
