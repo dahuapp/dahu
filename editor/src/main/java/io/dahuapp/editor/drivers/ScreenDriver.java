@@ -81,11 +81,9 @@ public class ScreenDriver implements Driver {
 
     @Override
     public void onLoad() {
-        System.out.println(this.getClass() + " loaded.");
     }
 
     @Override
     public void onStop() {
-        System.out.println(this.getClass() + " stopped.");
     }
 }
