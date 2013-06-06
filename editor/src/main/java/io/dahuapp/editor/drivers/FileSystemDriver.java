@@ -7,7 +7,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.util.Scanner;
 import javafx.stage.DirectoryChooser;
 
 /**
@@ -22,6 +21,7 @@ public class FileSystemDriver implements Driver {
      * our projects are just stored in simple directories.
      */
     private DirectoryChooser directoryChooser = new DirectoryChooser();
+    
     /**
      * File filter to choose only png files.
      */
@@ -31,7 +31,6 @@ public class FileSystemDriver implements Driver {
             return name.matches(".*\\.png$");
         }
     };
-    private Scanner Scanner;
 
     /**
      * Creates a directory.
@@ -83,14 +82,6 @@ public class FileSystemDriver implements Driver {
             return false;
         }
     }
-    
-    /**
-     * Returns the file separator depending on the OS.
-     * @return The file separator string (depends on the OS).
-     */
-    public String getSeparator() {
-        return System.getProperty("file.separator");
-    }
 
     /**
      * Read a file.
@@ -119,11 +110,6 @@ public class FileSystemDriver implements Driver {
      */
     public String askForProjectDir() {
         File file = directoryChooser.showDialog(null);
-        if (!file.exists()) {
-            if (!createDir(file.getAbsolutePath())) {
-                LoggerProxy.severe(getClass().getName(), "askForProjectDir", "Unable to create directory: " + file.getAbsolutePath());
-            }
-        }
         return file.getAbsolutePath();
     }
 
