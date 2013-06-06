@@ -40,6 +40,14 @@ var dahuapp = (function(dahuapp, $) {
          * Changes the capture mode (if true => false, if false => true).
          */
         var switchCaptureMode = function() {
+            // shortcut
+            var keyboardDriver = dahuapp.drivers.keyboard;
+            // if we're in capture mode, we exit it, otherwise we enter it
+            if (!captureMode) {
+                keyboardDriver.addKeyListener(self.handleCaptureModeEvent);
+            } else {
+                keyboardDriver.removeKeyListener(self.handleCaptureModeEvent);
+            }
             // the capture mode button gets a different style
             $('#capture-mode').toggleClass('btn-primary');
             $('#capture-mode').toggleClass('btn-success');
@@ -86,14 +94,6 @@ var dahuapp = (function(dahuapp, $) {
         self.init = function init() {
             
             $('#capture-mode').click(function() {
-                // shortcut
-                var keyboardDriver = dahuapp.drivers.keyboard;
-                // if we're in capture mode, we exit it, otherwise we enter it
-                if (!captureMode) {
-                    keyboardDriver.addKeyListener(self.handleCaptureModeEvent);
-                } else {
-                    keyboardDriver.removeKeyListener(self.handleCaptureModeEvent);
-                }
                 switchCaptureMode();
             });
         };
