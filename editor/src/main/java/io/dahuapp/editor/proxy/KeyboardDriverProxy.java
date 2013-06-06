@@ -50,14 +50,6 @@ public class KeyboardDriverProxy implements Proxy {
                 }
             });
         }
-        
-        /**
-         * Javascript callback associated with this listener.
-         * @return The callback name.
-         */
-        public String getCallback() {
-            return callback;
-        }
     }
     
     /**
