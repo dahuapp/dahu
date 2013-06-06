@@ -53,7 +53,7 @@ public class FileSystemDriver implements Driver {
             FileWriter fw = new FileWriter(fileName, true);
             fw.write(text);
             fw.close();
-            LoggerProxy.fine(this.getClass().getName(), "createFile",
+            LoggerProxy.fine(getClass().getName(), "createFile",
                     "file " + fileName + " created");
             return true;
         } catch (IOException e) {
