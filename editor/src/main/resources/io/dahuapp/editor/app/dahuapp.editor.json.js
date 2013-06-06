@@ -17,7 +17,16 @@ var editor = (function(editor, $) {
 
 
         /* Public API */
-
+        
+        /*
+         * json variable generated from a JSON file.
+         * @param String stringJson String loaded from JSON file.
+         */
+        self.loadJson = function loadJson(stringJson) {
+            json = JSON.parse(stringJson);
+        };
+        
+        
         /*
          * Create a new presentation variable in the JSON file which will contain slides.
          */
