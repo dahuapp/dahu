@@ -24,7 +24,7 @@ public class DahuApp extends Application {
      * Webview of the application, all the elements will be displayed
      * in this webview.
      */
-    private WebView webview = new WebView();
+    private WebView webview;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -66,6 +66,8 @@ public class DahuApp extends Application {
      * to the dahuapp javascript object.
      */
     private void initDahuApp() {
+        webview = new WebView();
+        
         // load main app
         webview.getEngine().load(getClass().getResource("dahuapp.html").toExternalForm());
 

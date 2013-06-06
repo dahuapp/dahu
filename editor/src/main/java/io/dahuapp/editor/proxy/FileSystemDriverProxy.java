@@ -21,4 +21,13 @@ public class FileSystemDriverProxy implements Proxy {
     public void onStop() {
         driver.onStop();
     }
+    
+    /**
+     * Creates a directory using the filesystem driver.
+     * @param name Name of the directory to create.
+     * @return 
+     */
+    public boolean createDir(String name) {
+        return driver.createDir(name);
+    }
 }
