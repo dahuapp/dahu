@@ -7,13 +7,13 @@
  * @param   $           jQuery
  * @returns dahuapp extended with editor module.
  */
-var dahuapp = (function(dahuapp, $) { 
-    var editor = (function () {
-        
+var dahuapp = (function(dahuapp, $) {
+    var editor = (function() {
+
         var self = {};
-        
+
         /* private API */
-        
+
         /*
          * Tells if the app is in the capture mode (in theory, no actions are
          * available in this mode, other than clicking on the capture mode
@@ -21,7 +21,19 @@ var dahuapp = (function(dahuapp, $) {
          * @type Boolean
          */
         var captureMode = false;
-        
+
+        /*
+         * Name of the Json file.
+         * @type String
+         */
+        var jsonFileName = "presentation.json";
+
+        /*
+         * True when new button was pressed.
+         * @type Boolean
+         */
+        var initProject = false;
+
         /*
          * The absolute path of a directory.
          * This directory has the following components (at least) :
@@ -35,7 +47,7 @@ var dahuapp = (function(dahuapp, $) {
          * @type String
          */
         var projectDir = ".";
-        
+
         /*
          * Changes the capture mode (if true => false, if false => true).
          */
@@ -53,7 +65,7 @@ var dahuapp = (function(dahuapp, $) {
             $('#capture-mode').toggleClass('btn-success');
             captureMode = !captureMode;
         };
-        
+
         /* public API */
 
         /*
@@ -77,14 +89,16 @@ var dahuapp = (function(dahuapp, $) {
             var drivers = dahuapp.drivers;
             switch (drivers.keyboard.keyToString(key).toLowerCase()) {
                 case "f8":
-                    dahuapp.drivers.screen.takeScreen(projectDir);
+                    img = dahuapp.drivers.screen.takeScreen(projectDir);
+                    var mouse = dahuapp.drivers.mouse;
+                    dahuapp.editor.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
                     break;
                 case "escape":
                     switchCaptureMode();
                     break;
             }
         };
-        
+
         /*
          * Main function : by calling this function, we bind the
          * html components of the application with their behaviour.
@@ -92,24 +106,39 @@ var dahuapp = (function(dahuapp, $) {
          * in the application window.
          */
         self.init = function init() {
-            
+
             $('#capture-mode').click(function() {
                 switchCaptureMode();
             });
+            $('#save-project').click(function() {
+                var stringJson = dahuapp.editor.json.getJson();
+                var driver = dahuapp.drivers.fileSystem;
+                driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson);
+            });
+            $('#open-project').click(function() {
+                var driver = dahuapp.drivers.fileSystem;
+                projectDir = driver.askForProjectDir();
+                var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
+                dahuapp.editor.json.loadJson(stringJson);
+            });
+            $('#new-project').click(function() {
+                dahuapp.editor.json.createPresentation();
+                initProject = true;
+            });
         };
-        
+
         /**
          * 
          * @param {type} args
          * @returns {String}
          */
         self.somePublicFunction = function somePublicFunction(args) {
-            return "public (editor) hello "+args;
-        }; 
-        
+            return "public (editor) hello " + args;
+        };
+
         return self;
     })();
-    
+
     dahuapp.editor = editor;
 
     return dahuapp;
