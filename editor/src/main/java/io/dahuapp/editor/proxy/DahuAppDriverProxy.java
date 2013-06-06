@@ -1,6 +1,5 @@
 package io.dahuapp.editor.proxy;
 
-import io.dahuapp.editor.drivers.*;
 import javafx.scene.web.WebEngine;
 
 /**
@@ -10,36 +9,35 @@ import javafx.scene.web.WebEngine;
  */
 public class DahuAppDriverProxy implements Proxy {
     
-    public DummyDriver dummy;
-    public KeyboardDriver keyboard;
-    public FileSystemDriver fileSystem;
-    public ScreenDriver screen;
+    /**
+     * Proxy for the different drivers.
+     */
+    public KeyboardDriverProxy keyboard;
+    public FileSystemDriverProxy fileSystem;
+    public ScreenDriverProxy screen;
     
     /**
      * Constructor.
      * @param webEngine The webEngine associated with the webView.
      */
     public DahuAppDriverProxy(WebEngine webEngine) {
-        // init all drivers
-        dummy = new DummyDriver(webEngine);
-        keyboard = new KeyboardDriver(webEngine);
-        fileSystem = new FileSystemDriver();
-        screen = new ScreenDriver();
-        
-        // load all drivers
-        dummy.onLoad();
+        // init all proxies
+        keyboard = new KeyboardDriverProxy(webEngine);
+        fileSystem = new FileSystemDriverProxy();
+        screen = new ScreenDriverProxy();
+    }
+    
+    @Override
+    public void onLoad() {
         keyboard.onLoad();
         fileSystem.onLoad();
         screen.onLoad();
     }
     
     @Override
-    public void onLoad() {
-        // ignore
-    }
-    
-    @Override
     public void onStop() {
-        // ignore
+        keyboard.onStop();
+        fileSystem.onStop();
+        screen.onStop();
     }
 }
