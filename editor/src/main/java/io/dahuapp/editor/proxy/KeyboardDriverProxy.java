@@ -1,13 +1,11 @@
 package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.KeyboardDriver;
-import io.dahuapp.editor.drivers.KeyboardDriver.KeyboardListener;
-import java.util.Objects;
+import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
-import org.jnativehook.keyboard.NativeKeyEvent;
 
 /**
  * Proxy for the keyboard driver.
@@ -33,43 +31,31 @@ public class KeyboardDriverProxy implements Proxy {
         }
 
         @Override
-        public void keyTyped(int keyCode) {
+        public void keyTyped(final int keyCode) {
             // ignored
         }
 
         @Override
-        public void keyPressed(int keyCode) {
+        public void keyPressed(final int keyCode) {
             // ignored
         }
 
         @Override
-        public void keyReleased(int keyCode) {
-            JSObject engine = (JSObject)webEngine.executeScript("window.dahuapp.engine");
-            engine.call(callback, keyCode);
-        }
-        
-        /**
-         * Equals method is redefined to know when two listeners are the
-         * same, in order to remove them from the listener list.
-         * @param o Object to compare this with.
-         * @return True if this is equals to the specified object.
-         */
-        @Override
-        public boolean equals(Object o) {
-            if (o instanceof KeyboardListener) {
-                KeyboardListener k = (KeyboardListener)o;
-                return k.callback.equals(this.callback);
-            }
-            return false;
-        }
-
-        @Override
-        public int hashCode() {
-            int hash = 3;
-            hash = 59 * hash + Objects.hashCode(this.callback);
-            return hash;
+        public void keyReleased(final int keyCode) {
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    JSObject engine = (JSObject) webEngine.executeScript("window.dahuapp.editor");
+                    engine.call(callback, keyCode);
+                }
+            });
         }
     }
+    
+    /**
+     * List of listeners added to this proxy.
+     */
+    private HashMap<String, KeyboardListener> listeners = new HashMap<>();
 
     /**
      * Driver associated with this proxy.
@@ -101,7 +87,11 @@ public class KeyboardDriverProxy implements Proxy {
             case "":
                 throw new JSException("Callback function cannot be anonymous.");
             default:
-                driver.addKeyListener(new KeyboardListener(functionName));
+                if (!listeners.containsKey(functionName)) {
+                    KeyboardListener kl = new KeyboardListener(functionName);
+                    listeners.put(functionName, kl);
+                    driver.addKeyListener(kl);
+                }
         }
     }
     
@@ -117,7 +107,10 @@ public class KeyboardDriverProxy implements Proxy {
             case "":
                 throw new JSException("Callback function cannot be anonymous.");
             default:
-                driver.removeKeyListener(new KeyboardListener(functionName));
+                if (listeners.containsKey(functionName)) {
+                    KeyboardListener kl = listeners.remove(functionName);
+                    driver.removeKeyListener(kl);
+                }
         }
     }
     

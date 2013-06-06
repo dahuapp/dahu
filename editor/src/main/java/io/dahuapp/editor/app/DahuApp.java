@@ -3,6 +3,7 @@ package io.dahuapp.editor.app;
 import io.dahuapp.editor.proxy.DahuAppProxy;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebView;
@@ -12,6 +13,8 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
+import javafx.event.EventHandler;
+import javafx.stage.WindowEvent;
 
 /**
  * Main class of the application.
@@ -21,10 +24,20 @@ import javafx.concurrent.Worker.State;
 public class DahuApp extends Application {
     
     /**
+     * Minimum width of the editor window.
+     */
+    private static final int MIN_WIDTH = 640;
+    
+    /**
+     * Minimum height of the editor window.
+     */
+    private static final int MIN_HEIGHT = 480;
+    
+    /**
      * Webview of the application, all the elements will be displayed
      * in this webview.
      */
-    private WebView webview = new WebView();
+    private WebView webview;
     
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -37,8 +50,17 @@ public class DahuApp extends Application {
         root.getChildren().add(webview);
         
         // create the sceen
-        Scene scene = new Scene(root, 640, 480);
-
+        Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
+        
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent t) {
+                webview.getEngine().executeScript("dahuapp.drivers.onStop();");
+                Platform.exit();
+            }
+        });
+        primaryStage.setMinWidth(MIN_WIDTH);
+        primaryStage.setMinHeight(MIN_HEIGHT);
         primaryStage.setTitle("DahuApp Editor");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -66,6 +88,8 @@ public class DahuApp extends Application {
      * to the dahuapp javascript object.
      */
     private void initDahuApp() {
+        webview = new WebView();
+        
         // load main app
         webview.getEngine().load(getClass().getResource("dahuapp.html").toExternalForm());
 
@@ -80,6 +104,9 @@ public class DahuApp extends Application {
                     
                     // init engine
                     webview.getEngine().executeScript("dahuapp.editor.init();");
+        
+                    // load the drivers
+                    webview.getEngine().executeScript("dahuapp.drivers.onLoad();");
                 }
             }
         });
