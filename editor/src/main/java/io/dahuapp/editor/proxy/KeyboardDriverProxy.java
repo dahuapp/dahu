@@ -1,8 +1,7 @@
 package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.KeyboardDriver;
-import java.util.ArrayList;
-import java.util.Objects;
+import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSException;
@@ -64,7 +63,7 @@ public class KeyboardDriverProxy implements Proxy {
     /**
      * List of listeners added to this proxy.
      */
-    private ArrayList<KeyboardListener> listeners = new ArrayList<>();
+    private HashMap<String, KeyboardListener> listeners = new HashMap<>();
 
     /**
      * Driver associated with this proxy.
@@ -96,9 +95,9 @@ public class KeyboardDriverProxy implements Proxy {
             case "":
                 throw new JSException("Callback function cannot be anonymous.");
             default:
-                KeyboardListener kl = new KeyboardListener(functionName);
-                if (!listeners.contains(kl)) {
-                    listeners.add(kl);
+                if (!listeners.containsKey(functionName)) {
+                    KeyboardListener kl = new KeyboardListener(functionName);
+                    listeners.put(functionName, kl);
                     driver.addKeyListener(kl);
                 }
         }
@@ -116,12 +115,9 @@ public class KeyboardDriverProxy implements Proxy {
             case "":
                 throw new JSException("Callback function cannot be anonymous.");
             default:
-                for (KeyboardListener kl : listeners) {
-                    if (kl.getCallback().equals(functionName)) {
-                        driver.removeKeyListener(kl);
-                        listeners.remove(kl);
-                        return;
-                    }
+                if (listeners.containsKey(functionName)) {
+                    KeyboardListener kl = listeners.remove(functionName);
+                    driver.removeKeyListener(kl);
                 }
         }
     }
