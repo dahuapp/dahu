@@ -1,6 +1,7 @@
 package io.dahuapp.editor.proxy;
 
 import javafx.scene.web.WebEngine;
+import javafx.stage.Stage;
 
 /**
  * Manager of all the drivers. Offers an interface between the javascript and
@@ -22,36 +23,36 @@ public class DahuAppProxy implements Proxy {
 
     /**
      * Constructor.
-     *
+     * @param primaryStage The main stage (for modal dialogs).
      * @param webEngine The webEngine associated with the webView.
      */
-    public DahuAppProxy(WebEngine webEngine) {
+    public DahuAppProxy(Stage primaryStage, WebEngine webEngine) {
         // init all proxies
         logger = new LoggerProxy();
         keyboard = new KeyboardDriverProxy(webEngine);
-        fileSystem = new FileSystemDriverProxy();
+        fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
     }
 
     /**
      * Constructor.
-     *
+     * @param primaryStage The main stage (for modal dialogs).
      * @param webEngine The webEngine associated with the webView
      * @param loggerDirectory path of the file to log
      */
-    public DahuAppProxy(WebEngine webEngine, String loggerDirectory) {
+    public DahuAppProxy(Stage primaryStage, WebEngine webEngine, String loggerDirectory) {
         // init all proxies
         logger = new LoggerProxy(loggerDirectory);
         keyboard = new KeyboardDriverProxy(webEngine);
-        fileSystem = new FileSystemDriverProxy();
+        fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
     }
 
     @Override
     public void onLoad() {
-        // more logical in logs than 'log.load' appears in the beginning
+        // more logical in logs than 'logger.load' appears in the beginning
         logger.onLoad();
         keyboard.onLoad();
         fileSystem.onLoad();
