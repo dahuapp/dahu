@@ -50,17 +50,32 @@
                                     </li>                                   
                                 </ul>
                             </li>
+                            <li class="dropdown">
+                                <!-- link of the dropdown menu -->
+                                <a id="drop2" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                                    View 
+                                    <b class="caret"></b>  
+                                </a>
+                                <!-- List of the dropdown menu links -->
+                                <ul class="dropdown-menu" aria-labelledby="drop2" role="menu">
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="generate">
+                                            Generate presentation
+                                        </a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="visual-mode">
+                                            Preview
+                                        </a>
+                                    </li>                                  
+                                </ul>
+                            </li>
                         </ul>
                         <!-- Buttons on the right part of navbar -->
                         <ul class="nav pull-right">
                             <li>
                                 <button class="btn btn-primary" id="capture-mode">
                                     Capture mode
-                                </button>
-                            </li>
-                            <li>
-                                <button class="btn btn-primary" id="preview-mode">
-                                    Preview
                                 </button>
                             </li>
                         </ul>
