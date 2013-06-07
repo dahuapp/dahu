@@ -94,7 +94,7 @@ var editor = (function(editor, $) {
          */
         self.getSlideList = function getSlideList() {
             var SlideList = new Array();
-            for (var i = 0; i < json.indexSlide - 1; i++) {
+            for (var i = 0; i < json.indexSlide; i++) {
                 SlideList.push(json.presentation[i].img);
             }
             return SlideList;
