@@ -3,6 +3,10 @@ package io.dahuapp.editor.proxy;
 import static io.dahuapp.editor.proxy.LoggerProxy.log;
 import io.dahuapp.editor.utils.HTMLFormatter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +19,8 @@ public class LoggerProxy implements Proxy {
     private static final Logger logger = Logger.getLogger(LoggerProxy.class.getName());
     private FileHandler fh;
     private static final String file = "dahu";
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+    private Date date = new Date();
 
     /**
      * Constructs a LoggerDriver. The log file will be set in the temporary
@@ -26,7 +32,7 @@ public class LoggerProxy implements Proxy {
         logger.setLevel(Level.ALL); //to throw messages from all levels
         logger.setUseParentHandlers(false); //to supress the default console
         try {
-            fh = new FileHandler("%t/" + file + "%u.log.html");
+            fh = new FileHandler("%t/" + file + dateFormat.format(date.getTime()) + ".log.html");
             fh.setFormatter(new HTMLFormatter());
             logger.addHandler(fh);
         } catch (IOException | SecurityException ex) {
@@ -44,7 +50,7 @@ public class LoggerProxy implements Proxy {
         logger.setLevel(Level.ALL); //to throw messages from all levels
         logger.setUseParentHandlers(false); //to supress the default console
         try {
-            fh = new FileHandler(directory + "/" + file + "%u.log.html");
+            fh = new FileHandler(directory + "/" + file + dateFormat.format(date.getTime()) + ".log.html");
             fh.setFormatter(new HTMLFormatter());
             logger.addHandler(fh);
         } catch (IOException | SecurityException ex) {

@@ -32,7 +32,7 @@ public class HTMLFormatter extends Formatter {
             s.append(".");
             s.append(record.getSourceMethodName());
         }
-        s.append("&nbsp;:&nbsp;");
+        s.append(":");
 
         s.append("</td>");
         String color = "color: rgb(0, 0, 0)";
@@ -49,7 +49,7 @@ public class HTMLFormatter extends Formatter {
         }
         s.append("<td><span  style=\"font-family:" + " Courier New,Courier,monospace; ").append(color).append(";\">" + "<b>");
         s.append(record.getLevel().getName()); 
-        s.append(" : ");
+        s.append(":");
         s.append("</td>");
         s.append("<td><span  style=\"font-family:" + " Courier New,Courier,monospace; ").append(color).append(";\">" + "<b>");
         s.append(formatMessage(record));
