@@ -1,8 +1,8 @@
 package io.dahuapp.editor.utils;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -14,44 +14,50 @@ import java.util.logging.LogRecord;
  */
 public class HTMLFormatter extends Formatter {
     // formatage d’une ligne
+    
+    private final String head = "<head>\n<style type=\"text/css\">\nbody {\ncolor: black;\nbackground-color: white \n}" 
+            + "\n.severe {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(204, 0, 0)\n}\n"
+            + "\n.warning {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(255, 204, 0)\n}\n"
+            + "\n.fine {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(0, 0, 204)\n}\n"
+            + "\n.info {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(104, 104, 104)\n}\n"
+            + "\n.config {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(0, 204, 0)\n}\n"
+            + "\n.all {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(0, 0, 0)\n}\n"
+            + "\n</style>\n";
+    
+    private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy-HH:mm:ss");
 
     @Override
     public String format(LogRecord record) {
         StringBuilder s = new StringBuilder(1024);
         Date d = new Date(record.getMillis());
-        DateFormat df = DateFormat.getDateTimeInstance(
-                DateFormat.LONG, DateFormat.MEDIUM, Locale.FRANCE);
         s.append("<tr><td>");
-        s.append(df.format(d));
-
+        s.append(dateFormat.format(d));
+        s.append(" in ");
         if (record.getSourceClassName() != null) {
-            s.append("&nbsp;");
             s.append(record.getSourceClassName());
         }
         if (record.getSourceMethodName() != null) {
             s.append(".");
             s.append(record.getSourceMethodName());
         }
-        s.append(":");
 
         s.append("</td>");
-        String color = "color: rgb(0, 0, 0)";
+        String color = "all";
         if (record.getLevel() == Level.SEVERE) {
-            color = "color: rgb(204, 0, 0)";
+            color = "severe";
         } else if (record.getLevel() == Level.WARNING) {
-            color = "color: rgb(255, 204, 0)";
+            color = "warning";
         } else if (record.getLevel() == Level.FINE) {
-            color = "color: rgb(0, 0, 204)";
+            color = "fine";
         } else if (record.getLevel() == Level.INFO) {
-            color = "color: rgb(0, 204, 204)";
+            color = "info";
         } else if (record.getLevel() == Level.CONFIG) {
-            color = "color: rgb(0, 204, 0)";
+            color = "config";
         }
-        s.append("<td><span  style=\"font-family:" + " Courier New,Courier,monospace; ").append(color).append(";\">" + "<b>");
+        s.append("<td><span class=\"").append(color).append("\">" + "<b>");
         s.append(record.getLevel().getName()); 
-        s.append(":");
-        s.append("</td>");
-        s.append("<td><span  style=\"font-family:" + " Courier New,Courier,monospace; ").append(color).append(";\">" + "<b>");
+        s.append("</b></td>");
+        s.append("<td><span  class=\"").append(color).append("\">" + "<b>");
         s.append(formatMessage(record));
         s.append("</b></span></td></tr>\n");
         return s.toString();
@@ -60,7 +66,7 @@ public class HTMLFormatter extends Formatter {
 
     @Override
     public String getHead(Handler h) {
-        return "<html>\n<body>\n<table>\n";
+        return "<html>"+head+"\n<body>\n<table>\n";
     }
     // end of the log file
 
