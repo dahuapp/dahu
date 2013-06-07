@@ -142,8 +142,6 @@ var dahuapp = (function(dahuapp, $) {
                         "The project was successfully created.");
                     dahuapp.editor.json.createPresentation();
                     initProject = true;
-                    dahuapp.editor.json.createPresentation();
-                    initProject = true;
                 }
             });
         };
