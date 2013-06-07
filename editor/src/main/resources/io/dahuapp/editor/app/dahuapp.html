@@ -9,68 +9,62 @@
         <!-- bootstrap's javascript uses jQuery -->
         <script src="bootstrap/js/bootstrap.min.js"></script>
     </head>
-    
+
     <body>
         <!-- Application -->
-                <div class="container debug1" id="app-container">
-                    
+        <div class="container debug1" id="app-container">
+
             <!-- Block for the navigation bar -->
             <div class="debug2" id="navbar-container">
 
-                <div class="navbar">
+                <div class="navbar navbar-static">
                     <div class="navbar-inner">
+                        <!-- Title of the navigation bar -->
                         <a class="brand" href="#">
                             DahuApp
                         </a>
-                        <ul class="nav">
-                           
-                            <!-- Set below the buttons of the navigation bar -->
-                            <li>
-                                <!-- To set the project directory -->
-                                <button class="btn btn-primary" id="set-project-dir" type="button">
-                                    set-project-dir
-                                </button>
-                            </li>
-                            <li>
-                                <!-- To set capture mode -->
-                                <button class="btn btn-primary" id="capture-mode" type="button">
-                                    capture-mode
-                                </button>
-                            </li>
-                            <li>
-                                <!-- To save the presentation -->
-                                <button class="btn btn-primary" id="save-project" type="button">
-                                    save-project
-                                </button>
-                            </li>
-                            <li>
-                                <!-- To save the presentation -->
-                                <button class="btn btn-primary" id="new-project" type="button">
-                                    new-project
-                                </button>
-                            </li>
-                            <li>
-                                <!-- To save the presentation -->
-                                <button class="btn btn-primary" id="open-project" type="button">
-                                    load-project
-                                </button>
+                        <!-- List of the navbar buttons -->
+                        <ul class="nav" role="navigation">
+                            <li class="dropdown">
+                                <!-- link of the dropdown menu -->
+                                <a id="drop1" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                                    File 
+                                    <b class="caret"></b>  
+                                </a>
+                                <!-- List of the dropdown menu links -->
+                                <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="new-project">
+                                            New project
+                                        </a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="open-project">
+                                            Load project
+                                        </a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="save-project">
+                                            Save project
+                                        </a>
+                                    </li>                                   
+                                </ul>
                             </li>
                         </ul>
+                        <!-- Button on the right part of navbar -->
+                        <button class="btn btn-primary pull-right" id="capture-mode">
+                            Capture mode
+                        </button>
                     </div>
                 </div>
-
             </div>
-            
+
             <!-- Main block -->
             <div class="debug3" id="main-container">
                 <div class="debug4 scroll" id="image-bar-container">
-                    <ul class="thumbnails">
-                        <li class="span2 offset">
-                            <!-- here below, the list of screen following the model given -->
-                            <a class="thumbnail">
-                                <img src="" alt="FAIL !!!"/>
-                            </a>
-                        </li>
+                    <!-- List of the image bar items -->
+                    <ul class="thumbnails" id="image-list">
+
                     </ul>
                 </div> 
                 <div class="debug5 scroll" id="current-image-container">
@@ -78,7 +72,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Including dahuapp -->
         <script src="dahuapp.js"></script>
         <script src="dahuapp.editor.js"></script>
