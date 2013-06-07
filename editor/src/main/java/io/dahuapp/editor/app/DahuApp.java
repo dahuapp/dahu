@@ -90,6 +90,7 @@ public class DahuApp extends Application {
      */
     private void initDahuApp(final Stage primaryStage) {
         webview = new WebView();
+        webview.setContextMenuEnabled(false);
         
         // load main app
         webview.getEngine().load(getClass().getResource("dahuapp.html").toExternalForm());
