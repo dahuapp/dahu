@@ -36,27 +36,22 @@ public class HTMLFormatter extends Formatter {
 
         s.append("</td>");
         String color = "color: rgb(0, 0, 0)";
-        String align = "&nbsp;&nbsp;&nbsp;&nbsp;";
         if (record.getLevel() == Level.SEVERE) {
-            align = "&nbsp;";
             color = "color: rgb(204, 0, 0)";
         } else if (record.getLevel() == Level.WARNING) {
-            align = "";
             color = "color: rgb(255, 204, 0)";
         } else if (record.getLevel() == Level.FINE) {
-            align = "&nbsp;&nbsp;&nbsp;";
             color = "color: rgb(0, 0, 204)";
         } else if (record.getLevel() == Level.INFO) {
-            align = "&nbsp;&nbsp;&nbsp;";
             color = "color: rgb(0, 204, 204)";
         } else if (record.getLevel() == Level.CONFIG) {
-            align = "&nbsp;";
             color = "color: rgb(0, 204, 0)";
         }
         s.append("<td><span  style=\"font-family:" + " Courier New,Courier,monospace; ").append(color).append(";\">" + "<b>");
-        s.append(record.getLevel().getName());
-        s.append(align);
+        s.append(record.getLevel().getName()); 
         s.append(" : ");
+        s.append("</td>");
+        s.append("<td><span  style=\"font-family:" + " Courier New,Courier,monospace; ").append(color).append(";\">" + "<b>");
         s.append(formatMessage(record));
         s.append("</b></span></td></tr>\n");
         return s.toString();
