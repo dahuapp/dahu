@@ -87,6 +87,18 @@ var editor = (function(editor, $) {
             json.presentation[idSlide].action[idAction].mouseX = mouseX;
             json.presentation[idSlide].action[idAction].mouseY = mouseY;
         };
+        
+        /*
+         * Catches all the slides of the presentation
+         * @returns {Array} List of slides of the presentation
+         */
+        self.getSlideList = function getSlideList() {
+            var SlideList = new Array();
+            for (var i = 0; i < json.indexSlide - 1; i++) {
+                SlideList.push(json.presentation[i].img);
+            }
+            return SlideList;
+        };
 
         /*
          * @returns {String}
