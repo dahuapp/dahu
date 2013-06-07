@@ -45,7 +45,6 @@ public class ScreenDriver implements Driver {
         try {
             // writes the buffered image on disk
             final File dirFile = new File(projectDir);
-            System.out.println(dirFile.getCanonicalPath());
             final int count = dirFile.listFiles(pngFilter).length + 1;
             // returns the file separator for this platform (unix or windows eg)
             final String fileSep = System.getProperty("file.separator");

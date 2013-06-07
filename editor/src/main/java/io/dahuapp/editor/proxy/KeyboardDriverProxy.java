@@ -123,6 +123,8 @@ public class KeyboardDriverProxy implements Proxy {
      */
     public String keyToString(int keyCode) {
         switch (keyCode) {
+            case VK_F7:
+                return "f7";
             case VK_F8:
                 return "f8";
             case VK_ESCAPE:

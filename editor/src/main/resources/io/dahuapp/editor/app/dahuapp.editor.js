@@ -88,7 +88,7 @@ var dahuapp = (function(dahuapp, $) {
             // shortcut
             var drivers = dahuapp.drivers;
             switch (drivers.keyboard.keyToString(key).toLowerCase()) {
-                case "f8":
+                case "f7":
                     var img = dahuapp.drivers.screen.takeScreen(projectDir);
                     var mouse = dahuapp.drivers.mouse;
                     dahuapp.editor.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
@@ -139,10 +139,24 @@ var dahuapp = (function(dahuapp, $) {
             $('#open-project').click(function() {
                 if (!captureMode) {
                     var driver = dahuapp.drivers.fileSystem;
-                    projectDir = driver.askForProjectDir();
+                    // projectDir = driver.askForProjectDir();
                     if (projectDir) {
                         var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
+                        var slideList;
+                        var i = 0;
                         dahuapp.editor.json.loadJson(stringJson);
+                        slideList = dahuapp.editor.json.getSlideList();
+                        while (slideList[i]) {
+                            var img = slideList[i];
+                            $('#image-list').append($(document.createElement('li'))
+                                    .attr({'class': 'span2 offset'})
+                                    .append($(document.createElement('a'))
+                                    .attr({'class': 'thumbnail'})
+                                    .append($(document.createElement('img'))
+                                    .attr({'src': img, 'alt': img}))));
+                            i++;
+                        }
+
                         initProject = true;
                     }
                 }
@@ -151,8 +165,6 @@ var dahuapp = (function(dahuapp, $) {
                 if (!captureMode) {
                     dahuapp.drivers.dialog.showMessage("Info",
                             "The project was successfully created.");
-                    dahuapp.editor.json.createPresentation();
-                    initProject = true;
                     dahuapp.editor.json.createPresentation();
                     initProject = true;
                 }
