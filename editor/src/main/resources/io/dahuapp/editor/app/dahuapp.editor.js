@@ -98,11 +98,18 @@ var dahuapp = (function(dahuapp, $) {
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
                             .attr({'src': img, 'alt': img}))));
+                    $('.thumbnail').click(function() {
+                        var littleImg = $(this).find('img').attr('src');
+                        $('#preview-image').replaceWith($(document.createElement('div'))
+                                .attr({'id': 'preview-image'})
+                                .append($(document.createElement('img'))
+                                .attr({'src': littleImg, 'alt': littleImg})));
+                    });
                     $('#preview-image').replaceWith($(document.createElement('div'))
-                            .attr({'id': 'preview-image'})
-                            .append($(document.createElement('img'))
-                            .attr({'src': img, 'alt': img})));
-                    break;
+                     .attr({'id': 'preview-image'})
+                     .append($(document.createElement('img'))
+                     .attr({'src': img, 'alt': img})));
+                     break;
                 case "escape":
                     switchCaptureMode();
                     break;
@@ -116,7 +123,7 @@ var dahuapp = (function(dahuapp, $) {
          * in the application window.
          */
         self.init = function init() {
-            
+
             $('#capture-mode').click(function() {
                 if (initProject) {
                     switchCaptureMode();
@@ -143,7 +150,7 @@ var dahuapp = (function(dahuapp, $) {
             $('#new-project').click(function() {
                 if (!captureMode) {
                     dahuapp.drivers.dialog.showMessage("Info",
-                        "The project was successfully created.");
+                            "The project was successfully created.");
                     dahuapp.editor.json.createPresentation();
                     initProject = true;
                     dahuapp.editor.json.createPresentation();
@@ -151,7 +158,7 @@ var dahuapp = (function(dahuapp, $) {
                 }
             });
         };
-        
+
         /**
          * 
          * @param {type} args
