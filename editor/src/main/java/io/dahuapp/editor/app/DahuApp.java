@@ -44,7 +44,7 @@ public class DahuApp extends Application {
         StackPane root = new StackPane();
         
         // init dahuapp
-        initDahuApp();
+        initDahuApp(primaryStage);
         
         // pin it to stackpane
         root.getChildren().add(webview);
@@ -86,8 +86,9 @@ public class DahuApp extends Application {
     /**
      * Initialises the webview with the html content and binds the drivers
      * to the dahuapp javascript object.
+     * @param primaryStage Main stage of the app (for the proxy).
      */
-    private void initDahuApp() {
+    private void initDahuApp(final Stage primaryStage) {
         webview = new WebView();
         
         // load main app
@@ -100,7 +101,7 @@ public class DahuApp extends Application {
                 if (newState == State.SUCCEEDED) {
                     // load drivers
                     JSObject dahuapp = (JSObject) webview.getEngine().executeScript("window.dahuapp");
-                    dahuapp.setMember("drivers", new DahuAppProxy(webview.getEngine()));
+                    dahuapp.setMember("drivers", new DahuAppProxy(primaryStage, webview.getEngine()));
                     
                     // init engine
                     webview.getEngine().executeScript("dahuapp.editor.init();");
