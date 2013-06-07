@@ -13,7 +13,6 @@ var editor = (function(editor, $) {
         var self = {};
 
         var json = {};
-        var idSlide = 0;
 
 
         /* Public API */
@@ -32,31 +31,31 @@ var editor = (function(editor, $) {
          * Create a new presentation variable in the JSON file which will contain slides.
          */
         self.createPresentation = function createPresentation() {
+            json.indexSlide = 0;
             json.presentation = new Array();
         };
 
         /*
          * Add a new slide in the presentation variable of the JSON file.
          * @param String img Related to pathname of the image.
-         * @param int mouseX Abscisa mouse position.
-         * @param int mouseY Ordonate mouse position.
+         * @param int mouseX Abscissa mouse position.
+         * @param int mouseY Ordinate mouse position.
          */
         self.addSlide = function addSlide(img, mouseX, mouseY) {
             var slide = {
-                "id": idSlide,
+                "id": json.indexSlide,
                 "img": img,
-                "idAction": 0,
+                "indexAction": 1,
                 "action": new Array()
             };
             var action = {
-                "id": slide.idAction,
+                "id": slide.indexAction,
                 "type": "mouse",
                 "mouseX": mouseX,
                 "mouseY": mouseY
             };
-            slide.idAction++;
             slide.action.push(action);
-            idSlide++;
+            json.indexSlide++;
             json.presentation.push(slide);
         };
 
@@ -81,7 +80,7 @@ var editor = (function(editor, $) {
          * of the slide identified by idSlide.
          * @param int idSlide Identify the slide.
          * @param int idAction Identify the action.
-         * @param int mouseX Abscisa mouse position.
+         * @param int mouseX Abscissa mouse position.
          * @param int mouseY Ordinate mouse position.
          */
         self.editMouse = function editMouse(idSlide, idAction, mouseX, mouseY) {
