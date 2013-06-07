@@ -8,6 +8,7 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 
 /**
  * Driver of file system. Writes data to files on disk, or read data from files
@@ -58,6 +59,9 @@ public class FileSystemDriver implements Driver {
      * @return True if the file or directory exists.
      */
     public boolean exists(String name) {
+        if (name == null) {
+            return false;
+        }
         File dir = new File(name);
         return dir.exists();
     }
@@ -109,13 +113,16 @@ public class FileSystemDriver implements Driver {
 
     /**
      * Let the user choose the project directory.
-     *
+     * @param parent Parent window (for modality).
      * @return The absolute path of the chosen directory.
      */
-    public String askForProjectDir() {
-        // TO DO : check this
-        //File file = directoryChooser.showDialog(null);
-        return ".";//file.getAbsolutePath();
+    public String askForProjectDir(Window parent) {
+        // TO DO : check why it cause a pthread_mutex error
+        //File file = directoryChooser.showDialog(parent);
+        //if (file == null) {
+            return null;
+        //}
+        //return file.getAbsolutePath();
     }
 
     /**

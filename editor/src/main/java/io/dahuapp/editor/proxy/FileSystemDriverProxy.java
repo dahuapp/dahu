@@ -1,6 +1,7 @@
 package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.FileSystemDriver;
+import javafx.stage.Stage;
 
 /**
  * Proxy for the file system driver.
@@ -8,9 +9,22 @@ import io.dahuapp.editor.drivers.FileSystemDriver;
 public class FileSystemDriverProxy implements Proxy {
     
     /**
+     * Main stage of the window (for modal dialogs).
+     */
+    private Stage primaryStage;
+    
+    /**
      * Driver associated with this proxy.
      */
     private FileSystemDriver driver = new FileSystemDriver();
+    
+    /**
+     * Constructor.
+     * @param primaryStage Main stage of the app (for modal dialogs).
+     */
+    public FileSystemDriverProxy(Stage primaryStage) {
+        this.primaryStage = primaryStage;
+    }
     
     @Override
     public void onLoad() {
@@ -61,7 +75,7 @@ public class FileSystemDriverProxy implements Proxy {
      * @return The absolute path of the chosen directory.
      */
     public String askForProjectDir() {
-        String dirName = driver.askForProjectDir();
+        String dirName = driver.askForProjectDir(primaryStage);
         if (!driver.exists(dirName)) {
             boolean created = driver.createDir(dirName);
             if (!created) {
