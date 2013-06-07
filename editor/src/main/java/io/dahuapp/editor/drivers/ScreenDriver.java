@@ -44,11 +44,13 @@ public class ScreenDriver implements Driver {
         
         try {
             // writes the buffered image on disk
-            final File dirFile = new File(projectDir).getCanonicalFile();
+            final File dirFile = new File(projectDir);
+            System.out.println(dirFile.getCanonicalPath());
             final int count = dirFile.listFiles(pngFilter).length + 1;
             // returns the file separator for this platform (unix or windows eg)
             final String fileSep = System.getProperty("file.separator");
-            final String fileName = projectDir + fileSep + "screen" + count + ".png";
+            final String fileName = dirFile.getCanonicalPath()
+                    + fileSep + "screen" + count + ".png";
             if (ImageIO.write(capture, "png", new File(fileName))) {
                 LoggerProxy.info(getClass().getName(), "takeScreen", 
                         "create png file " + fileName);

@@ -76,6 +76,9 @@ public class FileSystemDriverProxy implements Proxy {
      */
     public String askForProjectDir() {
         String dirName = driver.askForProjectDir(primaryStage);
+        if (dirName == null) {
+            return null;
+        }
         if (!driver.exists(dirName)) {
             boolean created = driver.createDir(dirName);
             if (!created) {

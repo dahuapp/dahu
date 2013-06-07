@@ -16,11 +16,13 @@ public class DahuAppProxy implements Proxy {
     public KeyboardDriverProxy keyboard;
     public FileSystemDriverProxy fileSystem;
     public ScreenDriverProxy screen;
+    
     /**
-     * Other Proxy.
+     * Other Proxies.
      */
     public LoggerProxy logger;
-
+    public DialogProxy dialog;
+    
     /**
      * Constructor.
      * @param primaryStage The main stage (for modal dialogs).
@@ -33,6 +35,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
+        dialog = new DialogProxy(primaryStage);
     }
 
     /**
@@ -48,6 +51,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
+        dialog = new DialogProxy(primaryStage);
     }
 
     @Override
@@ -58,6 +62,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem.onLoad();
         screen.onLoad();
         mouse.onLoad();
+        dialog.onLoad();
     }
 
     @Override
@@ -67,5 +72,6 @@ public class DahuAppProxy implements Proxy {
         screen.onStop();
         logger.onStop();
         mouse.onStop();
+        dialog.onStop();
     }
 }
