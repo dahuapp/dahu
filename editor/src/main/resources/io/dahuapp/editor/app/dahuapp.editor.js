@@ -108,27 +108,40 @@ var dahuapp = (function(dahuapp, $) {
         self.init = function init() {
             
             $('#capture-mode').click(function() {
-                switchCaptureMode();
+                if (initProject) {
+                    switchCaptureMode();
+                }
             });
             $('#save-project').click(function() {
-                var stringJson = dahuapp.editor.json.getJson();
-                var driver = dahuapp.drivers.fileSystem;
-                driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson);
+                if (initProject && !captureMode) {
+                    var stringJson = dahuapp.editor.json.getJson();
+                    var driver = dahuapp.drivers.fileSystem;
+                    driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson);
+                }
             });
             $('#open-project').click(function() {
-                var driver = dahuapp.drivers.fileSystem;
-                projectDir = driver.askForProjectDir();
-                var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
-                dahuapp.editor.json.loadJson(stringJson);
+                if (!captureMode) {
+                    var driver = dahuapp.drivers.fileSystem;
+                    projectDir = driver.askForProjectDir();
+                    if (projectDir) {
+                        var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
+                        dahuapp.editor.json.loadJson(stringJson);
+                        initProject = true;
+                    }
+                }
             });
             $('#new-project').click(function() {
-                dahuapp.drivers.dialog.showMessage("Info",
-                    "The project was successfully created.");
-                dahuapp.editor.json.createPresentation();
-                initProject = true;
+                if (!captureMode) {
+                    dahuapp.drivers.dialog.showMessage("Info",
+                        "The project was successfully created.");
+                    dahuapp.editor.json.createPresentation();
+                    initProject = true;
+                    dahuapp.editor.json.createPresentation();
+                    initProject = true;
+                }
             });
         };
-
+        
         /**
          * 
          * @param {type} args
