@@ -112,7 +112,7 @@ var dahuapp = (function(dahuapp, $) {
          * in the application window.
          */
         self.init = function init() {
-
+            
             $('#capture-mode').click(function() {
                 if (initProject) {
                     switchCaptureMode();
@@ -138,6 +138,10 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#new-project').click(function() {
                 if (!captureMode) {
+                    dahuapp.drivers.dialog.showMessage("Info",
+                        "The project was successfully created.");
+                    dahuapp.editor.json.createPresentation();
+                    initProject = true;
                     dahuapp.editor.json.createPresentation();
                     initProject = true;
                 }

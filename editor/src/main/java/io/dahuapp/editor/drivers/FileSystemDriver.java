@@ -59,9 +59,6 @@ public class FileSystemDriver implements Driver {
      * @return True if the file or directory exists.
      */
     public boolean exists(String name) {
-        if (name == null) {
-            return false;
-        }
         File dir = new File(name);
         return dir.exists();
     }
