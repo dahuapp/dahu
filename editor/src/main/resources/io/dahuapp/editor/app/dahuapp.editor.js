@@ -98,6 +98,10 @@ var dahuapp = (function(dahuapp, $) {
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
                             .attr({'src': img, 'alt': img}))));
+                    $('#preview-image').replaceWith($(document.createElement('div'))
+                            .attr({'id': 'preview-image'})
+                            .append($(document.createElement('img'))
+                            .attr({'src': img, 'alt': img})));
                     break;
                 case "escape":
                     switchCaptureMode();
