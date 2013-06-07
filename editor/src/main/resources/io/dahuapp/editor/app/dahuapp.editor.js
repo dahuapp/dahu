@@ -92,6 +92,12 @@ var dahuapp = (function(dahuapp, $) {
                     var img = dahuapp.drivers.screen.takeScreen(projectDir);
                     var mouse = dahuapp.drivers.mouse;
                     dahuapp.editor.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
+                    $('#image-list').append($(document.createElement('li'))
+                            .attr({'class': 'span2 offset'})
+                            .append($(document.createElement('a'))
+                            .attr({'class': 'thumbnail'})
+                            .append($(document.createElement('img'))
+                            .attr({'src': img, 'alt': img}))));
                     break;
                 case "escape":
                     switchCaptureMode();
