@@ -64,6 +64,11 @@ var dahuapp = (function(dahuapp, $) {
             $('#capture-mode').toggleClass('btn-primary');
             $('#capture-mode').toggleClass('btn-success');
             captureMode = !captureMode;
+            if (captureMode) {
+                dahuapp.drivers.logger.JSconfig("dahuap.editor.js", ": switchCaptureMode", "capture mode on");
+            } else {
+                dahuapp.drivers.logger.JSconfig("dahuap.editor.js", ": switchCaptureMode", "capture mode off");
+            }
         };
 
         /* public API */
@@ -133,8 +138,16 @@ var dahuapp = (function(dahuapp, $) {
                 if (initProject && !captureMode) {
                     var stringJson = dahuapp.json.getJson();
                     var driver = dahuapp.drivers.fileSystem;
-                    driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson);
-                    alert("The project was successfully saved");
+                    if (driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson)) {  
+                        dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", ": init", "project saved in " + projectDir);
+                        alert("The project was successfully saved");
+                    } else {
+                        dahuapp.drivers.logger.JSsevere("dahuapp.editor.js", ": init", "failed to save project in " + projectDir);
+                    }
+                } else if (captureMode) {
+                    dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", ": init", "can't save a project when captureMode is on!");
+                } else {
+                    dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", ": init", "can't save as there is no project selected !");
                 }
             });
             $('#open-project').click(function() {
@@ -160,13 +173,18 @@ var dahuapp = (function(dahuapp, $) {
 
                         initProject = true;
                     }
+                    } else {
+                       dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", ": init", "can't open a project when captureMode is on!");
                 }
             });
             $('#new-project').click(function() {
                 if (!captureMode) {
                     dahuapp.json.createPresentation();
                     alert("The project was successfully created.");
+                    dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", ": init", "project created !");
                     initProject = true;
+                } else {
+                    dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", ": init", "can't create a new project when captureMode is on!");
                 }
             });
         };
