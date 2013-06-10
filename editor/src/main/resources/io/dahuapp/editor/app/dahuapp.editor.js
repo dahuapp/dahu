@@ -97,14 +97,14 @@ var dahuapp = (function(dahuapp, $) {
                             .append($(document.createElement('a'))
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
-                            .attr({'src': img, 'alt': img}))));
-                    $('.thumbnail').click(function() {
+                            .attr({'src': img, 'alt': img}))
+                            .click(function() {
                         var littleImg = $(this).find('img').attr('src');
                         $('#preview-image').replaceWith($(document.createElement('div'))
                                 .attr({'id': 'preview-image'})
                                 .append($(document.createElement('img'))
                                 .attr({'src': littleImg, 'alt': littleImg})));
-                    });
+                    })));
                     $('#preview-image').replaceWith($(document.createElement('div'))
                      .attr({'id': 'preview-image'})
                      .append($(document.createElement('img'))
