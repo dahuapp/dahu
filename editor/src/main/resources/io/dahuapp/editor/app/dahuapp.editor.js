@@ -201,15 +201,28 @@ var dahuapp = (function(dahuapp, $) {
          * Function to update the preview on the middle.
          * slide is the absolute path to the image
          */
-        var updatePreview = function(slide) {
+        var updatePreview = function(slide, id) {
             if ($('#preview-image').empty()) {
                 $('#preview-image').append($(document.createElement('img'))
-                    .attr({'src': slide, 'alt': slide}));
+                    .attr({'src': slide, 'alt': slide, 'id': id}));
             } else {
                 $('#preview-image').children().replaceWith(
                     $(document.createElement('img'))
-                    .attr({'src': slide, 'alt': slide}));
+                    .attr({'src': slide, 'alt': slide, 'id': id}));
             }
+            // BEGINNING TO SET THE SOURIS
+            /*
+            var image = document.getElementById("preview-image");
+            var imageRect = image.getBoundingClientRect();
+            var jsObject = jsonModel.getSlide(id);
+            if (jsObject.object[1].type === "mouse") {
+                alert("mouseX : " + jsObject.object[1].mouseX
+                    + "mouseY : " + jsObject.object[1].mouseY);
+            }
+            alert("left : " + imageRect.left + " right : " + imageRect.right
+            + "\ntop : " + imageRect.top + " bottom " + imageRect.bottom
+            + "\nwidth : " + imageRect.width + " height : " + imageRect.height);
+            */
         };
         
         /*
@@ -218,17 +231,20 @@ var dahuapp = (function(dahuapp, $) {
          */
         var updateImageList = function(img) {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
+            var id = jsonModel.getNbSlide() - 1;
             $('#image-list').append($(document.createElement('li'))
                     .attr({'class': 'span2 offset'})
                     .append($(document.createElement('a'))
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
                                     .attr({'src': projectDir + sep + img,
-                                        'alt': projectDir + sep + img})
+                                        'id': id,
+                                        'alt': projectDir + sep + img
+                                    })
                             )
                     )
             );
-            updatePreview(projectDir + sep + img);
+            updatePreview(projectDir + sep + img, id);
         };
         
         /*
@@ -306,7 +322,7 @@ var dahuapp = (function(dahuapp, $) {
                 var imgName = $(this).attr('src');
                 if (currentSlide !== imgName) {
                     currentSlide = imgName;
-                    events.selectedImageChanged.publish(currentSlide);
+                    events.selectedImageChanged.publish(currentSlide, $(this).attr('id'));
                 }
             });
             $('#capture-mode').click(function() {

@@ -192,8 +192,15 @@
             /*
              * @returns {String} returns the index for the next slide.
              */
-            this.getIndex = function() {
+            this.getNbSlide = function() {
                 return json.metaData.nbSlide;
+            };
+            
+            /*
+             * @return {object} returns the object identified by idSlide
+             */
+            this.getSlide = function(idSlide) {
+                return json.data[idSlide];
             };
         };
 
