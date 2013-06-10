@@ -68,7 +68,7 @@
 
                 return retval;
             }
-            
+
 
 
             /* Public API */
@@ -182,6 +182,12 @@
                 return formatJson(stringJson);
             };
 
+            /*
+             * @returns {String} returns the index for the next slide.
+             */
+            this.getIndex = function() {
+                return json.metaData.nbSlide;
+            };
         };
 
         self.createScreencastModel = function createScreencastModel() {
