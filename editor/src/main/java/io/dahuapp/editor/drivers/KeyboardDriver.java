@@ -39,7 +39,7 @@ public class KeyboardDriver implements Driver {
     public void addKeyListener(KeyboardListener listener) {
         listeners.add(listener);
         LoggerProxy.config(getClass().getName(), "addKeyListener",
-                listener.getClass().getName() + " added");
+                listener.getClass().getSimpleName() + " added");
     }
     
     /**
@@ -50,7 +50,7 @@ public class KeyboardDriver implements Driver {
     public void removeKeyListener(KeyboardListener listener) {
         listeners.remove(listener);
         LoggerProxy.config(getClass().getName(), "removeKeyListener",
-                listener.getClass().getName() + " removed");
+                listener.getClass().getSimpleName() + " removed");
     }
     
     @Override
@@ -88,13 +88,13 @@ public class KeyboardDriver implements Driver {
             }
         });
         LoggerProxy.info(getClass().getName(), "onLoad",
-                "Starting " +  KeyboardDriver.class.getName() + " driver");
+                "Starting " +  KeyboardDriver.class.getSimpleName() + " driver");
     }
 
     @Override
     public void onStop() {
         GlobalScreen.unregisterNativeHook();
         LoggerProxy.info(getClass().getName(), 
-                "onStop", "Stopping " + KeyboardDriver.class.getName() + " driver");
+                "onStop", "Stopping " + KeyboardDriver.class.getSimpleName() + " driver");
     }
 }
