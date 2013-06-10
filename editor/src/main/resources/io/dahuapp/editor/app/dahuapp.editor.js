@@ -125,12 +125,14 @@ var dahuapp = (function(dahuapp, $) {
          * Function to update the image list (when a new one is captured).
          */
         var updateImageList = function(img) {
+            var sep = dahuapp.drivers.fileSystem.getSeparator();
             $('#image-list').append($(document.createElement('li'))
                     .attr({'class': 'span2 offset'})
                     .append($(document.createElement('a'))
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
-                                    .attr({'src': img, 'alt': img})
+                                    .attr({'src': projectDir + sep + img,
+                                        'alt': projectDir + sep + img})
                             )
                     )
             );
@@ -157,13 +159,12 @@ var dahuapp = (function(dahuapp, $) {
         self.handleCaptureModeEvent = function handleCaptureModeEvent(key) {
             // shortcuts
             var drivers = dahuapp.drivers;
-            var sep = drivers.fileSystem.getSeparator();
             switch (drivers.keyboard.keyToString(key).toLowerCase()) {
                 case "f7":
                     var img = dahuapp.drivers.screen.takeScreen(projectDir);
                     var mouse = dahuapp.drivers.mouse;
                     dahuapp.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
-                    events.newImageTaken.publish(projectDir + sep + img);
+                    events.newImageTaken.publish(img);
                     break;
                 case "escape":
                     switchCaptureMode();
@@ -219,7 +220,7 @@ var dahuapp = (function(dahuapp, $) {
             $('#open-project').click(function() {
                 if (!captureMode) {
                     var driver = dahuapp.drivers.fileSystem;
-                    projectDir = prompt("Enter the absolute path to the dahu project file :",
+                    projectDir = prompt("Enter the absolute path to the dahu project directory :",
                             "Dahu project file.");
                     // projectDir = driver.askForProjectDir();
                     if (projectDir) {
@@ -233,7 +234,6 @@ var dahuapp = (function(dahuapp, $) {
                             events.newImageTaken.publish(img);
                             i++;
                         }
-
                         initProject = true;
                     }
                 } else {
