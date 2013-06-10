@@ -23,6 +23,7 @@ public class DahuAppProxy implements Proxy {
      * Other Proxies.
      */
     public LoggerProxy logger;
+    public RootDirectoryProxy rootDirectory;
     
     /**
      * Engine.
@@ -46,6 +47,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
+        rootDirectory = new RootDirectoryProxy();
         // attributes
         this.webEngine = webEngine;
         this.primaryStage = primaryStage;
@@ -64,6 +66,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
+        rootDirectory = new RootDirectoryProxy();
         // attributes
         this.webEngine = webEngine;
         this.primaryStage = primaryStage;

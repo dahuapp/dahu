@@ -191,8 +191,8 @@
             /*
              * Add a new slide in the presentation variable of the JSON file.
              * @param String img Related to pathname of the image.
-             * @param int mouseX Abscissa mouse position.
-             * @param int mouseY Ordinate mouse position.
+             * @param double mouseX Abscissa mouse position in %.
+             * @param double mouseY Ordinate mouse position in %.
              */
             this.addSlide = function(img, mouseX, mouseY) {
                 var slide = {
@@ -247,8 +247,8 @@
              * Changes the mouse position values of the action identified by idAction
              * of the slide identified by idSlide.
              * @param int idSlide Identify the slide.
-             * @param int mouseX Abscissa mouse position.
-             * @param int mouseY Ordinate mouse position.
+             * @param double mouseX Abscissa mouse position in %.
+             * @param double mouseY Ordinate mouse position in %.
              */
             this.editMouse = function(idSlide, mouseX, mouseY) {
                 json.data[idSlide].object[1].mouseX = mouseX;

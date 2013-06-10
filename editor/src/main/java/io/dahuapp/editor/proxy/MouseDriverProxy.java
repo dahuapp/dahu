@@ -11,23 +11,32 @@ public class MouseDriverProxy implements Proxy {
      * Driver associated with this proxy.
      */
     private MouseDriver driver = new MouseDriver();
+    
+    private double width = 0;
+    private double height = 0;
 
     /**
-     * Get abscissa of the mouse location
+     * Get abscissa of the mouse location in %
      *
      * @return the abscissa of the mouse location
      */
-    public int getMouseX() {
-        return (int) driver.getMouse().getX();
+    public double getMouseX() {
+        if (width == 0) {
+            width = driver.getMouseMax().getX();
+        }
+        return (driver.getMouse().getX() / width);
     }
 
     /**
-     * Get ordinate of the mouse location
+     * Get ordinate of the mouse location in %
      *
      * @return the ordinate of the mouse location
      */
-    public int getMouseY() {
-        return (int) driver.getMouse().getY();
+    public double getMouseY() {
+        if (height == 0) {
+            height = driver.getMouseMax().getY();
+        }
+        return (driver.getMouse().getY() / height);
     }
 
     @Override

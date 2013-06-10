@@ -64,6 +64,26 @@ var dahuapp = (function(dahuapp, $) {
          */
         var projectDir = ".";
         
+                /*
+         * 
+         * @type @exp;dahuapp@pro;drivers@pro;fileSystem@call;getSeparator
+         */
+        //var sep = dahuapp.drivers.fileSystem.getSeparator();
+        
+        /*
+         * The default value must be discussed.
+         * @type String img directory in the project
+         */
+        /*var ressourceImgDir = projectDir + sep + "resources" + sep
+                    + "io" + sep + "dahuapp" + sep + "editor"
+                    + sep + "app" + sep + "img";
+        */
+        /*
+         * 
+         * @type String name of the cursor image
+         */
+        var cursorImage = "cursor.png";
+        
         /*
          * Current slide displayed in the view.
          * @type String
@@ -219,25 +239,35 @@ var dahuapp = (function(dahuapp, $) {
         var updatePreview = function(slide, id) {
             if ($('#preview-image').empty()) {
                 $('#preview-image').append($(document.createElement('img'))
-                    .attr({'src': slide, 'alt': slide, 'id': id}));
+                    .attr({'position': "absolute", 'src': slide, 'alt': slide, 'id': id, 'z-index': 1})); 
             } else {
                 $('#preview-image').children().replaceWith(
                     $(document.createElement('img'))
-                    .attr({'src': slide, 'alt': slide, 'id': id}));
+                    .attr({'src': slide, 'alt': slide, 'id': id})); 
             }
             // BEGINNING TO SET THE SOURIS
-            /*
+            
+            var sep = dahuapp.drivers.fileSystem.getSeparator();
+            var ressourceImgDir = dahuapp.drivers.rootDirectory.getRootDirectory() + sep + dahuapp.drivers.rootDirectory.getImgPath();
+            
             var image = document.getElementById("preview-image");
             var imageRect = image.getBoundingClientRect();
             var jsObject = jsonModel.getSlide(id);
-            if (jsObject.object[1].type === "mouse") {
-                alert("mouseX : " + jsObject.object[1].mouseX
-                    + "mouseY : " + jsObject.object[1].mouseY);
-            }
-            alert("left : " + imageRect.left + " right : " + imageRect.right
-            + "\ntop : " + imageRect.top + " bottom " + imageRect.bottom
-            + "\nwidth : " + imageRect.width + " height : " + imageRect.height);
-            */
+            var left = Math.floor((imageRect.width * jsObject.object[1].mouseX ) + imageRect.left);
+            var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ) + imageRect.top);
+            $('#preview-image').append(
+                $(document.createElement('img'))
+                    .attr({'src': sep + ressourceImgDir + sep + cursorImage,
+                           'alt': sep + ressourceImgDir + sep + cursorImage,
+                           'position': "absolute",
+                           'left': left + "px",
+                           'top': top + "px",
+                           'width': "22px",
+                           'height': "22px",
+                           'z-index': 2
+                       }));
+                       alert(imageRect.width + "x" + imageRect.height)
+           dahuapp.drivers.logger.JSsevere($('html').html());
         };
         
         /*
