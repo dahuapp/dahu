@@ -73,7 +73,7 @@ public class HTMLFormatter extends Formatter {
                 s.append(record.getSourceClassName());
             }
             if (record.getSourceMethodName() != null) {
-                s.append(".").append(record.getSourceMethodName());
+                s.append(":").append(record.getSourceMethodName());
             }
             s.append("</td>");
             return s.toString();
