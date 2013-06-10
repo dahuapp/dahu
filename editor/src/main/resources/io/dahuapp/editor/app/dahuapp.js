@@ -47,8 +47,10 @@
              * Create a new presentation variable in the JSON file which will contain slides.
              */
             self.createPresentation = function createPresentation() {
-                json.indexSlide = 0;
-                json.presentation = new Array();
+                json.metaData = {
+                    "nbSlide": 0
+                };
+                json.data = new Array();
             };
 
             /*
@@ -59,20 +61,28 @@
              */
             self.addSlide = function addSlide(img, mouseX, mouseY) {
                 var slide = {
-                    "id": json.indexSlide,
-                    "img": img,
-                    "indexAction": 1,
+                    "indexObject": 0,
+                    "indexAction": 0,
+                    "object": new Array(),
                     "action": new Array()
                 };
-                var action = {
-                    "id": slide.indexAction,
+                var object = {
+                    "id": slide.indexObject,
+                    "type": "background",
+                    "img": img
+                };
+                slide.object.push(object);
+                slide.indexObject++;
+                var object2 = {
+                    "id": slide.indexObject,
                     "type": "mouse",
                     "mouseX": mouseX,
                     "mouseY": mouseY
                 };
-                slide.action.push(action);
-                json.indexSlide++;
-                json.presentation.push(slide);
+                slide.object.push(object2);
+                slide.indexObject++;
+                json.metaData.nbSlide++;
+                json.data.push(slide);
             };
 
             /*
@@ -80,7 +90,7 @@
              * @param String title Title to add.
              */
             self.addTitle = function addTitle(title) {
-                json.title = title;
+                json.metaData.title = title;
             };
 
             /*
@@ -88,20 +98,19 @@
              * @param String annotation Annotation to add.
              */
             self.addAnnotation = function addAnnotation(annotation) {
-                json.annotation = annotation;
+                json.metaData.annotation = annotation;
             };
 
             /*
              * Changes the mouse position values of the action identified by idAction
              * of the slide identified by idSlide.
              * @param int idSlide Identify the slide.
-             * @param int idAction Identify the action.
              * @param int mouseX Abscissa mouse position.
              * @param int mouseY Ordinate mouse position.
              */
-            self.editMouse = function editMouse(idSlide, idAction, mouseX, mouseY) {
-                json.presentation[idSlide].action[idAction].mouseX = mouseX;
-                json.presentation[idSlide].action[idAction].mouseY = mouseY;
+            self.editMouse = function editMouse(idSlide, mouseX, mouseY) {
+                json.data[idSlide].object[1].mouseX = mouseX;
+                json.data[idSlide].object[1].mouseY = mouseY;
             };
 
             /*
@@ -109,11 +118,19 @@
              * @returns {Array} List of slides of the presentation
              */
             self.getSlideList = function getSlideList() {
-                var SlideList = new Array();
-                for (var i = 0; i < json.indexSlide; i++) {
-                    SlideList.push(json.presentation[i].img);
+                var slideList = new Array();
+                var indexSlide = 0;
+                while (json.data[indexSlide]) {
+                    var indexObject = 0;
+                    while (json.data[indexSlide].object[indexObject]) {
+                        if (json.data[indexSlide].object[indexObject].type === 'background') {
+                            slideList.push(json.data[indexSlide].object[indexObject].img);
+                        }
+                        indexObject++;
+                    }
+                    indexSlide++;
                 }
-                return SlideList;
+                return slideList;
             };
 
             /*
@@ -150,17 +167,20 @@
                             retval = retval + indentStr;
                         }
                     }
+
                     retval = retval + char;
                     if (char === '{' || char === '[' || char === ',') {
                         retval = retval + newLine;
                         if (char === '{' || char === '[') {
                             pos = pos + 1;
                         }
+
                         for (var k = 0; k < pos; k++) {
                             retval = retval + indentStr;
                         }
                     }
                 }
+
                 return retval;
             };
 
