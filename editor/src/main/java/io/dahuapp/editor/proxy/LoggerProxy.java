@@ -186,6 +186,135 @@ public class LoggerProxy implements Proxy {
     public static void log(String sourceClass, String sourceMethod, String message) {
         logger.logp(Level.ALL, sourceClass, sourceMethod, message);
     }
+    
+        /**
+     * Log the message with an INFO level (color : cyan).
+     * @param message The message to log.
+     */
+    public void JSinfo(String message) {
+        logger.log(Level.INFO, message);
+    }
+
+    /**
+     * Log the message with an INFO level (color : cyan).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     */
+    public void JSinfo(String sourceClass, String sourceMethod, String message) {
+        logger.logp(Level.INFO, sourceClass, sourceMethod, message);
+    }
+
+    /**
+     * Log the message with a SEVERE level (color : red).
+     * @param message The message to log
+     */
+    public void JSsevere(String message) {
+        logger.log(Level.SEVERE, message);
+    }
+
+    /**
+     * Log the message with a SEVERE level (color : red).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     */
+    public void JSsevere(String sourceClass, String sourceMethod, String message) {
+        logger.logp(Level.SEVERE, sourceClass, sourceMethod, message);
+    }
+
+    /**
+     * Log the message with a SEVERE level (color : red).
+     * @param message The message to log
+     * @param cause The cause of the severity
+     */
+    public void JSsevere(String message, Throwable cause) {
+        logger.log(Level.SEVERE, message, cause);
+    }
+
+    /**
+     * Log the message with a SEVERE level (color : red).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     * @param cause The cause of the severity.
+     */
+    public void JSsevere(String sourceClass, String sourceMethod, String message,
+            Throwable cause) {
+        logger.logp(Level.SEVERE, sourceClass, sourceMethod, message, cause);
+    }
+
+    /**
+     * Log the message with a WARNING level (color : yellow).
+     * @param message The message to log.
+     */
+    public void JSwarning(String message) {
+        logger.log(Level.WARNING, message);
+    }
+
+    /**
+     * Log the message with a WARNING level (color : yellow).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     */
+    public void JSwarning(String sourceClass, String sourceMethod, String message) {
+        logger.logp(Level.WARNING, sourceClass, sourceMethod, message);
+    }
+
+    /**
+     * Log the message with a FINE level (color : blue).
+     * @param message The message to log.
+     */
+    public void JSfine(String message) {
+        logger.log(Level.FINE, message);
+    }
+
+    /**
+     * Log the message with a FINE level (color : blue).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     */
+    public void JSfine(String sourceClass, String sourceMethod, String message) {
+        logger.logp(Level.FINE, sourceClass, sourceMethod, message);
+    }
+
+    /**
+     * Log the message with a CONFIG level (color : green).
+     * @param message The message to log.
+     */
+    public void JSconfig(String message) {
+        logger.log(Level.CONFIG, message);
+    }
+
+    /**
+     * Log the message with a CONFIG level (color : green).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     */
+    public void JSconfig(String sourceClass, String sourceMethod, String message) {
+        logger.logp(Level.CONFIG, sourceClass, sourceMethod, message);
+    }
+
+    /**
+     * Log the message with an ALL level (color : black).
+     * @param message The message to log.
+     */
+    public void JSlog(String message) {
+        logger.log(Level.ALL, message);
+    }
+
+    /**
+     * Log the message with an ALL level (color : black).
+     * @param sourceClass Name of class that issued the logging request.
+     * @param sourceMethod Name of method that issued the logging request.
+     * @param message The message to log.
+     */
+    public void JSlog(String sourceClass, String sourceMethod, String message) {
+        logger.logp(Level.ALL, sourceClass, sourceMethod, message);
+    }
 
     /**
      * Changes the level (default is Level.ALL).
