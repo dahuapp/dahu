@@ -2,8 +2,6 @@ package io.dahuapp.editor.drivers;
 
 import io.dahuapp.editor.proxy.LoggerProxy;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
