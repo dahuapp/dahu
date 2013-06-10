@@ -1,5 +1,6 @@
 package io.dahuapp.editor.proxy;
 
+import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
 
@@ -23,6 +24,11 @@ public class DahuAppProxy implements Proxy {
     public LoggerProxy logger;
     
     /**
+     * engine
+     */
+    private WebEngine webEngine;
+    
+    /**
      * Constructor.
      * @param primaryStage The main stage (for modal dialogs).
      * @param webEngine The webEngine associated with the webView.
@@ -34,6 +40,8 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
+        //
+        this.webEngine = webEngine;
     }
 
     /**
@@ -55,7 +63,8 @@ public class DahuAppProxy implements Proxy {
      * exits the application
      */
     public void exit() {
-        
+        webEngine.executeScript("dahuapp.drivers.onStop();");
+        Platform.exit();
     }
 
     @Override

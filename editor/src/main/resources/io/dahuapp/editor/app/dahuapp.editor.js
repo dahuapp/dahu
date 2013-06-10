@@ -255,6 +255,7 @@ var dahuapp = (function(dahuapp, $) {
             $('#exit').click(function() {
                 if (confirm('are you sure you want to quit ?')) {
                     dahuapp.drivers.logger.JSlog("dahuapp.editor.js", "init", "quit confirm ok");
+                    dahuapp.drivers.exit();
                 } else {
                     dahuapp.drivers.logger.JSlog("dahuapp.editor.js", "init", "quit confirm not ok");
                 }
