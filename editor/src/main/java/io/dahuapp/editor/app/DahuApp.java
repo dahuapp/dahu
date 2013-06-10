@@ -1,6 +1,7 @@
 package io.dahuapp.editor.app;
 
 import io.dahuapp.editor.proxy.DahuAppProxy;
+import io.dahuapp.editor.utils.Dialogs;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -14,44 +15,44 @@ import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.concurrent.Worker.State;
 import javafx.event.EventHandler;
+import javafx.scene.web.PromptData;
+import javafx.scene.web.WebEvent;
 import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 
 /**
- * Main class of the application.
- * Runs the GUI to allow the user to take screenshots and
- * edit the presentation he wants to make.
+ * Main class of the application. Runs the GUI to allow the user to take
+ * screenshots and edit the presentation he wants to make.
  */
 public class DahuApp extends Application {
-    
+
     /**
      * Minimum width of the editor window.
      */
     private static final int MIN_WIDTH = 640;
-    
     /**
      * Minimum height of the editor window.
      */
     private static final int MIN_HEIGHT = 480;
-    
     /**
-     * Webview of the application, all the elements will be displayed
-     * in this webview.
+     * Webview of the application, all the elements will be displayed in this
+     * webview.
      */
     private WebView webview;
-    
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         StackPane root = new StackPane();
-        
+
         // init dahuapp
         initDahuApp(primaryStage);
-        
+
         // pin it to stackpane
         root.getChildren().add(webview);
-        
+
         // create the sceen
         Scene scene = new Scene(root, MIN_WIDTH, MIN_HEIGHT);
-        
+
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent t) {
@@ -65,7 +66,7 @@ public class DahuApp extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
     }
-    
+
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
      * main() serves only as fallback in case the application can not be
@@ -78,20 +79,21 @@ public class DahuApp extends Application {
         /* fix for osx */
         System.setProperty("javafx.macosx.embedded", "true");
         java.awt.Toolkit.getDefaultToolkit();
-        
+
         /* launch app */
         launch(args);
     }
-    
+
     /**
-     * Initialises the webview with the html content and binds the drivers
-     * to the dahuapp javascript object.
+     * Initialises the webview with the html content and binds the drivers to
+     * the dahuapp javascript object.
+     *
      * @param primaryStage Main stage of the app (for the proxy).
      */
     private void initDahuApp(final Stage primaryStage) {
         webview = new WebView();
         webview.setContextMenuEnabled(false);
-        
+
         // load main app
         webview.getEngine().load(getClass().getResource("dahuapp.html").toExternalForm());
 
@@ -103,13 +105,38 @@ public class DahuApp extends Application {
                     // load drivers
                     JSObject dahuapp = (JSObject) webview.getEngine().executeScript("window.dahuapp");
                     dahuapp.setMember("drivers", new DahuAppProxy(primaryStage, webview.getEngine()));
-                    
+
                     // init engine
                     webview.getEngine().executeScript("dahuapp.editor.init();");
-        
+
                     // load the drivers
                     webview.getEngine().executeScript("dahuapp.drivers.onLoad();");
                 }
+            }
+        });
+
+        // adds a dialog alert handler
+        webview.getEngine().setOnAlert(new EventHandler<WebEvent<String>>() {
+            @Override
+            public void handle(WebEvent<String> e) {
+                Dialogs.showMessage(e.getData());
+                e.consume();
+            }
+        });
+
+        // adds a confirm dialog handler
+        webview.getEngine().setConfirmHandler(new Callback<String, Boolean>() {
+            @Override
+            public Boolean call(String p) {
+                return Dialogs.showConfirm(p);
+            }
+        });
+
+        // adds a prompt dialog handler
+        webview.getEngine().setPromptHandler(new Callback<PromptData, String>() {
+            @Override
+            public String call(PromptData p) {
+                return Dialogs.showPrompt(p.getMessage(), p.getDefaultValue());
             }
         });
     }

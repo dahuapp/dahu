@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSException;
 import netscape.javascript.JSObject;
-import org.jnativehook.keyboard.NativeKeyEvent;
 import static org.jnativehook.keyboard.NativeKeyEvent.*;
 
 /**
