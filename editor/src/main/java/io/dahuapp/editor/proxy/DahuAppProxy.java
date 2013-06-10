@@ -50,6 +50,13 @@ public class DahuAppProxy implements Proxy {
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
     }
+    
+    /**
+     * exits the application
+     */
+    public void exit() {
+        
+    }
 
     @Override
     public void onLoad() {
