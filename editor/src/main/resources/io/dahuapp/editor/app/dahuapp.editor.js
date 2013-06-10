@@ -26,7 +26,7 @@ var dahuapp = (function(dahuapp, $) {
          * Name of the Json file.
          * @type String
          */
-        var jsonFileName = "presentation.json";
+        var jsonFileName = "presentation.dahu";
 
         /*
          * True when new button was pressed.
@@ -47,6 +47,44 @@ var dahuapp = (function(dahuapp, $) {
          * @type String
          */
         var projectDir = ".";
+        
+        /*
+         * Current slide displayed in the view.
+         * @type String
+         */
+        var currentSlide = null;
+        
+        /*
+         * Private events for the editor.
+         */
+        var events = (function() {
+            var self = {};
+            
+            /*
+             * Creates a generic event.
+             */
+            var createEvent = function() {
+                var callbacks = $.Callbacks();
+                return {
+                    publish: callbacks.fire,
+                    subscribe: callbacks.add,
+                    unsubscribe: callbacks.remove
+                };
+            };
+            
+            /*
+             * Called when an image on the list has been selected and
+             * is different from the previous one.
+             */
+            self.selectedImageChanged = createEvent();
+            
+            /*
+             * Called when an image is added (by taking a screen capture).
+             */
+            self.newImageTaken = createEvent();
+            
+            return self;
+        })();
 
         /*
          * Changes the capture mode (if true => false, if false => true).
@@ -70,6 +108,33 @@ var dahuapp = (function(dahuapp, $) {
                 dahuapp.drivers.logger.JSconfig("dahuap.editor.js", "switchCaptureMode", "capture mode off");
             }
         };
+        
+        /*
+         * Function to update the preview on the middle.
+         */
+        var updatePreview = function(slide) {
+            $('#preview-image').replaceWith($(document.createElement('div'))
+                    .attr({'id':'preview-image'})
+                    .append($(document.createElement('img'))
+                            .attr({'src': slide, 'alt': slide})
+                    )
+            );
+        };
+        
+        /*
+         * Function to update the image list (when a new one is captured).
+         */
+        var updateImageList = function(img) {
+            $('#image-list').append($(document.createElement('li'))
+                    .attr({'class': 'span2 offset'})
+                    .append($(document.createElement('a'))
+                            .attr({'class': 'thumbnail'})
+                            .append($(document.createElement('img'))
+                                    .attr({'src': img, 'alt': img})
+                            )
+                    )
+            );
+        };
 
         /* public API */
 
@@ -90,37 +155,22 @@ var dahuapp = (function(dahuapp, $) {
          * @param int key Key that caused the event.
          */
         self.handleCaptureModeEvent = function handleCaptureModeEvent(key) {
-            // shortcut
+            // shortcuts
             var drivers = dahuapp.drivers;
+            var sep = drivers.fileSystem.getSeparator();
             switch (drivers.keyboard.keyToString(key).toLowerCase()) {
                 case "f7":
                     var img = dahuapp.drivers.screen.takeScreen(projectDir);
                     var mouse = dahuapp.drivers.mouse;
                     dahuapp.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
-                    $('#image-list').append($(document.createElement('li'))
-                            .attr({'class': 'span2 offset'})
-                            .append($(document.createElement('a'))
-                            .attr({'class': 'thumbnail'})
-                            .append($(document.createElement('img'))
-                            .attr({'src': img, 'alt': img}))
-                            .click(function() {
-                        var littleImg = $(this).find('img').attr('src');
-                        $('#preview-image').replaceWith($(document.createElement('div'))
-                                .attr({'id': 'preview-image'})
-                                .append($(document.createElement('img'))
-                                .attr({'src': littleImg, 'alt': littleImg})));
-                    })));
-                    $('#preview-image').replaceWith($(document.createElement('div'))
-                            .attr({'id': 'preview-image'})
-                            .append($(document.createElement('img'))
-                            .attr({'src': img, 'alt': img})));
+                    events.newImageTaken.publish(projectDir + sep + img);
                     break;
                 case "escape":
                     switchCaptureMode();
                     break;
             }
         };
-
+        
         /*
          * Main function : by calling this function, we bind the
          * html components of the application with their behaviour.
@@ -128,7 +178,23 @@ var dahuapp = (function(dahuapp, $) {
          * in the application window.
          */
         self.init = function init() {
-
+            
+            /*
+             * Private events callbacks subscribals.
+             */
+            events.selectedImageChanged.subscribe(updatePreview);
+            events.newImageTaken.subscribe(updateImageList);
+            
+            /*
+             * Basic events for the buttons and components.
+             */
+            $('#image-list').on('click', 'img', function() {
+                var imgName = $(this).attr('src');
+                if (currentSlide !== imgName) {
+                    currentSlide = imgName;
+                    events.selectedImageChanged.publish(currentSlide);
+                }
+            });
             $('#capture-mode').click(function() {
                 if (initProject) {
                     switchCaptureMode();
@@ -153,6 +219,8 @@ var dahuapp = (function(dahuapp, $) {
             $('#open-project').click(function() {
                 if (!captureMode) {
                     var driver = dahuapp.drivers.fileSystem;
+                    projectDir = prompt("Enter the absolute path to the dahu project file :",
+                            "Dahu project file.");
                     // projectDir = driver.askForProjectDir();
                     if (projectDir) {
                         var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
@@ -162,12 +230,7 @@ var dahuapp = (function(dahuapp, $) {
                         slideList = dahuapp.json.getSlideList();
                         while (slideList[i]) {
                             var img = slideList[i];
-                            $('#image-list').append($(document.createElement('li'))
-                                    .attr({'class': 'span2 offset'})
-                                    .append($(document.createElement('a'))
-                                    .attr({'class': 'thumbnail'})
-                                    .append($(document.createElement('img'))
-                                    .attr({'src': img, 'alt': img}))));
+                            events.newImageTaken.publish(img);
                             i++;
                         }
 
@@ -179,6 +242,8 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#new-project').click(function() {
                 if (!captureMode) {
+                    projectDir = prompt("Enter the absolute path of the project directory :",
+                            "Dahu project directory.");
                     dahuapp.json.createPresentation();
                     alert("The project was successfully created.");
                     dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");

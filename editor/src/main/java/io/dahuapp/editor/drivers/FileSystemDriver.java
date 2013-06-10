@@ -115,6 +115,7 @@ public class FileSystemDriver implements Driver {
      */
     public String askForProjectDir(Window parent) {
         // TO DO : check why it cause a pthread_mutex error
+        //System.out.println(Platform.isFxApplicationThread()); // prints 'true'
         //File file = directoryChooser.showDialog(parent);
         //if (file == null) {
             return null;

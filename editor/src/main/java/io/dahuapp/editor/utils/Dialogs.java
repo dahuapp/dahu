@@ -1,6 +1,5 @@
 package io.dahuapp.editor.utils;
 
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -83,6 +82,7 @@ public class Dialogs {
         Button ok = ButtonBuilder.create().text("Yes").onAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
+                confirmChoice = true;
                 alert.close();
             }
         }).build();
@@ -90,6 +90,7 @@ public class Dialogs {
         Button cancel = ButtonBuilder.create().text("No").onAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent t) {
+                confirmChoice = false;
                 alert.close();
             }
         }).build();
@@ -115,7 +116,6 @@ public class Dialogs {
      * @return String entered by the user (null if cancelled).
      */
     public static String showPrompt(String message, String defVal) {
-        System.out.println(Platform.isFxApplicationThread());
         final Stage alert = new Stage(StageStyle.UTILITY);
         alert.setTitle("Prompt");
         alert.initModality(Modality.APPLICATION_MODAL);
