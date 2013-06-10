@@ -1,5 +1,6 @@
 package io.dahuapp.editor.proxy;
 
+import io.dahuapp.editor.app.DahuApp;
 import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
 import javafx.stage.Stage;
@@ -24,9 +25,14 @@ public class DahuAppProxy implements Proxy {
     public LoggerProxy logger;
     
     /**
-     * engine
+     * Engine.
      */
     private WebEngine webEngine;
+    
+    /**
+     * Primary stage.
+     */
+    private Stage primaryStage;
     
     /**
      * Constructor.
@@ -40,8 +46,9 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
-        //
+        // attributes
         this.webEngine = webEngine;
+        this.primaryStage = primaryStage;
     }
 
     /**
@@ -57,14 +64,25 @@ public class DahuAppProxy implements Proxy {
         fileSystem = new FileSystemDriverProxy(primaryStage);
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
+        // attributes
+        this.webEngine = webEngine;
+        this.primaryStage = primaryStage;
     }
     
     /**
-     * exits the application
+     * Exits the application.
      */
     public void exit() {
         webEngine.executeScript("dahuapp.drivers.onStop();");
         Platform.exit();
+    }
+    
+    /**
+     * Changes the titlebar of the application.
+     * @param project Name of the project.
+     */
+    public void setTitleProject(String project) {
+        primaryStage.setTitle(DahuApp.TITLE + " - " + project);
     }
 
     @Override
@@ -82,7 +100,8 @@ public class DahuAppProxy implements Proxy {
         keyboard.onStop();
         fileSystem.onStop();
         screen.onStop();
-        logger.onStop();
         mouse.onStop();
+        // idem for 'logger.stop'
+        logger.onStop();
     }
 }

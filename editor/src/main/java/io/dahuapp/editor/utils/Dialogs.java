@@ -26,6 +26,12 @@ import javafx.stage.StageStyle;
 public class Dialogs {
 
     /**
+     * Some parameters for the dialogs.
+     */
+    private static final Insets PADDING = new Insets(14);
+    private static final int SPACING = 10;
+    
+    /**
      * For the confirm dialog return.
      */
     private static Boolean confirmChoice;
@@ -56,7 +62,7 @@ public class Dialogs {
 
         // vbox to display the label and the button
         VBox content = VBoxBuilder.create().children(text, ok)
-                .alignment(Pos.CENTER).spacing(10).padding(new Insets(10)).build();
+                .alignment(Pos.CENTER).spacing(SPACING).padding(PADDING).build();
 
         alert.setScene(new Scene(content, Color.LIGHTGRAY));
         alert.setResizable(false);
@@ -97,10 +103,10 @@ public class Dialogs {
 
         // hbox containing the buttons
         HBox controls = HBoxBuilder.create().children(ok, cancel)
-                .alignment(Pos.CENTER).spacing(10).build();
+                .alignment(Pos.CENTER).spacing(SPACING).build();
         // vbox to display the label and the button
         VBox content = VBoxBuilder.create().children(text, controls)
-                .alignment(Pos.CENTER).spacing(10).padding(new Insets(10)).build();
+                .alignment(Pos.CENTER).spacing(SPACING).padding(PADDING).build();
 
         alert.setScene(new Scene(content, Color.LIGHTGRAY));
         alert.setResizable(false);
@@ -143,10 +149,10 @@ public class Dialogs {
 
         // hbox containing the buttons
         HBox controls = HBoxBuilder.create().children(ok, cancel)
-                .alignment(Pos.CENTER).spacing(10).build();
+                .alignment(Pos.CENTER).spacing(SPACING).build();
         // vbox to display the label and the button
         VBox content = VBoxBuilder.create().children(text, input, controls)
-                .alignment(Pos.CENTER).spacing(10).padding(new Insets(10)).build();
+                .alignment(Pos.CENTER).spacing(SPACING).padding(PADDING).build();
 
         alert.setScene(new Scene(content, Color.LIGHTGRAY));
         alert.setResizable(false);

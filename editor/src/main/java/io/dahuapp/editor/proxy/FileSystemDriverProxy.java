@@ -1,6 +1,7 @@
 package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.FileSystemDriver;
+import java.io.File;
 import javafx.stage.Stage;
 
 /**
@@ -98,5 +99,25 @@ public class FileSystemDriverProxy implements Proxy {
      */
     public String[] getPngFiles(String dir) {
         return driver.getPngFiles(dir);
+    }
+    
+    /**
+     * Check the existence of the specified directory.
+     * 
+     * @param dir Directory to check for a new project.
+     * @return True only if the directory exists.
+     */
+    public boolean exists(String dir) {
+        return new File(dir).exists();
+    }
+    
+    /**
+     * Creates the specified directory.
+     * 
+     * @param dir Directory to create.
+     * @return True only if the directory was created.
+     */
+    public boolean create(String dir) {
+        return new File(dir).mkdirs();
     }
 }

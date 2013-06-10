@@ -89,6 +89,11 @@ var dahuapp = (function(dahuapp, $) {
              */
             self.newImageTaken = createEvent();
             
+            /*
+             * Called when a new projet is created.
+             */
+            self.newProjectCreated = createEvent();
+            
             return self;
         })();
 
@@ -96,6 +101,78 @@ var dahuapp = (function(dahuapp, $) {
          * Instanciates the DahuScreencastModel class.
          */
         var jsonModel;
+
+        /*
+         * Standard message printers.
+         */
+        var captureModeAlert = function() {
+            alert("Please turn capture mode off\n" +
+                "before doing that.");
+        };
+        var initialiseProjectAlert = function() {
+            alert("Please open or create a project\n" +
+                "before doing that.");
+        };
+        
+        /*
+         * Functions associated with buttons.
+         */
+        var openProject = function() {
+            var choice = prompt("Enter the absolute path to the dahu project directory :",
+                    "Dahu project directory.");
+            // projectDir = driver.askForProjectDir();
+            if (choice) {
+                var fileSystem = dahuapp.drivers.fileSystem;
+                var sep = fileSystem.getSeparator();
+                var absolutePath = choice + sep + jsonFileName;
+                if (!fileSystem.exists(absolutePath)) {
+                    alert("The following file :\n\n" + absolutePath +
+                        "\n\ndoesn't exist. Please create a new project,\n" +
+                        "or specify a valid dahu project directory.");
+                    return;
+                }
+                projectDir = choice;
+                var stringJson = fileSystem.readFile(absolutePath);
+                var slideList;
+                var i = 0;
+                events.newProjectCreated.publish();
+                jsonModel.loadJson(stringJson);
+                slideList = jsonModel.getSlideList();
+                while (slideList[i]) {
+                    var img = slideList[i];
+                    events.newImageTaken.publish(img);
+                    i++;
+                }
+                dahuapp.drivers.setTitleProject(projectDir);
+                initProject = true;
+            }
+        };
+        var newProject = function() {
+            var choice = prompt("Enter the absolute path of the project directory :",
+                    "Dahu project directory.");
+            // projectDir = driver.askForProjectDir();
+            if (choice) {
+                var fileSystem = dahuapp.drivers.fileSystem;
+                if (!fileSystem.exists(choice)) {
+                    if (!fileSystem.create(choice)) {
+                        alert("The directory couldn't have been created.\n"
+                                + "Maybe it's an issue with rights.");
+                        return;
+                    } else {
+                        alert("The directory has been successfully created.");
+                    }
+                } else {
+                    alert("This directory already exists.\n" +
+                            "It's not a problem, but be careful !");
+                }
+                projectDir = choice;
+                jsonModel.createPresentation();
+                dahuapp.drivers.setTitleProject(projectDir);
+                dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
+                initProject = true;
+                events.newProjectCreated.publish();
+            }
+        };
 
         /*
          * Changes the capture mode (if true => false, if false => true).
@@ -111,7 +188,7 @@ var dahuapp = (function(dahuapp, $) {
             }
             // the capture mode button gets a different style
             $('#capture-mode').toggleClass('btn-primary');
-            $('#capture-mode').toggleClass('btn-success');
+            $('#capture-mode').toggleClass('btn-danger');
             captureMode = !captureMode;
             if (captureMode) {
                 dahuapp.drivers.logger.JSconfig("dahuap.editor.js", "switchCaptureMode", "capture mode on");
@@ -122,18 +199,22 @@ var dahuapp = (function(dahuapp, $) {
         
         /*
          * Function to update the preview on the middle.
+         * slide is the absolute path to the image
          */
         var updatePreview = function(slide) {
-            $('#preview-image').replaceWith($(document.createElement('div'))
-                    .attr({'id':'preview-image'})
-                    .append($(document.createElement('img'))
-                            .attr({'src': slide, 'alt': slide})
-                    )
-            );
+            if ($('#preview-image').empty()) {
+                $('#preview-image').append($(document.createElement('img'))
+                    .attr({'src': slide, 'alt': slide}));
+            } else {
+                $('#preview-image').children().replaceWith(
+                    $(document.createElement('img'))
+                    .attr({'src': slide, 'alt': slide}));
+            }
         };
         
         /*
          * Function to update the image list (when a new one is captured).
+         * img is the relative path to the image (relatively to the .dahu file)
          */
         var updateImageList = function(img) {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
@@ -147,6 +228,21 @@ var dahuapp = (function(dahuapp, $) {
                             )
                     )
             );
+            updatePreview(projectDir + sep + img);
+        };
+        
+        /*
+         * Cleans the image list.
+         */
+        var cleanImageList = function() {
+            $('#image-list').contents().remove();
+        };
+        
+        /*
+         * Cleans the preview.
+         */
+        var cleanPreview = function() {
+            $('#preview-image').contents().remove();
         };
 
         /* public API */
@@ -200,6 +296,8 @@ var dahuapp = (function(dahuapp, $) {
              */
             events.selectedImageChanged.subscribe(updatePreview);
             events.newImageTaken.subscribe(updateImageList);
+            events.newProjectCreated.subscribe(cleanImageList);
+            events.newProjectCreated.subscribe(cleanPreview);
             
             /*
              * Basic events for the buttons and components.
@@ -214,6 +312,8 @@ var dahuapp = (function(dahuapp, $) {
             $('#capture-mode').click(function() {
                 if (initProject) {
                     switchCaptureMode();
+                } else {
+                    initialiseProjectAlert();
                 }
             });
             $('#save-project').click(function() {
@@ -222,59 +322,86 @@ var dahuapp = (function(dahuapp, $) {
                     var driver = dahuapp.drivers.fileSystem;
                     if (driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson)) {
                         dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project saved in " + projectDir);
-                        alert("The project was successfully saved");
+                        alert("The project has been saved successfully.");
                         newChanges = false;
                     } else {
+                        alert("There's been a problem.\n" +
+                            "The project hasn't been saved.");
                         dahuapp.drivers.logger.JSsevere("dahuapp.editor.js", "init", "failed to save project in " + projectDir);
                     }
                 } else if (captureMode) {
+                    captureModeAlert();
                     dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", "init", "can't save a project when captureMode is on!");
                 } else {
+                    initialiseProjectAlert();
                     dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", "init", "can't save as there is no project selected !");
                 }
             });
             $('#open-project').click(function() {
                 if (!captureMode) {
-                    var driver = dahuapp.drivers.fileSystem;
-                    projectDir = prompt("Enter the absolute path to the dahu project directory :",
-                            "Dahu project directory.");
-                    // projectDir = driver.askForProjectDir();
-                    if (projectDir) {
-                        var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
-                        var slideList;
-                        var i = 0;
-                        jsonModel.loadJson(stringJson);
-                        slideList = jsonModel.getSlideList();
-                        while (slideList[i]) {
-                            var img = slideList[i];
-                            events.newImageTaken.publish(img);
-                            i++;
+                    if (newChanges) {
+                        var discard = confirm("There are unsaved changes.\n" +
+                                "Discard them and still open a project ?");
+                        if (discard) {
+                            openProject();
                         }
-                        initProject = true;
+                    } else {
+                        openProject();
                     }
                 } else {
+                    captureModeAlert();
                     dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", "init", "can't open a project when captureMode is on!");
                 }
             });
             $('#new-project').click(function() {
                 if (!captureMode) {
-                    projectDir = prompt("Enter the absolute path of the project directory :",
-                            "Dahu project directory.");
-                    jsonModel.createPresentation();
-                    alert("The project was successfully created.");
-                    dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
-                    initProject = true;
+                    if (newChanges) {
+                        var discard = confirm("There are unsaved changes.\n" +
+                                "Discard them and still open a project ?");
+                        if (discard) {
+                            newProject();
+                        }
+                    } else {
+                        newProject();
+                    }
                 } else {
+                    captureModeAlert();
                     dahuapp.drivers.logger.JSwarning("dahuapp.editor.js", "init", "can't create a new project when captureMode is on!");
                 }
             });
             $('#exit').click(function() {
-                var message = 'Are you sure you want to quit ?';
-                if(newChanges) {
-                    message = 'Quit without saving any changes ?';
+                if (captureMode) {
+                    captureModeAlert();
+                } else {
+                    var message = 'Are you sure you want to quit ?';
+                    if (newChanges) {
+                        message = 'Quit without saving any changes ?';
+                    }
+                    if (confirm(message)) {
+                        dahuapp.drivers.exit();
+                    }
                 }
-                if (confirm(message)) {
-                    dahuapp.drivers.exit();
+            });
+            $('#generate').click(function() {
+                if (captureMode) {
+                    captureModeAlert();
+                } else {
+                    if (!initProject) {
+                        initialiseProjectAlert();
+                    } else {
+                        alert("Not implemented yet.");
+                    }
+                }
+            });
+            $('#visual-mode').click(function() {
+                if (captureMode) {
+                    captureModeAlert();
+                } else {
+                    if (!initProject) {
+                        initialiseProjectAlert();
+                    } else {
+                        alert("Not implemented yet.");
+                    }
                 }
             });
         };

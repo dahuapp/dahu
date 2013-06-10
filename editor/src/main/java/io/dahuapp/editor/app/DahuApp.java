@@ -27,6 +27,10 @@ import javafx.util.Callback;
 public class DahuApp extends Application {
 
     /**
+     * Title of the application.
+     */
+    public static final String TITLE = "DahuApp Editor";
+    /**
      * Minimum width of the editor window.
      */
     private static final int MIN_WIDTH = 640;
@@ -62,7 +66,7 @@ public class DahuApp extends Application {
         });
         primaryStage.setMinWidth(MIN_WIDTH);
         primaryStage.setMinHeight(MIN_HEIGHT);
-        primaryStage.setTitle("DahuApp Editor");
+        primaryStage.setTitle(TITLE);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
