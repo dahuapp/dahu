@@ -33,6 +33,12 @@ var dahuapp = (function(dahuapp, $) {
          * @type Boolean
          */
         var initProject = false;
+        
+        /**
+         * True when new changes occurs
+         * @type Boolean
+         */
+        var newChanges = false;
 
         /*
          * The absolute path of a directory.
@@ -170,6 +176,7 @@ var dahuapp = (function(dahuapp, $) {
                     var mouse = dahuapp.drivers.mouse;
                     jsonModel.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
                     events.newImageTaken.publish(img);
+                    newChanges = true;
                     break;
                 case "escape":
                     switchCaptureMode();
@@ -216,6 +223,7 @@ var dahuapp = (function(dahuapp, $) {
                     if (driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson)) {
                         dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project saved in " + projectDir);
                         alert("The project was successfully saved");
+                        newChanges = false;
                     } else {
                         dahuapp.drivers.logger.JSsevere("dahuapp.editor.js", "init", "failed to save project in " + projectDir);
                     }
@@ -261,11 +269,12 @@ var dahuapp = (function(dahuapp, $) {
                 }
             });
             $('#exit').click(function() {
-                if (confirm('are you sure you want to quit ?')) {
-                    dahuapp.drivers.logger.JSlog("dahuapp.editor.js", "init", "quit confirm ok");
+                var message = 'Are you sure you want to quit ?';
+                if(newChanges) {
+                    message = 'Quit without saving any changes ?';
+                }
+                if (confirm(message)) {
                     dahuapp.drivers.exit();
-                } else {
-                    dahuapp.drivers.logger.JSlog("dahuapp.editor.js", "init", "quit confirm not ok");
                 }
             });
         };
