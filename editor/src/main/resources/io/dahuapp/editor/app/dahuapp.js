@@ -24,124 +24,9 @@
 
         self.version = "0.0.1";
 
-        self.json = (function() {
-
-            var self = {};
+        var DahuScreencastModel = function() {
 
             var json = {};
-
-
-            /* Public API */
-
-            /*
-             * json variable generated from a JSON file.
-             * @param String stringJson String loaded from JSON file.
-             */
-            self.loadJson = function loadJson(stringJson) {
-                json = JSON.parse(stringJson);
-                // TO DO : actualise the id of the next slide (idSlide)
-            };
-
-
-            /*
-             * Create a new presentation variable in the JSON file which will contain slides.
-             */
-            self.createPresentation = function createPresentation() {
-                json.metaData = {
-                    "nbSlide": 0
-                };
-                json.data = new Array();
-            };
-
-            /*
-             * Add a new slide in the presentation variable of the JSON file.
-             * @param String img Related to pathname of the image.
-             * @param int mouseX Abscissa mouse position.
-             * @param int mouseY Ordinate mouse position.
-             */
-            self.addSlide = function addSlide(img, mouseX, mouseY) {
-                var slide = {
-                    "indexObject": 0,
-                    "indexAction": 0,
-                    "object": new Array(),
-                    "action": new Array()
-                };
-                var object = {
-                    "id": slide.indexObject,
-                    "type": "background",
-                    "img": img
-                };
-                slide.object.push(object);
-                slide.indexObject++;
-                var object2 = {
-                    "id": slide.indexObject,
-                    "type": "mouse",
-                    "mouseX": mouseX,
-                    "mouseY": mouseY
-                };
-                slide.object.push(object2);
-                slide.indexObject++;
-                json.metaData.nbSlide++;
-                json.data.push(slide);
-            };
-
-            /*
-             * Add a title for the presentation.
-             * @param String title Title to add.
-             */
-            self.addTitle = function addTitle(title) {
-                json.metaData.title = title;
-            };
-
-            /*
-             * Add an annotation for the presentation.
-             * @param String annotation Annotation to add.
-             */
-            self.addAnnotation = function addAnnotation(annotation) {
-                json.metaData.annotation = annotation;
-            };
-
-            /*
-             * Changes the mouse position values of the action identified by idAction
-             * of the slide identified by idSlide.
-             * @param int idSlide Identify the slide.
-             * @param int mouseX Abscissa mouse position.
-             * @param int mouseY Ordinate mouse position.
-             */
-            self.editMouse = function editMouse(idSlide, mouseX, mouseY) {
-                json.data[idSlide].object[1].mouseX = mouseX;
-                json.data[idSlide].object[1].mouseY = mouseY;
-            };
-
-            /*
-             * Catches all the slides of the presentation
-             * @returns {Array} List of slides of the presentation
-             */
-            self.getSlideList = function getSlideList() {
-                var slideList = new Array();
-                var indexSlide = 0;
-                while (json.data[indexSlide]) {
-                    var indexObject = 0;
-                    while (json.data[indexSlide].object[indexObject]) {
-                        if (json.data[indexSlide].object[indexObject].type === 'background') {
-                            slideList.push(json.data[indexSlide].object[indexObject].img);
-                        }
-                        indexObject++;
-                    }
-                    indexSlide++;
-                }
-                return slideList;
-            };
-
-            /*
-             * @returns {String}
-             */
-            self.getJson = function getJson() {
-                var stringJson;
-                stringJson = JSON.stringify(json);
-                return formatJson(stringJson);
-            };
-
 
             /* Private API */
 
@@ -182,12 +67,126 @@
                 }
 
                 return retval;
+            }
+            
+
+
+            /* Public API */
+
+            /*
+             * json variable generated from a JSON file.
+             * @param String stringJson String loaded from JSON file.
+             */
+            this.loadJson = function(stringJson) {
+                json = JSON.parse(stringJson);
+                // TO DO : actualise the id of the next slide (idSlide)
             };
 
-            return self;
-        })();
 
+            /*
+             * Create a new presentation variable in the JSON file which will contain slides.
+             */
+            this.createPresentation = function() {
+                json.metaData = {
+                    "nbSlide": 0
+                };
+                json.data = new Array();
+            };
 
+            /*
+             * Add a new slide in the presentation variable of the JSON file.
+             * @param String img Related to pathname of the image.
+             * @param int mouseX Abscissa mouse position.
+             * @param int mouseY Ordinate mouse position.
+             */
+            this.addSlide = function(img, mouseX, mouseY) {
+                var slide = {
+                    "indexObject": 0,
+                    "indexAction": 0,
+                    "object": new Array(),
+                    "action": new Array()
+                };
+                var object = {
+                    "id": slide.indexObject,
+                    "type": "background",
+                    "img": img
+                };
+                slide.object.push(object);
+                slide.indexObject++;
+                var object2 = {
+                    "id": slide.indexObject,
+                    "type": "mouse",
+                    "mouseX": mouseX,
+                    "mouseY": mouseY
+                };
+                slide.object.push(object2);
+                slide.indexObject++;
+                json.metaData.nbSlide++;
+                json.data.push(slide);
+            };
+
+            /*
+             * Add a title for the presentation.
+             * @param String title Title to add.
+             */
+            this.addTitle = function(title) {
+                json.metaData.title = title;
+            };
+
+            /*
+             * Add an annotation for the presentation.
+             * @param String annotation Annotation to add.
+             */
+            this.addAnnotation = function(annotation) {
+                json.metaData.annotation = annotation;
+            };
+
+            /*
+             * Changes the mouse position values of the action identified by idAction
+             * of the slide identified by idSlide.
+             * @param int idSlide Identify the slide.
+             * @param int mouseX Abscissa mouse position.
+             * @param int mouseY Ordinate mouse position.
+             */
+            this.editMouse = function(idSlide, mouseX, mouseY) {
+                json.data[idSlide].object[1].mouseX = mouseX;
+                json.data[idSlide].object[1].mouseY = mouseY;
+            };
+
+            /*
+             * Catches all the slides of the presentation
+             * @returns {Array} List of slides of the presentation
+             */
+            this.getSlideList = function() {
+                var slideList = new Array();
+                var indexSlide = 0;
+                while (json.data[indexSlide]) {
+                    var indexObject = 0;
+                    while (json.data[indexSlide].object[indexObject]) {
+                        if (json.data[indexSlide].object[indexObject].type === 'background') {
+                            slideList.push(json.data[indexSlide].object[indexObject].img);
+                        }
+                        indexObject++;
+                    }
+                    indexSlide++;
+                }
+                return slideList;
+            };
+
+            /*
+             * @returns {String}
+             */
+            this.getJson = function() {
+                var stringJson;
+                stringJson = JSON.stringify(json);
+                return formatJson(stringJson);
+            };
+
+        };
+
+        self.createScreencastModel = function createScreencastModel() {
+            return new DahuScreencastModel();
+        };
 
         // eventually to remove
         self.publicFunctionExample = function publicFunctionExample(args) {

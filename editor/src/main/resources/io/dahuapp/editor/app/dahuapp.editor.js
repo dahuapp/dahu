@@ -87,6 +87,11 @@ var dahuapp = (function(dahuapp, $) {
         })();
 
         /*
+         * Instanciates the DahuScreencastModel class.
+         */
+        var jsonModel;
+
+        /*
          * Changes the capture mode (if true => false, if false => true).
          */
         var switchCaptureMode = function() {
@@ -163,7 +168,7 @@ var dahuapp = (function(dahuapp, $) {
                 case "f7":
                     var img = dahuapp.drivers.screen.takeScreen(projectDir);
                     var mouse = dahuapp.drivers.mouse;
-                    dahuapp.json.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
+                    jsonModel.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
                     events.newImageTaken.publish(img);
                     break;
                 case "escape":
@@ -179,7 +184,10 @@ var dahuapp = (function(dahuapp, $) {
          * in the application window.
          */
         self.init = function init() {
-            
+            /*
+             * Instanciation of the JSON model
+             */
+            jsonModel = dahuapp.createScreencastModel();
             /*
              * Private events callbacks subscribals.
              */
@@ -203,7 +211,7 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#save-project').click(function() {
                 if (initProject && !captureMode) {
-                    var stringJson = dahuapp.json.getJson();
+                    var stringJson = jsonModel.getJson();
                     var driver = dahuapp.drivers.fileSystem;
                     if (driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson)) {
                         dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project saved in " + projectDir);
@@ -227,8 +235,8 @@ var dahuapp = (function(dahuapp, $) {
                         var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
                         var slideList;
                         var i = 0;
-                        dahuapp.json.loadJson(stringJson);
-                        slideList = dahuapp.json.getSlideList();
+                        jsonModel.loadJson(stringJson);
+                        slideList = jsonModel.getSlideList();
                         while (slideList[i]) {
                             var img = slideList[i];
                             events.newImageTaken.publish(img);
@@ -244,7 +252,7 @@ var dahuapp = (function(dahuapp, $) {
                 if (!captureMode) {
                     projectDir = prompt("Enter the absolute path of the project directory :",
                             "Dahu project directory.");
-                    dahuapp.json.createPresentation();
+                    jsonModel.createPresentation();
                     alert("The project was successfully created.");
                     dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
                     initProject = true;
