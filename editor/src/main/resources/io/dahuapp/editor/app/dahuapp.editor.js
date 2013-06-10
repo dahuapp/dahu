@@ -237,7 +237,7 @@ var dahuapp = (function(dahuapp, $) {
                 if (!captureMode) {
                     var driver = dahuapp.drivers.fileSystem;
                     projectDir = prompt("Enter the absolute path to the dahu project directory :",
-                            "Dahu project file.");
+                            "Dahu project directory.");
                     // projectDir = driver.askForProjectDir();
                     if (projectDir) {
                         var stringJson = driver.readFile(projectDir + driver.getSeparator() + jsonFileName);
