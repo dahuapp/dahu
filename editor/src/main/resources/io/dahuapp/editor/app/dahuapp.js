@@ -23,6 +23,103 @@
         /* public API */
 
         self.version = "0.0.1";
+        
+        var DahuScreencastGenerator = function() {
+            
+            /*
+             * Format the specified string in a readable format.
+             */
+            function htmlFormat(htmlString) {
+                var i;
+                var readableHTML = htmlString;
+                var lb = '\n';
+                var htags = ["<html", "</html>", "</head>", "<title", "</title>", "<meta", "<link", "</body>"];
+                for (i = 0; i < htags.length; ++i) {
+                    var hhh = htags[i];
+                    readableHTML = readableHTML.replace(new RegExp(hhh, 'gi'), lb + hhh);
+                }
+                var btags = ["</div>", "</section>", "</span>", "<br>", "<br />", "<blockquote", "</blockquote>", "<ul", "</ul>", "<ol", "</ol>", "<li", "<\!--", "<script", "</script>"];
+                for (i = 0; i < btags.length; ++i) {
+                    var bbb = btags[i];
+                    readableHTML = readableHTML.replace(new RegExp(bbb, 'gi'), lb + bbb);
+                }
+                var ftags = ["<img", "<legend", "</legend>"];
+                for (i = 0; i < ftags.length; ++i) {
+                    var fff = ftags[i];
+                    readableHTML = readableHTML.replace(new RegExp(fff, 'gi'), lb + fff);
+                }
+                var xtags = ["<body", "<head", "<div", "<section", "<span", "<p"];
+                for (i = 0; i < xtags.length; ++i) {
+                    var xxx = xtags[i];
+                    readableHTML = readableHTML.replace(new RegExp(xxx, 'gi'), lb + lb + xxx);
+                }
+                return readableHTML;
+            }
+            
+            /*
+             * Generates the html String with the Json model.
+             */
+            this.generateHtmlString = function(jsonModel) {
+                // initialising the compilation area
+                $('body')
+                        .append($(document.createElement('div'))
+                        .attr({'id': 'private-generating-section'})
+                        .hide());
+
+                // we create the html using the json
+                var $document = $('#private-generating-section')
+                        .append($(document.createElement('html'))
+                        .attr({'lang': 'en'}));
+                $('html', $($document))
+                        .append(document.createElement('head'))
+                        .append($(document.createElement('body')));
+                $('head', $($document))
+                        .append($(document.createElement('meta'))
+                        .attr({'charset': 'utf-8'}))
+                        .append($(document.createElement('script'))
+                        .attr({'src': 'http://code.jquery.com/jquery-1.9.1.min.js'}));
+                $('body', $($document))
+                        .append($(document.createElement('section'))
+                        .attr({'id': 'my-dahu-presentation'}));
+                $('#my-dahu-presentation', $($document))
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'image-list'}))
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'control'}));
+
+                // adding the images to the page
+                $.each(jsonModel.getSlideList(), function(id, slide) {
+                    $('.image-list', $($document))
+                            .append($(document.createElement('img'))
+                            .attr({'src': slide, 'alt': slide, 'class': id.toString()}));
+                });
+                
+                // adding the control buttons to the page
+                $('.control', $($document))
+                        .append($(document.createElement('button'))
+                        .attr({'class':'previous'})
+                                .append('Previous'))
+                        .append($(document.createElement('button'))
+                        .attr({'class':'next'})
+                                .append('Next'));
+
+                var result = htmlFormat($document.html());
+
+                // clearing the compilation area
+                $document.remove();
+
+                return result;
+            };
+
+            /*
+             * Generates the generated JSON using the JSONmodel.
+             */
+            this.generateJsonString = function(jsonModel) {
+                // at the moment, the generated json is the same as
+                // the json used for edition
+                return jsonModel.getJson();
+            };
+        };
 
         var DahuScreencastModel = function() {
 
@@ -68,8 +165,6 @@
 
                 return retval;
             }
-
-
 
             /* Public API */
 
@@ -204,13 +299,12 @@
             };
         };
 
-        self.createScreencastModel = function createScreencastModel() {
-            return new DahuScreencastModel();
+        self.createScreencastGenerator = function createScreencastGenerator() {
+            return new DahuScreencastGenerator();
         };
 
-        // eventually to remove
-        self.publicFunctionExample = function publicFunctionExample(args) {
-            return "public hello " + args;
+        self.createScreencastModel = function createScreencastModel() {
+            return new DahuScreencastModel();
         };
 
         return self;

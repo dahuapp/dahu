@@ -90,16 +90,6 @@ public class FileSystemDriverProxy implements Proxy {
         }
         return dirName;
     }
-
-    /**
-     * Returns a table containing the names of png files in a directory.
-     *
-     * @param dir The directory to analyse.
-     * @return The list of png files (absolute pathnames).
-     */
-    public String[] getPngFiles(String dir) {
-        return driver.getPngFiles(dir);
-    }
     
     /**
      * Check the existence of the specified directory.
@@ -108,7 +98,7 @@ public class FileSystemDriverProxy implements Proxy {
      * @return True only if the directory exists.
      */
     public boolean exists(String dir) {
-        return new File(dir).exists();
+        return driver.exists(dir);
     }
     
     /**
@@ -118,6 +108,15 @@ public class FileSystemDriverProxy implements Proxy {
      * @return True only if the directory was created.
      */
     public boolean create(String dir) {
-        return new File(dir).mkdirs();
+        return driver.create(dir);
+    }
+    
+    /**
+     * Removes the specified directory.
+     * @param dir Directory to remove.
+     * @return True only if the directory was created.
+     */
+    public boolean remove(String dir) {
+        return driver.remove(dir);
     }
 }

@@ -22,16 +22,6 @@ public class FileSystemDriver implements Driver {
      * our projects are just stored in simple directories.
      */
     private DirectoryChooser directoryChooser = new DirectoryChooser();
-    
-    /**
-     * File filter to choose only png files.
-     */
-    private FilenameFilter pngFilter = new FilenameFilter() {
-        @Override
-        public boolean accept(File dir, String name) {
-            return name.matches(".*\\.png$");
-        }
-    };
 
     /**
      * Creates a directory.
@@ -61,6 +51,50 @@ public class FileSystemDriver implements Driver {
     public boolean exists(String name) {
         File dir = new File(name);
         return dir.exists();
+    }
+    
+    /**
+     * Creates the specified directory.
+     * 
+     * @param dir Directory to create.
+     * @return True only if the directory was created.
+     */
+    public boolean create(String dir) {
+        File dirFile = new File(dir);
+        if (dirFile.exists()) {
+            return false;
+        }
+        return dirFile.mkdirs();
+    }
+    
+    /**
+     * Recursivly removes all the files and directories in the
+     * specified directory (or simply removes the file if it's a file).
+     * @param dir Directory to emtpy.
+     * @return True only if the function ended well.
+     */
+    public boolean removeThisAndItsContent(File dir) {
+        if (dir.isDirectory()) {
+            boolean result = true;
+            for (File f : dir.listFiles()) {
+                result = result && removeThisAndItsContent(f);
+            }
+            return result && dir.delete();
+        } else if (dir.isFile()) {
+            return dir.delete();
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Removes the specified directory.
+     * @param dir Directory to remove.
+     * @return True only if the directory was created.
+     */
+    public boolean remove(String dir) {
+        File f = new File(dir);
+        return removeThisAndItsContent(f);
     }
 
     /**
@@ -121,17 +155,6 @@ public class FileSystemDriver implements Driver {
             return null;
         //}
         //return file.getAbsolutePath();
-    }
-
-    /**
-     * Returns a table containing the names of png files in a directory.
-     *
-     * @param dir The directory to analyse.
-     * @return The list of png files (absolute pathnames).
-     */
-    public String[] getPngFiles(String dir) {
-        File dirFile = new File(dir).getAbsoluteFile();
-        return dirFile.list(pngFilter);
     }
 
     @Override

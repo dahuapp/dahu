@@ -23,10 +23,13 @@ var dahuapp = (function(dahuapp, $) {
         var captureMode = false;
 
         /*
-         * Name of the Json file.
-         * @type String
+         * Name of the files used in a project.
+         * @type String|String|String|String
          */
         var jsonFileName = "presentation.dahu";
+        var buildDir = "build";
+        var generatedHtmlName = "presentation.html";
+        var generatedJsonName = "presentation.json";
 
         /*
          * True when new button was pressed.
@@ -44,10 +47,17 @@ var dahuapp = (function(dahuapp, $) {
          * The absolute path of a directory.
          * This directory has the following components (at least) :
          * projectDir
-         *      |------- format.json
+         *      |------- presentation.dahu
          *      |------- screen1.png
          *      |------- ...
          *      |------- screen2.png
+         *      |------- build
+         *                  |--------- presentation.dahu
+         *                  |--------- screen1.png
+         *                  |--------- ...
+         *                  |--------- screen2.png
+         *                  |--------- presentation.html
+         *                  |--------- presentation.css
          *      
          * The default value must be discussed.
          * @type String
@@ -101,6 +111,11 @@ var dahuapp = (function(dahuapp, $) {
          * Instanciates the DahuScreencastModel class.
          */
         var jsonModel;
+        
+        /*
+         * Instanciates the DahuScreencastGenerator class.
+         */
+        var generator;
 
         /*
          * Standard message printers.
@@ -260,7 +275,7 @@ var dahuapp = (function(dahuapp, $) {
         var cleanPreview = function() {
             $('#preview-image').contents().remove();
         };
-
+        
         /* public API */
 
         /*
@@ -304,9 +319,11 @@ var dahuapp = (function(dahuapp, $) {
          */
         self.init = function init() {
             /*
-             * Instanciation of the JSON model
+             * Instanciation of the JSON model and the generator.
              */
             jsonModel = dahuapp.createScreencastModel();
+            generator = dahuapp.createScreencastGenerator();
+            
             /*
              * Private events callbacks subscribals.
              */
@@ -404,8 +421,29 @@ var dahuapp = (function(dahuapp, $) {
                 } else {
                     if (!initProject) {
                         initialiseProjectAlert();
+                    } else if (newChanges) {
+                        alert('Please save your project before generating it.');
                     } else {
-                        alert("Not implemented yet.");
+                        var fileSystem = dahuapp.drivers.fileSystem;
+                        var sep = fileSystem.getSeparator();
+                        var completeBuildDir = projectDir + sep + buildDir;
+                        if (fileSystem.exists(completeBuildDir)) {
+                            if (!fileSystem.remove(completeBuildDir)) {
+                                alert("Error, the build directory couldn't\n" +
+                                    "have been removed.");
+                                return;
+                            }
+                        }
+                        if (!fileSystem.create(completeBuildDir)) {
+                            alert("Error, the build directory couldn't\n" +
+                                "have been created.");
+                            return;
+                        }
+                        var htmlGen = generator.generateHtmlString(jsonModel);
+                        var jsonGen = generator.generateJsonString(jsonModel);
+                        fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
+                        fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
+                        alert("The project has been built in the directory :\n" + completeBuildDir);
                     }
                 }
             });
