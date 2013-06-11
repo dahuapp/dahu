@@ -122,16 +122,9 @@
                 slide.object.push(object);
                 slide.indexObject++;
                 var action = {
-                    "target": slide.object[0].id,
-                    "type": "appear",
-                    "trigger": "nextButton"
-                };
-                slide.action.push(action);
-                slide.indexAction++;
-                action = {
                     "target": slide.object[1].id,
                     "type": "appear",
-                    "trigger": "withPrevious"
+                    "trigger": "nextButton"
                 };
                 slide.action.push(action);
                 slide.indexAction++;
