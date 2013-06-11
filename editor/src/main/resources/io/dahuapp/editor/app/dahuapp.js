@@ -57,6 +57,64 @@
             }
             
             /*
+             * Generates the html header.
+             */
+            var generateHtmlHeader = function($divCompilation) {
+                $('head', $($divCompilation))
+                        .append($(document.createElement('meta'))
+                        .attr({'charset': 'utf-8'}))
+                        .append($(document.createElement('script'))
+                        .attr({'src': 'http://code.jquery.com/jquery-1.9.1.min.js'}))
+                        .append($(document.createElement('link'))
+                        .attr({'rel': 'stylesheet', 'href': 'dahuapp.viewer.css'}));
+            };
+            
+            /*
+             * Generates a background image.
+             */
+            var generateBackgroundImage = function($divCompilation, object) {
+                $('.image-list', $($divCompilation))
+                        .append($(document.createElement('img'))
+                        .attr({'src': object.img, 'alt': object.img, 'class': 'screen ' + object.id}));
+            };
+            
+            /*
+             * Generates the html body.
+             */
+            var generateHtmlBody = function($divCompilation, jsonModel) {
+                $('body', $($divCompilation))
+                        .append($(document.createElement('section'))
+                        .attr({'id': 'my-dahu-presentation'}))
+                        .append($(document.createElement('script'))
+                        .attr({'src': 'dahuapp.js'}))
+                        .append($(document.createElement('script'))
+                        .attr({'src': 'dahuapp.viewer.js'}));
+                $('#my-dahu-presentation', $($divCompilation))
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'image-list'}))
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'control'}));
+
+                // adding the objects to the page
+                $.each(jsonModel.getObjectList(), function(id, object) {
+                    switch (object.type) {
+                        case "background":
+                            generateBackgroundImage($divCompilation, object);
+                            break;
+                    }
+                });
+                
+                // adding the control buttons to the page
+                $('.control', $($divCompilation))
+                        .append($(document.createElement('button'))
+                        .attr({'class':'previous'})
+                                .append('Previous'))
+                        .append($(document.createElement('button'))
+                        .attr({'class':'next'})
+                                .append('Next'));
+            };
+            
+            /*
              * Generates the html String with the Json model.
              */
             this.generateHtmlString = function(jsonModel) {
@@ -67,46 +125,20 @@
                         .hide());
 
                 // we create the html using the json
-                var $document = $('#private-generating-section')
+                var $divCompilation = $('#private-generating-section')
                         .append($(document.createElement('html'))
                         .attr({'lang': 'en'}));
-                $('html', $($document))
-                        .append(document.createElement('head'))
+                $('html', $($divCompilation))
+                        .append($(document.createElement('head')))
                         .append($(document.createElement('body')));
-                $('head', $($document))
-                        .append($(document.createElement('meta'))
-                        .attr({'charset': 'utf-8'}))
-                        .append($(document.createElement('script'))
-                        .attr({'src': 'http://code.jquery.com/jquery-1.9.1.min.js'}));
-                $('body', $($document))
-                        .append($(document.createElement('section'))
-                        .attr({'id': 'my-dahu-presentation'}));
-                $('#my-dahu-presentation', $($document))
-                        .append($(document.createElement('div'))
-                        .attr({'class': 'image-list'}))
-                        .append($(document.createElement('div'))
-                        .attr({'class': 'control'}));
-
-                // adding the images to the page
-                $.each(jsonModel.getSlideList(), function(id, slide) {
-                    $('.image-list', $($document))
-                            .append($(document.createElement('img'))
-                            .attr({'src': slide, 'alt': slide, 'class': id.toString()}));
-                });
                 
-                // adding the control buttons to the page
-                $('.control', $($document))
-                        .append($(document.createElement('button'))
-                        .attr({'class':'previous'})
-                                .append('Previous'))
-                        .append($(document.createElement('button'))
-                        .attr({'class':'next'})
-                                .append('Next'));
+                generateHtmlHeader($divCompilation);
+                generateHtmlBody($divCompilation, jsonModel);
 
-                var result = htmlFormat($document.html());
+                var result = htmlFormat($divCompilation.html());
 
                 // clearing the compilation area
-                $document.remove();
+                $divCompilation.remove();
 
                 return result;
             };
