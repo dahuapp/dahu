@@ -107,20 +107,34 @@
                     "action": new Array()
                 };
                 var object = {
-                    "id": slide.indexObject,
+                    "id": json.metaData.nbSlide + "." + slide.indexObject,
                     "type": "background",
                     "img": img
                 };
                 slide.object.push(object);
                 slide.indexObject++;
-                var object2 = {
-                    "id": slide.indexObject,
+                object = {
+                    "id": json.metaData.nbSlide + "." + slide.indexObject,
                     "type": "mouse",
                     "mouseX": mouseX,
                     "mouseY": mouseY
                 };
-                slide.object.push(object2);
+                slide.object.push(object);
                 slide.indexObject++;
+                var action = {
+                    "target": slide.object[0].id,
+                    "type": "appear",
+                    "trigger": "nextButton"
+                };
+                slide.action.push(action);
+                slide.indexAction++;
+                action = {
+                    "target": slide.object[1].id,
+                    "type": "appear",
+                    "trigger": "withPrevious"
+                };
+                slide.action.push(action);
+                slide.indexAction++;
                 json.metaData.nbSlide++;
                 json.data.push(slide);
             };
