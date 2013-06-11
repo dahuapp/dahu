@@ -107,14 +107,14 @@
                     "action": new Array()
                 };
                 var object = {
-                    "id": json.metaData.nbSlide + "." + slide.indexObject,
+                    "id": "s" + json.metaData.nbSlide + "-o" + slide.indexObject,
                     "type": "background",
                     "img": img
                 };
                 slide.object.push(object);
                 slide.indexObject++;
                 object = {
-                    "id": json.metaData.nbSlide + "." + slide.indexObject,
+                    "id": "s" + json.metaData.nbSlide + "-o" + slide.indexObject,
                     "type": "mouse",
                     "mouseX": mouseX,
                     "mouseY": mouseY
