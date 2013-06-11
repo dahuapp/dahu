@@ -255,6 +255,25 @@
                 json.data[idSlide].object[1].mouseY = mouseY;
             };
 
+
+            /*
+             * Catches all the objects of the presentation
+             * @returns {Array} List of objects of the presentation
+             */
+            this.getObjectList = function() {
+                var objectList = new Array();
+                var indexSlide = 0;
+                while (json.data[indexSlide]) {
+                    var indexObject = 0;
+                    while (json.data[indexSlide].object[indexObject]) {
+                        objectList.push(json.data[indexSlide].object[indexObject]);
+                        indexObject++;
+                    }
+                    indexSlide++;
+                }
+                return objectList;
+            };
+
             /*
              * Catches all the slides of the presentation
              * @returns {Array} List of slides of the presentation
