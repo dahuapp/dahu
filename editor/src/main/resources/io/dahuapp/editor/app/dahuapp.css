@@ -13,6 +13,7 @@
     margin:0px;
     width: 100%;
     height: 100%;
+    z-index: 0;
 }
 
 #navbar-container{
@@ -21,6 +22,7 @@
     height:40px;
     margin:0px;
     width:100%;
+    z-index: 2;
 }
 
 #main-container{
@@ -29,6 +31,7 @@
     bottom: 0px;
     margin: 0px;
     width: 100%;
+    z-index: 1;
 }
 
 #image-bar-container{
@@ -63,6 +66,7 @@
 .selected-image {
     border: 2px solid red;
     border-radius: 4px;
+
 }
 
 .offset{
@@ -93,4 +97,8 @@
 
 .debug6 {
     border:3px solid magenta;
+}
+
+.debug7 {
+    border:3px solid whitesmoke;
 }
