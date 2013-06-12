@@ -2,6 +2,10 @@ package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.FileSystemDriver;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
@@ -81,7 +85,7 @@ public class FileSystemDriverProxy implements Proxy {
             return null;
         }
         if (!driver.exists(dirName)) {
-            boolean created = driver.createDir(dirName);
+            boolean created = driver.create(dirName);
             if (!created) {
                 LoggerProxy.warning(getClass().getName(), "askForProjectDir",
                         "Unable to create directory : " + dirName);
@@ -118,5 +122,32 @@ public class FileSystemDriverProxy implements Proxy {
      */
     public boolean remove(String dir) {
         return driver.remove(dir);
+    }
+    
+    /**
+     * Copies only the simple files from a directory to another.
+     * @param src Directory containing the source files.
+     * @param dest Directory where the copies will be placed.
+     */
+    public void copyDirectoryContent(String src, String dest) {
+        File source = new File(src);
+        for (File f : source.listFiles()) {
+            driver.copy(f, new File(dest + getSeparator() + f.getName()));
+        }
+    }
+    
+    /**
+     * Runs the preview (opens the default web browser).
+     * @param htmlFile The absolute path to the html file to display.
+     */
+    public void runPreview(String htmlFile) {
+        try {
+            URI u = new URI(htmlFile);
+            System.out.println(u);
+            System.out.println(Platform.isFxApplicationThread());
+            java.awt.Desktop.getDesktop().browse(u);
+        } catch (IOException | URISyntaxException e) {
+            LoggerProxy.severe("Browser couldn't have been opened.");
+        }
     }
 }

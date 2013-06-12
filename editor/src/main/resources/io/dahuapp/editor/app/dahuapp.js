@@ -43,7 +43,7 @@
                     var bbb = btags[i];
                     readableHTML = readableHTML.replace(new RegExp(bbb, 'gi'), lb + bbb);
                 }
-                var ftags = ["<img", "<legend", "</legend>"];
+                var ftags = ["<img", "<legend", "</legend>", "<button", "</button>"];
                 for (i = 0; i < ftags.length; ++i) {
                     var fff = ftags[i];
                     readableHTML = readableHTML.replace(new RegExp(fff, 'gi'), lb + fff);
@@ -59,8 +59,8 @@
             /*
              * Generates the html header.
              */
-            var generateHtmlHeader = function($divCompilation) {
-                $('head', $($divCompilation))
+            var generateHtmlHeader = function($generated) {
+                $('head', $generated)
                         .append($(document.createElement('meta'))
                         .attr({'charset': 'utf-8'}))
                         .append($(document.createElement('script'))
@@ -68,28 +68,42 @@
                         .append($(document.createElement('link'))
                         .attr({'rel': 'stylesheet', 'href': 'dahuapp.viewer.css'}));
             };
-            
+
             /*
              * Generates a background image.
              */
-            var generateBackgroundImage = function($divCompilation, object) {
-                $('.image-list', $($divCompilation))
+            var generateBackgroundImage = function($generated, object) {
+                $('.image-list', $generated)
                         .append($(document.createElement('img'))
                         .attr({'src': object.img, 'alt': object.img, 'class': 'screen ' + object.id}));
             };
             
             /*
+             * Returns the code used to call the viewer to the presentation.
+             */
+            var getBasicCallCode = function() {
+                var code = '(function($) {\n';
+                code += '    myPresentation = dahuapp.viewer.createDahuViewer("#my-dahu-presentation");\n';
+                code += '    myPresentation.load("presentation.json");\n';
+                code += '    myPresentation.start();\n';
+                code += '})(jQuery);\n';
+                return code;
+            };
+
+            /*
              * Generates the html body.
              */
-            var generateHtmlBody = function($divCompilation, jsonModel) {
-                $('body', $($divCompilation))
+            var generateHtmlBody = function($generated, jsonModel) {
+                $('body', $generated)
                         .append($(document.createElement('section'))
                         .attr({'id': 'my-dahu-presentation'}))
                         .append($(document.createElement('script'))
                         .attr({'src': 'dahuapp.js'}))
                         .append($(document.createElement('script'))
-                        .attr({'src': 'dahuapp.viewer.js'}));
-                $('#my-dahu-presentation', $($divCompilation))
+                        .attr({'src': 'dahuapp.viewer.js'}))
+                        .append($(document.createElement('script'))
+                                .append(getBasicCallCode()));
+                $('#my-dahu-presentation', $generated)
                         .append($(document.createElement('div'))
                         .attr({'class': 'image-list'}))
                         .append($(document.createElement('div'))
@@ -99,48 +113,43 @@
                 $.each(jsonModel.getObjectList(), function(id, object) {
                     switch (object.type) {
                         case "background":
-                            generateBackgroundImage($divCompilation, object);
+                            generateBackgroundImage($generated, object);
                             break;
                     }
                 });
                 
+                //!\\ careful here, i'm not sure if $.each is always over here
+
                 // adding the control buttons to the page
-                $('.control', $($divCompilation))
+                $('.control', $generated)
                         .append($(document.createElement('button'))
-                        .attr({'class':'previous'})
-                                .append('Previous'))
+                        .attr({'class': 'previous'})
+                        .append('Previous'))
                         .append($(document.createElement('button'))
-                        .attr({'class':'next'})
-                                .append('Next'));
+                        .attr({'class': 'next'})
+                        .append('Next'));
             };
-            
+
             /*
              * Generates the html String with the Json model.
              */
             this.generateHtmlString = function(jsonModel) {
                 // initialising the compilation area
-                $('body')
-                        .append($(document.createElement('div'))
-                        .attr({'id': 'private-generating-section'})
-                        .hide());
+                var $generated = $(document.createElement('div'));
 
                 // we create the html using the json
-                var $divCompilation = $('#private-generating-section')
-                        .append($(document.createElement('html'))
+                $generated.append($(document.createElement('html'))
                         .attr({'lang': 'en'}));
-                $('html', $($divCompilation))
+                $('html', $generated)
                         .append($(document.createElement('head')))
                         .append($(document.createElement('body')));
-                
-                generateHtmlHeader($divCompilation);
-                generateHtmlBody($divCompilation, jsonModel);
 
-                var result = htmlFormat($divCompilation.html());
+                generateHtmlHeader($generated);
+                generateHtmlBody($generated, jsonModel);
 
-                // clearing the compilation area
-                $divCompilation.remove();
+                var result = htmlFormat($generated.html());
 
-                return result;
+                return '<!DOCTYPE html>\n' + result;
             };
 
             /*
@@ -219,12 +228,13 @@
                 };
                 json.data = new Array();
             };
-
+            
             /*
              * Add a new slide in the presentation variable of the JSON file.
              * @param String img Related to pathname of the image.
              * @param double mouseX Abscissa mouse position in %.
              * @param double mouseY Ordinate mouse position in %.
+             * @return Index of the newly added slide.
              */
             this.addSlide = function(img, mouseX, mouseY) {
                 var slide = {
@@ -255,8 +265,10 @@
                 };
                 slide.action.push(action);
                 slide.indexAction++;
-                json.metaData.nbSlide++;
                 json.data.push(slide);
+                var numSlide = json.metaData.nbSlide;
+                json.metaData.nbSlide++;
+                return numSlide;
             };
 
             /*

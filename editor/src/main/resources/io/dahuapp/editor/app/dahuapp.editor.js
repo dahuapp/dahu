@@ -24,12 +24,13 @@ var dahuapp = (function(dahuapp, $) {
 
         /*
          * Name of the files used in a project.
-         * @type String|String|String|String
+         * @type String|String|String|String|String|String
          */
         var jsonFileName = "presentation.dahu";
-        var buildDir = "build";
         var generatedHtmlName = "presentation.html";
         var generatedJsonName = "presentation.json";
+        var buildDir = "build";
+        var imgDir = "img";
 
         /*
          * True when new button was pressed.
@@ -86,9 +87,9 @@ var dahuapp = (function(dahuapp, $) {
         
         /*
          * Current slide displayed in the view.
-         * @type String
+         * @type int
          */
-        var currentSlide = null;
+        var currentSlide = 0;
         
         /*
          * Private events for the editor.
@@ -112,17 +113,17 @@ var dahuapp = (function(dahuapp, $) {
              * Called when an image on the list has been selected and
              * is different from the previous one.
              */
-            self.selectedImageChanged = createEvent();
+            self.onSelectedImageChanged = createEvent();
             
             /*
              * Called when an image is added (by taking a screen capture).
              */
-            self.newImageTaken = createEvent();
+            self.onNewImageTaken = createEvent();
             
             /*
              * Called when a new projet is created.
              */
-            self.newProjectCreated = createEvent();
+            self.onNewProjectCreated = createEvent();
             
             return self;
         })();
@@ -158,8 +159,7 @@ var dahuapp = (function(dahuapp, $) {
             // projectDir = driver.askForProjectDir();
             if (choice) {
                 var fileSystem = dahuapp.drivers.fileSystem;
-                var sep = fileSystem.getSeparator();
-                var absolutePath = choice + sep + jsonFileName;
+                var absolutePath = choice + fileSystem.getSeparator() + jsonFileName;
                 if (!fileSystem.exists(absolutePath)) {
                     alert("The following file :\n\n" + absolutePath +
                         "\n\ndoesn't exist. Please create a new project,\n" +
@@ -168,16 +168,13 @@ var dahuapp = (function(dahuapp, $) {
                 }
                 projectDir = choice;
                 var stringJson = fileSystem.readFile(absolutePath);
-                var slideList;
-                var i = 0;
-                events.newProjectCreated.publish();
+                events.onNewProjectCreated.publish();
                 jsonModel.loadJson(stringJson);
-                slideList = jsonModel.getSlideList();
-                while (slideList[i]) {
-                    var img = slideList[i];
-                    events.newImageTaken.publish(img);
-                    i++;
+                var nbSlides = jsonModel.getNbSlide();
+                for (var i = 0; i < nbSlides; i++) {
+                    events.onNewImageTaken.publish(i);
                 }
+                currentSlide = nbSlides - 1;
                 dahuapp.drivers.setTitleProject(projectDir);
                 initProject = true;
             }
@@ -208,6 +205,38 @@ var dahuapp = (function(dahuapp, $) {
                 events.newProjectCreated.publish();
             }
         };
+        var cleanProjectDirectory = function() {
+            var fileSystem = dahuapp.drivers.fileSystem;
+            var completeBuildDir = projectDir + fileSystem.getSeparator() + buildDir;
+            if (fileSystem.exists(completeBuildDir)) {
+                if (!fileSystem.remove(completeBuildDir)) {
+                    alert("Error, the build directory couldn't\n" +
+                            "have been removed.");
+                    return;
+                }
+            }
+        };
+        var generateProject = function() {
+            var fileSystem = dahuapp.drivers.fileSystem;
+            var sep = fileSystem.getSeparator();
+            var completeBuildDir = projectDir + sep + buildDir;
+            if (!fileSystem.create(completeBuildDir)) {
+                alert("Error, the build directory couldn't\n" +
+                        "have been created.");
+                return;
+            }
+            var htmlGen = generator.generateHtmlString(jsonModel);
+            var jsonGen = generator.generateJsonString(jsonModel);
+            fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
+            fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
+            fileSystem.create(completeBuildDir + sep + imgDir);
+            fileSystem.copyDirectoryContent(projectDir + sep + imgDir, completeBuildDir + sep + imgDir);
+        };
+        var runPreview = function() {
+            var sep = dahuapp.drivers.fileSystem.getSeparator();
+            var target = projectDir + sep + buildDir + sep + generatedHtmlName;
+            dahuapp.drivers.fileSystem.runPreview(target);
+        };
 
         /*
          * Changes the capture mode (if true => false, if false => true).
@@ -234,19 +263,20 @@ var dahuapp = (function(dahuapp, $) {
         
         /*
          * Function to update the preview on the middle.
-         * slide is the absolute path to the image
+         * 
          */
-        var updatePreview = function(slide, id) {
-            if ($('#preview-image').empty()) {
-                $('#preview-image').append($(document.createElement('img'))
-                    .attr({'position': "absolute", 'src': slide, 'alt': slide, 'id': id, 'z-index': 1})); 
-            } else {
-                $('#preview-image').children().replaceWith(
-                    $(document.createElement('img'))
-                    .attr({'src': slide, 'alt': slide, 'id': id})); 
-            }
-            // BEGINNING TO SET THE SOURIS
+        var updatePreview = function(idSlide) {
+            var img = jsonModel.getSlide(idSlide).object[0].img;
+            var sep = dahuapp.drivers.fileSystem.getSeparator();
+            var abs = projectDir + sep + img;
+            cleanPreview();
+            // Be careful, properties down there are no CSS but HTML !
+            // CSS properties must be set in dahuapp.css !
+            $('#preview-image').append($(document.createElement('img'))
+                    .attr({'src': abs, 'alt': abs, 'id': idSlide}));
             
+            // BEGINNING TO SET THE SOURIS
+            /*
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var ressourceImgDir = dahuapp.drivers.rootDirectory.getRootDirectory() + sep + dahuapp.drivers.rootDirectory.getImgPath();
             
@@ -255,41 +285,44 @@ var dahuapp = (function(dahuapp, $) {
             var jsObject = jsonModel.getSlide(id);
             var left = Math.floor((imageRect.width * jsObject.object[1].mouseX ) + imageRect.left);
             var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ) + imageRect.top);
+            
+            // Be careful, properties down there are no CSS but HTML !
+            // CSS properties must be set in dahuapp.css !
             $('#preview-image').append(
                 $(document.createElement('img'))
                     .attr({'src': sep + ressourceImgDir + sep + cursorImage,
                            'alt': sep + ressourceImgDir + sep + cursorImage,
-                           'position': "absolute",
-                           'left': left + "px",
-                           'top': top + "px",
-                           'width': "22px",
-                           'height': "22px",
-                           'z-index': 2
+                           'position': "absolute", // strange
+                           'left': left + "px", // strange
+                           'top': top + "px", // strange
+                           'width': "22px", // strange
+                           'height': "22px", // strange
+                           'z-index': 2 // strange
                        }));
                        alert(imageRect.width + "x" + imageRect.height)
-           dahuapp.drivers.logger.JSsevere($('html').html());
+           dahuapp.drivers.logger.JSsevere($('html').html());*/
         };
         
         /*
          * Function to update the image list (when a new one is captured).
          * img is the relative path to the image (relatively to the .dahu file)
          */
-        var updateImageList = function(img) {
+        var updateImageList = function(idSlide) {
+            var img = jsonModel.getSlide(idSlide).object[0].img;
             var sep = dahuapp.drivers.fileSystem.getSeparator();
-            var id = jsonModel.getNbSlide() - 1;
+            var abs = projectDir + sep + img;
             $('#image-list').append($(document.createElement('li'))
                     .attr({'class': 'span2 offset'})
                     .append($(document.createElement('a'))
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
-                                    .attr({'src': projectDir + sep + img,
-                                        'id': id,
-                                        'alt': projectDir + sep + img
+                                    .attr({'src': abs,
+                                        'id': idSlide,
+                                        'alt': abs
                                     })
                             )
                     )
             );
-            updatePreview(projectDir + sep + img, id);
         };
         
         /*
@@ -329,10 +362,21 @@ var dahuapp = (function(dahuapp, $) {
             var drivers = dahuapp.drivers;
             switch (drivers.keyboard.keyToString(key).toLowerCase()) {
                 case "f7":
-                    var img = dahuapp.drivers.screen.takeScreen(projectDir);
+                    var fileSystem = dahuapp.drivers.fileSystem;
+                    var sep = fileSystem.getSeparator();
+                    // creation of imgDir if it doesn't exist
+                    var imgDirAbsolute = projectDir + sep + imgDir;
+                    if (!fileSystem.exists(imgDirAbsolute)) {
+                        if (!fileSystem.create(imgDirAbsolute)) {
+                            alert("Impossible to create image directory.");
+                            return;
+                        }
+                    }
+                    var img = dahuapp.drivers.screen.takeScreen(imgDirAbsolute);
+                    var imgRelative = imgDir + sep + img;
                     var mouse = dahuapp.drivers.mouse;
-                    jsonModel.addSlide(img, mouse.getMouseX(), mouse.getMouseY());
-                    events.newImageTaken.publish(img);
+                    var numSlide = jsonModel.addSlide(imgRelative, mouse.getMouseX(), mouse.getMouseY());
+                    events.onNewImageTaken.publish(numSlide);
                     newChanges = true;
                     break;
                 case "escape":
@@ -357,19 +401,29 @@ var dahuapp = (function(dahuapp, $) {
             /*
              * Private events callbacks subscribals.
              */
-            events.selectedImageChanged.subscribe(updatePreview);
-            events.newImageTaken.subscribe(updateImageList);
-            events.newProjectCreated.subscribe(cleanImageList);
-            events.newProjectCreated.subscribe(cleanPreview);
+            events.onSelectedImageChanged.subscribe(updatePreview);
+            events.onNewImageTaken.subscribe(updateImageList);
+            events.onNewImageTaken.subscribe(updatePreview);
+            events.onNewProjectCreated.subscribe(cleanImageList);
+            events.onNewProjectCreated.subscribe(cleanPreview);
             
             /*
              * Basic events for the buttons and components.
              */
+            $('body').on('dragstart drop', function() {
+                // - This function is to avoid exceptions when dragging elements
+                //   on the webview (e.g. the preview or the images on the list).
+                //   The webview doesn't support image dragging, so we desactivate
+                //   it in the whole page.
+                // - If a drag & drop system have to be implemented, this event
+                //   will probably have to be removed.
+                return false;
+            });
             $('#image-list').on('click', 'img', function() {
-                var imgName = $(this).attr('src');
-                if (currentSlide !== imgName) {
-                    currentSlide = imgName;
-                    events.selectedImageChanged.publish(currentSlide, $(this).attr('id'));
+                var imgId = parseInt($(this).attr('id'));
+                if (currentSlide !== imgId) {
+                    currentSlide = imgId;
+                    events.onSelectedImageChanged.publish(currentSlide);
                 }
             });
             $('#capture-mode').click(function() {
@@ -382,8 +436,9 @@ var dahuapp = (function(dahuapp, $) {
             $('#save-project').click(function() {
                 if (initProject && !captureMode) {
                     var stringJson = jsonModel.getJson();
-                    var driver = dahuapp.drivers.fileSystem;
-                    if (driver.writeFile(projectDir + driver.getSeparator() + jsonFileName, stringJson)) {
+                    var fileSystem = dahuapp.drivers.fileSystem;
+                    var sep = fileSystem.getSeparator();
+                    if (fileSystem.writeFile(projectDir + sep + jsonFileName, stringJson)) {
                         dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project saved in " + projectDir);
                         alert("The project has been saved successfully.");
                         newChanges = false;
@@ -445,6 +500,18 @@ var dahuapp = (function(dahuapp, $) {
                     }
                 }
             });
+            $('#clean-project').click(function() {
+                if (captureMode) {
+                    captureModeAlert();
+                } else {
+                    if (!initProject) {
+                        initialiseProjectAlert();
+                    } else {
+                        cleanProjectDirectory();
+                        alert("The build directory has been removed.");
+                    }
+                }
+            });
             $('#generate').click(function() {
                 if (captureMode) {
                     captureModeAlert();
@@ -454,26 +521,10 @@ var dahuapp = (function(dahuapp, $) {
                     } else if (newChanges) {
                         alert('Please save your project before generating it.');
                     } else {
-                        var fileSystem = dahuapp.drivers.fileSystem;
-                        var sep = fileSystem.getSeparator();
-                        var completeBuildDir = projectDir + sep + buildDir;
-                        if (fileSystem.exists(completeBuildDir)) {
-                            if (!fileSystem.remove(completeBuildDir)) {
-                                alert("Error, the build directory couldn't\n" +
-                                    "have been removed.");
-                                return;
-                            }
-                        }
-                        if (!fileSystem.create(completeBuildDir)) {
-                            alert("Error, the build directory couldn't\n" +
-                                "have been created.");
-                            return;
-                        }
-                        var htmlGen = generator.generateHtmlString(jsonModel);
-                        var jsonGen = generator.generateJsonString(jsonModel);
-                        fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
-                        fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
-                        alert("The project has been built in the directory :\n" + completeBuildDir);
+                        cleanProjectDirectory();
+                        generateProject();
+                        alert('The project has been built in the "build"\n' +
+                            'of the project.');
                     }
                 }
             });
@@ -484,19 +535,13 @@ var dahuapp = (function(dahuapp, $) {
                     if (!initProject) {
                         initialiseProjectAlert();
                     } else {
-                        alert("Not implemented yet.");
+                        alert('Not implemented yet.');
+                        /*cleanProjectDirectory();
+                        generateProject();
+                        runPreview();*/
                     }
                 }
             });
-        };
-
-        /**
-         * 
-         * @param {type} args
-         * @returns {String}
-         */
-        self.somePublicFunction = function somePublicFunction(args) {
-            return "public (editor) hello " + args;
         };
 
         return self;

@@ -3,9 +3,11 @@ package io.dahuapp.editor.drivers;
 import io.dahuapp.editor.proxy.LoggerProxy;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
@@ -22,25 +24,6 @@ public class FileSystemDriver implements Driver {
      * our projects are just stored in simple directories.
      */
     private DirectoryChooser directoryChooser = new DirectoryChooser();
-
-    /**
-     * Creates a directory.
-     *
-     * @param name Name of the directory.
-     * @return True if the directory is created.
-     */
-    public boolean createDir(String name) {
-        File dir = new File(name);
-        if (dir.mkdirs()) {
-            LoggerProxy.fine(this.getClass().getName(), "createDir",
-                    name + " directory created");
-            return true;
-        } else {
-            LoggerProxy.severe(this.getClass().getName(), "createDir",
-                    "failed to create directory " + name);
-            return false;
-        }
-    }
 
     /**
      * Indicates if a specified file or directory exists.
@@ -155,6 +138,35 @@ public class FileSystemDriver implements Driver {
             return null;
         //}
         //return file.getAbsolutePath();
+    }
+    
+    /**
+     * Copies src file to dest.
+     * @param src File to copy.
+     * @param dest Destination file.
+     * @return True only if the copy succeed.
+     */
+    public boolean copy(File src, File dest) {
+        FileInputStream in;
+        FileOutputStream out;
+        try {
+            in = new FileInputStream(src);
+            out = new FileOutputStream(dest);
+        } catch (FileNotFoundException e) {
+            return false;
+        }
+        int length;
+        byte[] buffer = new byte[1024];
+        try {
+            while ((length = in.read(buffer)) > 0) {
+                out.write(buffer, 0, length);
+            }
+            in.close();
+            out.close();
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override
