@@ -68,6 +68,15 @@
     background : Silver;
 }
 
+#preview-image{
+    position : relative;
+    list-style-type: none;
+}
+
+.my-cursor{
+    position : absolute;
+}
+
 .selected-image {
     border: 2px solid red;
     border-radius: 4px;
@@ -89,11 +98,11 @@
 }
 
 .debug3 {
-    background:yellow;
+        border:3px solid yellow;
 }
 
 .debug4 {
-    background:green;
+        border:3px solid green;
 }
 
 .debug5 {
@@ -101,9 +110,9 @@
 }
 
 .debug6 {
-    border:3px solid magenta;
+    border:6px solid magenta;
 }
 
 .debug7 {
-    border:3px solid whitesmoke;
+    border:3px solid darkorange;
 }

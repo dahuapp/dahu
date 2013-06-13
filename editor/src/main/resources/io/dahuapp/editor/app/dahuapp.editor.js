@@ -284,11 +284,26 @@ var dahuapp = (function(dahuapp, $) {
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
-            $('#preview-image').append($(document.createElement('img'))
-                    .attr({'src': abs, 'alt': abs}));
             
+            $('#preview-image').append($(document.createElement('li')).append($(document.createElement('img'))
+                    .attr({'src': abs, 'alt': abs})));
+            updateMouse(idSlide);
+
         };
-        
+
+        var updateMouse = function(idSlide) {
+            var ressourceImgDir = dahuapp.drivers.fileSystem.getResource("cursor.png");
+            var slide = jsonModel.getSlide(idSlide);
+            $("#preview-image").append(
+                    $(document.createElement('li')).append($(document.createElement('img'))
+                    .attr({'src': ressourceImgDir,
+                'alt': ressourceImgDir, 'class': "my-cursor"})));
+            $('.my-cursor').css({
+                'top': slide.object[1].mouseY * 100 + "\%",
+                'left': slide.object[1].mouseX * 100 + "\%"
+            });
+        };
+
         /*
          * Function to update the image list (when a new one is captured).
          * img is the relative path to the image (relatively to the .dahu file)
