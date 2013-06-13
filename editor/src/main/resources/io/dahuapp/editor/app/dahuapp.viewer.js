@@ -61,18 +61,20 @@ var dahuapp = (function(dahuapp, $) {
             var nextEventHandler = function() {
                 while (json.data[currentSlide]) {
                     while (json.data[currentSlide].action[currentAction]) {
-                        if (json.data[currentSlide].action[currentAction].trigger === 'nextButton') {
+                        if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
                             launch(json.data[currentSlide].action[currentAction++]);
+                            alert(currentSlide);
                             return;
                         }
                         currentAction++;
                     }
-                    if (currentSlide < json.metaData.nbSlide - 1) {
+                    if (currentSlide < json.data.length - 1) {
                         lastSlide = currentSlide;
                         currentSlide++;
                         currentAction = 0;
                         actualise();
                     } else {
+                        alert(currentSlide);
                         return;
                     }
                 }
@@ -85,7 +87,8 @@ var dahuapp = (function(dahuapp, $) {
                 currentAction--;
                 while (json.data[currentSlide]) {
                     while (json.data[currentSlide].action[currentAction]) {
-                        if (json.data[currentSlide].action[currentAction].trigger === 'nextButton') {
+                        if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
+                            alert(currentSlide);
                             return;
                         }
                         currentAction--;
@@ -96,6 +99,7 @@ var dahuapp = (function(dahuapp, $) {
                         actualise();
                         currentAction = json.data[currentSlide].indexAction - 1;
                     } else {
+                        alert(currentSlide);
                         return;
                     }
                 }
@@ -110,7 +114,7 @@ var dahuapp = (function(dahuapp, $) {
                         launch(json.data[currentSlide].action[currentAction++]);
                     }
                 } else {
-                    if (currentSlide < json.metaData.nbSlide - 1) {
+                    if (currentSlide < json.data.length - 1) {
                         lastSlide = currentSlide;
                         currentSlide++;
                         actualise();
@@ -135,20 +139,10 @@ var dahuapp = (function(dahuapp, $) {
              * Function used to realise actions.
              */
             var launch = function(action) {
-                switch (action.type) {
-                    case "appear":
-                        $(selector + " ." + action.target).show();
-                        events.actionOver.publish();
-                        break;
-                    case "disappear":
-                        $(selector + " ." + action.traget).hide();
-                        events.actionOver.publish();
-                        break;
-                    case "move":
-                        //not implemented yet;
-                        events.actionOver.publish();
-                        break;
-                }
+                var target = selector + ' .' + action.target;
+                var animation = eval('(' + action.execute + ')');
+                animation(target);
+                events.actionOver.publish();
             };
 
             /* Public API */
@@ -177,7 +171,7 @@ var dahuapp = (function(dahuapp, $) {
                 /*
                  * Variable storing the total number of slides.
                  */
-                var max = json.metaData.nbSlide;
+                var max = json.data.length;
 
                 /*
                  *At the beginning, the visible image is the first one of the presentation
@@ -185,7 +179,7 @@ var dahuapp = (function(dahuapp, $) {
                 for (var i = 0; i < max; i++) {
                     $(selector + " .s" + i + "-o0").hide();
                 }
-                $(selector + " .s0-o0").show();
+                $(selector + " ." + json.data[0].object[0].id).show();
 
                 /*
                  * A click on the "next" button publishes a nextSlide event

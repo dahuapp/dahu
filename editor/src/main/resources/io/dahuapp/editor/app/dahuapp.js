@@ -23,9 +23,9 @@
         /* public API */
 
         self.version = "0.0.1";
-        
+
         var DahuScreencastGenerator = function() {
-            
+
             /*
              * Format the specified string in a readable format.
              */
@@ -55,7 +55,7 @@
                 }
                 return readableHTML;
             }
-            
+
             /*
              * Generates the html header.
              */
@@ -77,7 +77,7 @@
                         .append($(document.createElement('img'))
                         .attr({'src': object.img, 'alt': object.img, 'class': 'screen ' + object.id}));
             };
-            
+
             /*
              * Returns the code used to call the viewer to the presentation.
              */
@@ -102,7 +102,7 @@
                         .append($(document.createElement('script'))
                         .attr({'src': 'dahuapp.viewer.js'}))
                         .append($(document.createElement('script'))
-                                .append(getBasicCallCode()));
+                        .append(getBasicCallCode()));
                 $('#my-dahu-presentation', $generated)
                         .append($(document.createElement('div'))
                         .attr({'class': 'image-list'}))
@@ -117,7 +117,7 @@
                             break;
                     }
                 });
-                
+
                 //!\\ careful here, i'm not sure if $.each is always over here
 
                 // adding the control buttons to the page
@@ -176,30 +176,50 @@
             function formatJson(val) {
                 var retval = '';
                 var str = val;
+                var strFunct;
                 var pos = 0;
                 var strLen = str.length;
                 var indentStr = '    ';
                 var newLine = '\n';
                 var char = '';
+                var formatEnable = true;
                 for (var i = 0; i < strLen; i++) {
                     char = str.substring(i, i + 1);
-                    if (char === '}' || char === ']') {
-                        retval = retval + newLine;
-                        pos = pos - 1;
-                        for (var j = 0; j < pos; j++) {
-                            retval = retval + indentStr;
+                    if (formatEnable === true) {
+                        if (i > 10) {
+                            strFunct = str.substring(i - 10, i);
+                            if (char === '"' && strFunct === '"execute":')
+                            {
+                                formatEnable = false;
+                            }
                         }
-                    }
-
-                    retval = retval + char;
-                    if (char === '{' || char === '[' || char === ',') {
-                        retval = retval + newLine;
-                        if (char === '{' || char === '[') {
-                            pos = pos + 1;
+                        if (char === '}' || char === ']') {
+                            retval = retval + newLine;
+                            pos = pos - 1;
+                            for (var j = 0; j < pos; j++) {
+                                retval = retval + indentStr;
+                            }
                         }
 
-                        for (var k = 0; k < pos; k++) {
-                            retval = retval + indentStr;
+                        retval = retval + char;
+                        if (char === '{' || char === '[' || char === ',') {
+                            retval = retval + newLine;
+                            if (char === '{' || char === '[') {
+                                pos = pos + 1;
+                            }
+
+                            for (var k = 0; k < pos; k++) {
+                                retval = retval + indentStr;
+                            }
+                        }
+                    } else if (char === '"') {
+                        formatEnable = true;
+                        retval = retval + char;
+                    } else {
+                        if (char !== '\\') {
+                            retval = retval + char;
+                        } else {
+                            i++;
                         }
                     }
                 }
@@ -225,7 +245,7 @@
                 json.metaData = {};
                 json.data = new Array();
             };
-            
+
             /*
              * Add a new slide in the presentation variable of the JSON file.
              * @param int ID wanted for the slide.
@@ -241,29 +261,79 @@
                     "object": new Array(),
                     "action": new Array()
                 };
-                var object = {
-                    "id": "s" + json.metaData.nbSlide + "-o" + slide.indexObject,
-                    "type": "background",
-                    "img": img
-                };
-                slide.object.push(object);
-                slide.indexObject++;
-                object = {
-                    "id": "s" + json.metaData.nbSlide + "-o" + slide.indexObject,
-                    "type": "mouse",
-                    "mouseX": mouseX,
-                    "mouseY": mouseY
-                };
-                slide.object.push(object);
-                slide.indexObject++;
-                var action = {
-                    "target": slide.object[1].id,
-                    "type": "appear",
-                    "trigger": "nextButton"
-                };
-                slide.action.push(action);
-                slide.indexAction++;
                 json.data.splice(idSlide, 0, slide);
+                this.addObject(idSlide, "background");
+                this.setObjectImage(idSlide, 0, img);
+                this.addObject(idSlide, "mouse");
+                this.setObjectMouse(idSlide, 1, mouseX, mouseY);
+                this.addAction(idSlide, json.data[idSlide].object[1].id, "onClick");
+                this.setActionAppear(idSlide, 0, mouseX, mouseY);
+            };
+
+            /*
+             * Add a new Object in the slide idSlide.
+             * @param int idSlide
+             * @param string type
+             */
+            this.addObject = function(idSlide, type) {
+                var object = {
+                    "id": "s" + idSlide + "-o" + json.data[idSlide].indexObject,
+                    "type": type
+                };
+                json.data[idSlide].object.push(object);
+                json.data[idSlide].indexObject++;
+            };
+
+            /*
+             * Add a new Action in the slide idSlide whose target is the id of an object.
+             * Three types of trigger : "withPrevious", "afterPrevious", "onClick".
+             * @param int idSlide
+             * @param string target
+             * @param string trigger
+             */
+            this.addAction = function(idSlide, target, trigger) {
+                var action = {
+                    "target": target,
+                    "trigger": trigger
+                };
+                json.data[idSlide].action.push(action);
+                json.data[idSlide].indexAction++;
+            };
+
+            /*
+             * Set abscissa, ordinate and function for the action idAction of the Slide idSlide.
+             * @param int idSlide
+             * @param int idAction
+             * @param int abs
+             * @param int ord
+             */
+            this.setActionAppear = function(idSlide, idAction, abs, ord) {
+                json.data[idSlide].action[idAction].finalAbs = abs;
+                json.data[idSlide].action[idAction].finalOrd = ord;
+                var appear = function(target) { $(target).show();};
+                json.data[idSlide].action[idAction].execute = appear.toString();
+            };
+
+            /*
+             * Set image arguments for the object idObject of the slide idSlide.
+             * @param int idSlide
+             * @param int idObject
+             * @param int img
+             */
+            this.setObjectImage = function(idSlide, idObject, img) {
+                json.data[idSlide].object[idObject].img = img;
+            };
+
+            /*
+             * Set mouse arguments for the object idObject of the slide idSlide.
+             * @param int idSlide
+             * @param int idObject
+             * @param int mouseX
+             * @param int mouseY
+             */
+            this.setObjectMouse = function(idSlide, idObject, mouseX, mouseY) {
+                json.data[idSlide].object[idObject].mouseX = mouseX;
+                json.data[idSlide].object[idObject].mouseY = mouseY;
             };
 
             /*
@@ -367,7 +437,7 @@
             this.getNbSlide = function() {
                 return json.data.length;
             };
-            
+
             /*
              * @return {object} returns the object identified by idSlide
              */
