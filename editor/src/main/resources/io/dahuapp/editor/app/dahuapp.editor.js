@@ -277,7 +277,8 @@ var dahuapp = (function(dahuapp, $) {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
             
-            $('#preview-image').append($(document.createElement('li')).append($(document.createElement('img'))
+            $('#preview-image').append($(document.createElement('li'))
+                    .append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs})));
             updateMouse(idSlide);
 
@@ -286,10 +287,10 @@ var dahuapp = (function(dahuapp, $) {
         var updateMouse = function(idSlide) {
             var ressourceImgDir = dahuapp.drivers.fileSystem.getResource("cursor.png");
             var slide = jsonModel.getSlide(idSlide);
-            $("#preview-image").append(
-                    $(document.createElement('li')).append($(document.createElement('img'))
-                    .attr({'src': ressourceImgDir,
-                'alt': ressourceImgDir, 'class': "my-cursor"})));
+            $("#preview-image").append($(document.createElement('li'))
+                    .attr({'class': "my-cursor"})
+                    .append($(document.createElement('img'))
+                    .attr({'src': ressourceImgDir, 'alt': ressourceImgDir})));
             $('.my-cursor').css({
                 'top': slide.object[1].mouseY * 100 + "\%",
                 'left': slide.object[1].mouseX * 100 + "\%"
@@ -339,6 +340,7 @@ var dahuapp = (function(dahuapp, $) {
             $('#image-list > li').removeClass('selected-image');
             var selectedItem = $('#image-list > li').get(idSlide);
             $(selectedItem).addClass('selected-image');
+            selectedObjectOnSlide = -1;
         };
         
         /*

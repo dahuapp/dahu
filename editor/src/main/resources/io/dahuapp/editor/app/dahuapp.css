@@ -55,7 +55,7 @@
     right: 0px;
     bottom: 20px;
     margin: 0px;
-    padding : 4px;
+    padding: 4px;
     border:1px solid black;
 }
 
@@ -81,7 +81,8 @@
 
 #preview-image{
     position : relative;
-    list-style-type: none;
+    margin: 0px;
+    list-style: none;
 }
 
 .my-cursor{
@@ -90,7 +91,7 @@
 
 .selected-image {
     border: 2px solid red;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
 .selected-object {
