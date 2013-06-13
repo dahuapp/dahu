@@ -177,6 +177,7 @@ var dahuapp = (function(dahuapp, $) {
                 currentSlide = nbSlides - 1;
                 dahuapp.drivers.setTitleProject(projectDir);
                 initProject = true;
+                newChanges = false;
             }
         };
         var newProject = function() {
@@ -202,6 +203,7 @@ var dahuapp = (function(dahuapp, $) {
                 dahuapp.drivers.setTitleProject(projectDir);
                 dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
                 initProject = true;
+                newChanges = false;
                 events.newProjectCreated.publish();
             }
         };
@@ -253,8 +255,10 @@ var dahuapp = (function(dahuapp, $) {
             // if we're in capture mode, we exit it, otherwise we enter it
             if (!captureMode) {
                 keyboardDriver.addKeyListener(self.handleCaptureModeEvent);
+                setStateBarMessage("Capture mode ON (F7 to take a screenshot / ESC to exit capture mode)");
             } else {
                 keyboardDriver.removeKeyListener(self.handleCaptureModeEvent);
+                setStateBarMessage("Capture mode OFF");
             }
             // the capture mode button gets a different style
             $('#capture-mode').toggleClass('btn-primary');
