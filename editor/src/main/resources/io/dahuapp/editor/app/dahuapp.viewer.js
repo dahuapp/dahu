@@ -127,8 +127,8 @@ var dahuapp = (function(dahuapp, $) {
              * Function used to actualise the background when there is a new slide.
              */
             var actualise = function() {
-                $(selector + " .s" + lastSlide + "-o0").hide();
-                $(selector + " .s" + currentSlide + "-o0").show();
+                $(selector + " ." + json.data[lastSlide].object[0].id).hide();
+                $(selector + " ." + json.data[currentSlide].object[0].id).show();
             };
 
             /*
