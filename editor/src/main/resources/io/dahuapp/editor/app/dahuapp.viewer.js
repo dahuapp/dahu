@@ -63,7 +63,6 @@ var dahuapp = (function(dahuapp, $) {
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
                             launch(json.data[currentSlide].action[currentAction++]);
-                            alert(currentSlide);
                             return;
                         }
                         currentAction++;
@@ -74,7 +73,6 @@ var dahuapp = (function(dahuapp, $) {
                         currentAction = 0;
                         actualise();
                     } else {
-                        alert(currentSlide);
                         return;
                     }
                 }
@@ -88,7 +86,6 @@ var dahuapp = (function(dahuapp, $) {
                 while (json.data[currentSlide]) {
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
-                            alert(currentSlide);
                             return;
                         }
                         currentAction--;
@@ -99,7 +96,6 @@ var dahuapp = (function(dahuapp, $) {
                         actualise();
                         currentAction = json.data[currentSlide].indexAction - 1;
                     } else {
-                        alert(currentSlide);
                         return;
                     }
                 }
@@ -167,7 +163,6 @@ var dahuapp = (function(dahuapp, $) {
                 events.next.subscribe(nextEventHandler);
                 events.previous.subscribe(previousEventHandler);
                 events.actionOver.subscribe(actionOverEventHandler);
-
                 /*
                  * Variable storing the total number of slides.
                  */
@@ -187,7 +182,6 @@ var dahuapp = (function(dahuapp, $) {
                 $(selector + " .next").click(function() {
                     events.next.publish();
                 });
-
                 /*
                  * A click on the "previous" button publishes a previousSlide event
                  */

@@ -144,6 +144,7 @@
                         .append($(document.createElement('head')))
                         .append($(document.createElement('body')));
 
+
                 generateHtmlHeader($generated);
                 generateHtmlBody($generated, jsonModel);
 
@@ -176,6 +177,7 @@
             function formatJson(val) {
                 var retval = '';
                 var str = val;
+                var str2;
                 var strFunct;
                 var pos = 0;
                 var strLen = str.length;
@@ -185,6 +187,7 @@
                 var formatEnable = true;
                 for (var i = 0; i < strLen; i++) {
                     char = str.substring(i, i + 1);
+                    str2 = str.substring(i - 2, i);
                     if (formatEnable === true) {
                         if (i > 10) {
                             strFunct = str.substring(i - 10, i);
@@ -212,7 +215,7 @@
                                 retval = retval + indentStr;
                             }
                         }
-                    } else if (char === '"') {
+                    } else if (str2 === '}"') {
                         formatEnable = true;
                         retval = retval + char;
                     } else {
@@ -310,7 +313,7 @@
             this.setActionAppear = function(idSlide, idAction, abs, ord) {
                 json.data[idSlide].action[idAction].finalAbs = abs;
                 json.data[idSlide].action[idAction].finalOrd = ord;
-                var appear = function(target) { $(target).show();};
+                var appear = function (target) { $(target).show();};
                 json.data[idSlide].action[idAction].execute = appear.toString();
             };
 
