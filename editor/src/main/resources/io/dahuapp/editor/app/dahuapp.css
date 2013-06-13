@@ -35,17 +35,29 @@
     position:absolute;
     width: 200px;
     top: 0px;
-    bottom: 0px;
+    bottom: 20px;
     margin: 0px;
+    border:1px solid black;
 }
 
 #current-image-container{
-   position: absolute;
-   left: 200px;
-   top: 0px;
-   right: 0px;
-   bottom: 0px;
-   margin: 0px;
+    position: absolute;
+    left: 200px;
+    top: 0px;
+    right: 0px;
+    bottom: 20px;
+    margin: 0px;
+    text-align: center;
+    padding : 4px;
+    border:1px solid black;
+}
+
+#state-bar-container{
+    position: absolute;
+    height: 20px;
+    width: 100%;
+    bottom: 0px;
+    background : Silver;
 }
 
 .offset{
