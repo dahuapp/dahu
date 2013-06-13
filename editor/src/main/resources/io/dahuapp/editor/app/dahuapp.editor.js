@@ -86,10 +86,11 @@ var dahuapp = (function(dahuapp, $) {
         var cursorImage = "cursor.png";
         
         /*
-         * Current slide displayed in the view.
+         * Selected slide (displayed in the view).
+         * -1 means nothing is selected.
          * @type int
          */
-        var currentSlide = -1;
+        var selectedSlide = -1;
         
         /*
          * Private events for the editor.
@@ -174,7 +175,7 @@ var dahuapp = (function(dahuapp, $) {
                 for (var i = 0; i < nbSlides; i++) {
                     events.onNewImageTaken.publish(i);
                 }
-                currentSlide = nbSlides - 1;
+                selectedSlide = nbSlides - 1;
                 dahuapp.drivers.setTitleProject(projectDir);
                 initProject = true;
                 newChanges = false;
@@ -316,17 +317,19 @@ var dahuapp = (function(dahuapp, $) {
          */
         var updateImageList = function(idSlide) {
             var img = jsonModel.getSlide(idSlide).object[0].img;
-            var sep = dahuapp.drivers.fileSystem.getSeparator();
-            var abs = projectDir + sep + img;
-            $('#image-list').append($(document.createElement('li'))
+            var abs = projectDir + dahuapp.drivers.fileSystem.getSeparator() + img;
+            var $newImage = $(document.createElement('img')).attr({'src': abs, 'alt': abs});
+            var $newListElement = $(document.createElement('li'))
                     .attr({'class': 'span2 offset'})
                     .append($(document.createElement('a'))
                             .attr({'class': 'thumbnail'})
-                            .append($(document.createElement('img'))
-                                    .attr({'src': abs, 'alt': abs})
-                            )
-                    )
-            );
+                            .append($newImage));
+            var $imageList = $('#image-list > li');
+            if ($imageList.length === 0) {
+                $('#image-list').append($newListElement);
+            } else {
+                $($imageList.get(idSlide - 1)).after($newListElement);
+            }
         };
         
         /*
@@ -406,8 +409,10 @@ var dahuapp = (function(dahuapp, $) {
                     var img = dahuapp.drivers.screen.takeScreen(imgDirAbsolute);
                     var imgRelative = imgDir + sep + img;
                     var mouse = dahuapp.drivers.mouse;
-                    var numSlide = jsonModel.addSlide(imgRelative, mouse.getMouseX(), mouse.getMouseY());
-                    events.onNewImageTaken.publish(numSlide);
+                    // the new screen shot is inserted just after the current slide
+                    selectedSlide++;
+                    jsonModel.addSlide(selectedSlide, imgRelative, mouse.getMouseX(), mouse.getMouseY());
+                    events.onNewImageTaken.publish(selectedSlide);
                     newChanges = true;
                     break;
                 case "escape":
@@ -436,6 +441,7 @@ var dahuapp = (function(dahuapp, $) {
             events.onSelectedImageChanged.subscribe(setSelectedOnImageList);
             events.onNewImageTaken.subscribe(updateImageList);
             events.onNewImageTaken.subscribe(updatePreview);
+            events.onNewImageTaken.subscribe(setSelectedOnImageList);
             events.onNewProjectCreated.subscribe(cleanImageList);
             events.onNewProjectCreated.subscribe(cleanPreview);
             
@@ -453,9 +459,9 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#image-list').on('click', 'li', function() {
                 var imgId = $(this).index();
-                if (currentSlide !== imgId) {
-                    currentSlide = imgId;
-                    events.onSelectedImageChanged.publish(currentSlide);
+                if (selectedSlide !== imgId) {
+                    selectedSlide = imgId;
+                    events.onSelectedImageChanged.publish(selectedSlide);
                 }
             });
             $('#capture-mode').click(function() {

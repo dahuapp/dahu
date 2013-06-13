@@ -231,12 +231,13 @@
             
             /*
              * Add a new slide in the presentation variable of the JSON file.
+             * @param int ID wanted for the slide.
              * @param String img Related to pathname of the image.
              * @param double mouseX Abscissa mouse position in %.
              * @param double mouseY Ordinate mouse position in %.
              * @return Index of the newly added slide.
              */
-            this.addSlide = function(img, mouseX, mouseY) {
+            this.addSlide = function(idSlide, img, mouseX, mouseY) {
                 var slide = {
                     "indexObject": 0,
                     "indexAction": 0,
@@ -265,10 +266,8 @@
                 };
                 slide.action.push(action);
                 slide.indexAction++;
-                json.data.push(slide);
-                var numSlide = json.metaData.nbSlide;
+                json.data.splice(idSlide, 0, slide);
                 json.metaData.nbSlide++;
-                return numSlide;
             };
 
             /*
