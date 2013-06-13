@@ -55,9 +55,20 @@
     right: 0px;
     bottom: 20px;
     margin: 0px;
-    text-align: center;
     padding : 4px;
     border:1px solid black;
+}
+
+#action-editor-container {
+    position: absolute;
+    left: 200px;
+    right: 0px;
+    bottom: 20px;
+    margin: 0px;
+    padding: 4px;
+    height: 200px;
+    background-color: gainsboro;
+    border: 1px solid black;
 }
 
 #state-bar-container{
@@ -80,7 +91,11 @@
 .selected-image {
     border: 2px solid red;
     border-radius: 4px;
+}
 
+.selected-object {
+    border: 2px solid red;
+    border-radius: 4px;
 }
 
 .offset{

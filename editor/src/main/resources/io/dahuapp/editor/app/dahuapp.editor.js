@@ -65,32 +65,19 @@ var dahuapp = (function(dahuapp, $) {
          */
         var projectDir = ".";
         
-                /*
-         * 
-         * @type @exp;dahuapp@pro;drivers@pro;fileSystem@call;getSeparator
-         */
-        //var sep = dahuapp.drivers.fileSystem.getSeparator();
-        
-        /*
-         * The default value must be discussed.
-         * @type String img directory in the project
-         */
-        /*var ressourceImgDir = projectDir + sep + "resources" + sep
-                    + "io" + sep + "dahuapp" + sep + "editor"
-                    + sep + "app" + sep + "img";
-        */
-        /*
-         * 
-         * @type String name of the cursor image
-         */
-        var cursorImage = "cursor.png";
-        
         /*
          * Selected slide (displayed in the view).
          * -1 means nothing is selected.
          * @type int
          */
         var selectedSlide = -1;
+        
+        /*
+         * Selected object on the current slide.
+         * -1 means nothing is selected.
+         * @type int
+         */
+        var selectedObjectOnSlide = -1;
         
         /*
          * Private events for the editor.
@@ -117,7 +104,7 @@ var dahuapp = (function(dahuapp, $) {
             self.onSelectedImageChanged = createEvent();
             
             /*
-             * Called when an image is added (by taking a screen capture).
+             * Called when an image is added to the list.
              */
             self.onNewImageTaken = createEvent();
             
@@ -125,6 +112,11 @@ var dahuapp = (function(dahuapp, $) {
              * Called when a new projet is created.
              */
             self.onNewProjectCreated = createEvent();
+            
+            /*
+             * Called when an object is selected.
+             */
+            self.onSelectedObjectChanged = createEvent();
             
             return self;
         })();
@@ -305,6 +297,16 @@ var dahuapp = (function(dahuapp, $) {
         };
 
         /*
+         * Edit the current action.
+         */
+        var editSelectedObject = function() {
+            if (selectedObjectOnSlide === -1) {
+                return;
+            }
+            
+        };
+        
+        /*
          * Function to update the image list (when a new one is captured).
          * img is the relative path to the image (relatively to the .dahu file)
          */
@@ -337,6 +339,15 @@ var dahuapp = (function(dahuapp, $) {
             $('#image-list > li').removeClass('selected-image');
             var selectedItem = $('#image-list > li').get(idSlide);
             $(selectedItem).addClass('selected-image');
+        };
+        
+        /*
+         * Sets a selected object on the slide.
+         */
+        var setSelectedObjectOnSlide = function(idObject) {
+            $('#preview-image > li').removeClass('selected-object');
+            var selectedObject = $('#preview-image > li').get(idObject);
+            $(selectedObject).addClass('selected-object');
         };
         
         /*
@@ -480,6 +491,7 @@ var dahuapp = (function(dahuapp, $) {
             events.onNewImageTaken.subscribe(setSelectedOnImageList);
             events.onNewProjectCreated.subscribe(cleanImageList);
             events.onNewProjectCreated.subscribe(cleanPreview);
+            events.onSelectedObjectChanged.subscribe(setSelectedObjectOnSlide);
             
             /*
              * Basic events for the buttons and components.
@@ -498,6 +510,13 @@ var dahuapp = (function(dahuapp, $) {
                 if (selectedSlide !== imgId) {
                     selectedSlide = imgId;
                     events.onSelectedImageChanged.publish(selectedSlide);
+                }
+            });
+            $('#preview-image').on('click', 'li', function() {
+                var objId = $(this).index();
+                if (selectedObjectOnSlide !== objId) {
+                    selectedObjectOnSlide = objId;
+                    events.onSelectedObjectChanged.publish(selectedObjectOnSlide);
                 }
             });
             $('#capture-mode').click(function() {
@@ -617,6 +636,7 @@ var dahuapp = (function(dahuapp, $) {
             $('#throw-this-slide').click(removeSelectedSlide);
             $('#this-slide-up').click(moveSelectedSlideUp);
             $('#this-slide-down').click(moveSelectedSlideDown);
+            $('#edit-action').click(editSelectedObject);
         };
 
         return self;

@@ -102,6 +102,8 @@
                             <li><button class="btn" id="this-slide-down"><i class="icon-arrow-down"></i></button></li>
                             <li class="divider-vertical"></li>
                             <li><button class="btn btn-danger" id="throw-this-slide"><i class="icon-trash"></i></button></li>
+                            <li class="divider-vertical"></li>
+                            <li><button class="btn" id="edit-action"><i class="icon-wrench"></i></button></li>
                         </ul>
                     </div>
                 </div>
@@ -116,11 +118,19 @@
                     </ul>
                 </div> 
                 <div class="scroll" id="current-image-container">
-                    <ul id="preview-image" class="debug3"> 
+                    <ul id="preview-image"> 
                         
                     </ul>
                 </div>
+                <div id="action-editor-container" hidden>
+                    <span class="label label-inverse">Action editor :</span>
+                    <div id="action-editor" class="scroll">
+                        
+                    </div>
+                </div>
             </div>
+            
+            <!-- State bar -->
             <div id="state-bar-container">
                 
             </div>
@@ -130,6 +140,5 @@
         <!-- Including dahuapp -->
         <script src="dahuapp.js"></script>
         <script src="dahuapp.editor.js"></script>
-        <script src="dahuapp.editor.json.js"></script>
     </body>
 </html>
