@@ -280,58 +280,9 @@ var dahuapp = (function(dahuapp, $) {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
             cleanPreview();
-<<<<<<< HEAD
+            
             $('#preview-image').append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs}));
-            
-=======
-            // Be careful, properties down there are no CSS but HTML !
-            // CSS properties must be set in dahuapp.css !
-            if ($('#current-screen').empty()) {
-                $('#current-screen').append($(document.createElement('img'))
-                    .attr({'src': abs, 'alt': abs, 'id': idSlide})); 
-            } else {
-                $('#current-screen').children().replaceWith(
-                    $(document.createElement('img'))
-                    .attr({'src': abs, 'alt': abs, 'id': idSlide})); 
-            }            
->>>>>>> new proxy : RootDirectoryProxy
-            // BEGINNING TO SET THE SOURIS
-            
-            var sep = dahuapp.drivers.fileSystem.getSeparator();
-            var ressourceImgDir = sep + dahuapp.drivers.rootDirectory.getRootDirectory() + sep + dahuapp.drivers.rootDirectory.getImgPath();
-            
-            var image = document.getElementById("current-screen");
-            var imageRect = image.getBoundingClientRect();
-            alert(imageRect.height);
-            alert("toto");
-            var jsObject = jsonModel.getSlide(idSlide);
-            var left = Math.floor((imageRect.width * jsObject.object[1].mouseX )) /*offset de l'image*/// -4;// + imageRect.left);
-            var top = Math.floor((imageRect.height * jsObject.object[1].mouseY ));// + imageRect.top);
-            var width = 22;
-            var height = 22;
-            alert("left : " + imageRect.left + "\ntop : " + imageRect.top);
-            alert("mouseX : " + left + "\nmouseY : " + top);
-            $('#mouse').css({
-                'top': left + "px",
-                'left': top + "px",
-                'width': width + "px",
-                'height': height + "px"
-            });
-            alert(ressourceImgDir);
-            if ($('#mouse').empty()) {
-                $('#mouse').append(
-                    $(document.createElement('img'))
-                        .attr({'src': ressourceImgDir + sep + "cursor.png", 
-                               'alt': ressourceImgDir + sep + "cursor.png"})
-                );
-            } else {
-                $('#mouse').children().replaceWith(
-                    $(document.createElement('img'))
-                        .attr({'src': ressourceImgDir + sep + "cursor.png", 
-                               'alt': ressourceImgDir + sep + "cursor.png"})
-                           );
-            }
             
         };
         
