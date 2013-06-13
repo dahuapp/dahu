@@ -23,9 +23,17 @@
     width:100%;
 }
 
-#main-container{
+#toolbar-container {
     position: absolute;
     top: 40px;
+    height: 40px;
+    margin: 0px;
+    width: 100%;
+}
+
+#main-container{
+    position: absolute;
+    top: 80px;
     bottom: 0px;
     margin: 0px;
     width: 100%;

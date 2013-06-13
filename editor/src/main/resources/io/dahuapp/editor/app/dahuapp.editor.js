@@ -205,6 +205,7 @@ var dahuapp = (function(dahuapp, $) {
                 dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
                 initProject = true;
                 newChanges = false;
+                selectedIndex = -1;
                 events.onNewProjectCreated.publish();
             }
         };
@@ -276,11 +277,13 @@ var dahuapp = (function(dahuapp, $) {
          * Function to update the preview on the middle.
          */
         var updatePreview = function(idSlide) {
+            cleanPreview();
+            if (idSlide === -1) {
+                return;
+            }
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
-            cleanPreview();
-            
             $('#preview-image').append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs}));
             
@@ -291,6 +294,9 @@ var dahuapp = (function(dahuapp, $) {
          * img is the relative path to the image (relatively to the .dahu file)
          */
         var updateImageList = function(idSlide) {
+            if (idSlide === -1) {
+                return;
+            }
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var abs = projectDir + dahuapp.drivers.fileSystem.getSeparator() + img;
             var $newImage = $(document.createElement('img')).attr({'src': abs, 'alt': abs});
@@ -346,6 +352,46 @@ var dahuapp = (function(dahuapp, $) {
          */
         var cleanPreview = function() {
             $('#preview-image').contents().remove();
+        };
+        
+        /*
+         * Removes the selected slide.
+         * At the moment, we don't remove the .png image on disk, because
+         * two slides may have the same image as background (not now, but
+         * it can be the case).
+         */
+        var removeSelectedSlide = function() {
+            var selectedItem = $('#image-list > li').get(selectedSlide);
+            $(selectedItem).remove();
+            jsonModel.removeSlide(selectedSlide);
+            if (jsonModel.getNbSlide() === selectedSlide) {
+                selectedSlide--;
+            }
+            events.onSelectedImageChanged.publish(selectedSlide);
+        };
+        
+        /*
+         * Move the selected slide (up and down).
+         */
+        var moveSelectedSlideUp = function() {
+            if (selectedSlide > 0) {
+                jsonModel.invertSlides(selectedSlide, selectedSlide - 1);
+                var selectedItem = $('#image-list > li').get(selectedSlide);
+                $(selectedItem).remove();
+                var previousItem = $('#image-list > li').get(selectedSlide - 1);
+                $(previousItem).before(selectedItem);
+                selectedSlide--;
+            }
+        };
+        var moveSelectedSlideDown = function() {
+            if (selectedSlide < jsonModel.getNbSlide() - 1) {
+                jsonModel.invertSlides(selectedSlide, selectedSlide + 1);
+                var selectedItem = $('#image-list > li').get(selectedSlide);
+                $(selectedItem).remove();
+                var nextItem = $('#image-list > li').get(selectedSlide);
+                $(nextItem).after(selectedItem);
+                selectedSlide++;
+            }
         };
         
         /* public API */
@@ -553,6 +599,9 @@ var dahuapp = (function(dahuapp, $) {
                     }
                 }
             });
+            $('#throw-this-slide').click(removeSelectedSlide);
+            $('#this-slide-up').click(moveSelectedSlideUp);
+            $('#this-slide-down').click(moveSelectedSlideDown);
         };
 
         return self;

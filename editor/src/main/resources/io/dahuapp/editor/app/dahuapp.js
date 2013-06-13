@@ -215,7 +215,6 @@
              */
             this.loadJson = function(stringJson) {
                 json = JSON.parse(stringJson);
-                // TO DO : actualise the id of the next slide (idSlide)
             };
 
 
@@ -223,9 +222,7 @@
              * Create a new presentation variable in the JSON file which will contain slides.
              */
             this.createPresentation = function() {
-                json.metaData = {
-                    "nbSlide": 0
-                };
+                json.metaData = {};
                 json.data = new Array();
             };
             
@@ -267,7 +264,6 @@
                 slide.action.push(action);
                 slide.indexAction++;
                 json.data.splice(idSlide, 0, slide);
-                json.metaData.nbSlide++;
             };
 
             /*
@@ -284,6 +280,17 @@
              */
             this.addAnnotation = function(annotation) {
                 json.metaData.annotation = annotation;
+            };
+            
+            /*
+             * Inverts the two slides (their positions on the table).
+             * @param int idSlide1 Index of the first slide.
+             * @param int idSlide2 Index of the second slide.
+             */
+            this.invertSlides = function(idSlide1, idSlide2) {
+                var tmp = json.data[idSlide1];
+                json.data[idSlide1] = json.data[idSlide2];
+                json.data[idSlide2] = tmp;
             };
 
             /*
@@ -336,6 +343,14 @@
                 }
                 return slideList;
             };
+            
+            /*
+             * Removes the slide at the specified index.
+             * @param {int} idSlide
+             */
+            this.removeSlide = function(idSlide) {
+                json.data.splice(idSlide, 1);
+            };
 
             /*
              * @returns {String}
@@ -350,7 +365,7 @@
              * @returns {String} returns the index for the next slide.
              */
             this.getNbSlide = function() {
-                return json.metaData.nbSlide;
+                return json.data.length;
             };
             
             /*

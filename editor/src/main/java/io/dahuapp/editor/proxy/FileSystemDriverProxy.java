@@ -153,7 +153,6 @@ public class FileSystemDriverProxy implements Proxy {
      * @return The path to the resource.
      */
     public String getResource(String name) {
-        System.out.println(DahuApp.getResource(name));
         return DahuApp.getResource(name);
     }
 }
