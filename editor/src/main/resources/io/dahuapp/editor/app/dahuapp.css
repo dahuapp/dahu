@@ -60,6 +60,11 @@
     background : Silver;
 }
 
+.selected-image {
+    border: 2px solid red;
+    border-radius: 4px;
+}
+
 .offset{
     position: relative;
     top: 20px;

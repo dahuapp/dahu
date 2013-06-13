@@ -89,7 +89,7 @@ var dahuapp = (function(dahuapp, $) {
          * Current slide displayed in the view.
          * @type int
          */
-        var currentSlide = 0;
+        var currentSlide = -1;
         
         /*
          * Private events for the editor.
@@ -204,7 +204,7 @@ var dahuapp = (function(dahuapp, $) {
                 dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
                 initProject = true;
                 newChanges = false;
-                events.newProjectCreated.publish();
+                events.onNewProjectCreated.publish();
             }
         };
         var cleanProjectDirectory = function() {
@@ -273,17 +273,14 @@ var dahuapp = (function(dahuapp, $) {
         
         /*
          * Function to update the preview on the middle.
-         * 
          */
         var updatePreview = function(idSlide) {
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
             cleanPreview();
-            // Be careful, properties down there are no CSS but HTML !
-            // CSS properties must be set in dahuapp.css !
             $('#preview-image').append($(document.createElement('img'))
-                    .attr({'src': abs, 'alt': abs, 'id': idSlide}));
+                    .attr({'src': abs, 'alt': abs}));
             
             // BEGINNING TO SET THE SOURIS
             /*
@@ -326,13 +323,21 @@ var dahuapp = (function(dahuapp, $) {
                     .append($(document.createElement('a'))
                             .attr({'class': 'thumbnail'})
                             .append($(document.createElement('img'))
-                                    .attr({'src': abs,
-                                        'id': idSlide,
-                                        'alt': abs
-                                    })
+                                    .attr({'src': abs, 'alt': abs})
                             )
                     )
             );
+        };
+        
+        /*
+         * Sets an element as selected in the image list.
+         * 'selected-image' is a class in case we want to allow
+         * multiple selection in a future version of the application.
+         */
+        var setSelectedOnImageList = function(idSlide) {
+            $('#image-list > li').removeClass('selected-image');
+            var selectedItem = $('#image-list > li').get(idSlide);
+            $(selectedItem).addClass('selected-image');
         };
         
         /*
@@ -428,6 +433,7 @@ var dahuapp = (function(dahuapp, $) {
              * Private events callbacks subscribals.
              */
             events.onSelectedImageChanged.subscribe(updatePreview);
+            events.onSelectedImageChanged.subscribe(setSelectedOnImageList);
             events.onNewImageTaken.subscribe(updateImageList);
             events.onNewImageTaken.subscribe(updatePreview);
             events.onNewProjectCreated.subscribe(cleanImageList);
@@ -445,8 +451,8 @@ var dahuapp = (function(dahuapp, $) {
                 //   will probably have to be removed.
                 return false;
             });
-            $('#image-list').on('click', 'img', function() {
-                var imgId = parseInt($(this).attr('id'));
+            $('#image-list').on('click', 'li', function() {
+                var imgId = $(this).index();
                 if (currentSlide !== imgId) {
                     currentSlide = imgId;
                     events.onSelectedImageChanged.publish(currentSlide);
