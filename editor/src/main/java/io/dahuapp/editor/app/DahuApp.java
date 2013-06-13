@@ -87,6 +87,15 @@ public class DahuApp extends Application {
         /* launch app */
         launch(args);
     }
+    
+    /**
+     * Gets the path of a ressource of the application.
+     * @param name Name of the resource to find.
+     * @return The path to the resource (as it can be put in a file and opened).
+     */
+    public static String getResource(String name) {
+        return DahuApp.class.getResource(name).getFile();
+    }
 
     /**
      * Initialises the webview with the html content and binds the drivers to

@@ -1,11 +1,8 @@
 package io.dahuapp.editor.proxy;
 
+import io.dahuapp.editor.app.DahuApp;
 import io.dahuapp.editor.drivers.FileSystemDriver;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import javafx.application.Platform;
 import javafx.stage.Stage;
 
 /**
@@ -131,23 +128,32 @@ public class FileSystemDriverProxy implements Proxy {
      */
     public void copyDirectoryContent(String src, String dest) {
         File source = new File(src);
-        for (File f : source.listFiles()) {
-            driver.copy(f, new File(dest + getSeparator() + f.getName()));
+        File[] list = source.listFiles();
+        if (list != null) {
+            for (File f : list) {
+                driver.copy(f, new File(dest + getSeparator() + f.getName()));
+            }
         }
     }
     
     /**
-     * Runs the preview (opens the default web browser).
-     * @param htmlFile The absolute path to the html file to display.
+     * Copies the file denoted by its pathname to another file.
+     * @param src Name of the file to copy.
+     * @param dest Name of the file where to put the copy.
      */
-    public void runPreview(String htmlFile) {
-        try {
-            URI u = new URI(htmlFile);
-            System.out.println(u);
-            System.out.println(Platform.isFxApplicationThread());
-            java.awt.Desktop.getDesktop().browse(u);
-        } catch (IOException | URISyntaxException e) {
-            LoggerProxy.severe("Browser couldn't have been opened.");
-        }
+    public void copyFile(String src, String dest) {
+        File source = new File(src);
+        File destination = new File(dest);
+        driver.copy(source, destination);
+    }
+    
+    /**
+     * Gets the path to a resource of the application.
+     * @param name Name of the resource to find.
+     * @return The path to the resource.
+     */
+    public String getResource(String name) {
+        System.out.println(DahuApp.getResource(name));
+        return DahuApp.getResource(name);
     }
 }

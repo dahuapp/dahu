@@ -191,7 +191,7 @@ var dahuapp = (function(dahuapp, $) {
                                 + "Maybe it's an issue with rights.");
                         return;
                     } else {
-                        alert("The directory has been successfully created.");
+                        setStateBarMessage("Project " + choice + " created");
                     }
                 } else {
                     alert("This directory already exists.\n" +
@@ -227,15 +227,21 @@ var dahuapp = (function(dahuapp, $) {
             }
             var htmlGen = generator.generateHtmlString(jsonModel);
             var jsonGen = generator.generateJsonString(jsonModel);
+            // write the generated json and html
             fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
             fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
+            // create img directory and adds the final forms of the images
             fileSystem.create(completeBuildDir + sep + imgDir);
             fileSystem.copyDirectoryContent(projectDir + sep + imgDir, completeBuildDir + sep + imgDir);
+            // copies the script files into the build directory
+            fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.js"), completeBuildDir + sep + "dahuapp.viewer.js");
+            fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.css"), completeBuildDir + sep + "dahuapp.viewer.css");
+            fileSystem.copyFile(fileSystem.getResource("dahuapp.js"), completeBuildDir + sep + "dahuapp.js");
         };
         var runPreview = function() {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var target = projectDir + sep + buildDir + sep + generatedHtmlName;
-            dahuapp.drivers.fileSystem.runPreview(target);
+            dahuapp.drivers.preview.runPreview(target);
         };
 
         /*
@@ -323,6 +329,22 @@ var dahuapp = (function(dahuapp, $) {
                             )
                     )
             );
+        };
+        
+        /*
+         * Sets the message in the state bar.
+         * @param String message to display in the state bar.
+         */
+        var setStateBarMessage = function(message) {
+            removeStateBarMessage();
+            $('#state-bar-container').append(message);
+        };
+
+        /*
+         * Removes the message in the state bar.
+         */
+        var removeStateBarMessage = function() {
+            $('#state-bar-container').contents().remove();
         };
         
         /*
@@ -440,7 +462,7 @@ var dahuapp = (function(dahuapp, $) {
                     var sep = fileSystem.getSeparator();
                     if (fileSystem.writeFile(projectDir + sep + jsonFileName, stringJson)) {
                         dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project saved in " + projectDir);
-                        alert("The project has been saved successfully.");
+                        setStateBarMessage("Saved in " + projectDir + " successfully");
                         newChanges = false;
                     } else {
                         alert("There's been a problem.\n" +
@@ -508,7 +530,7 @@ var dahuapp = (function(dahuapp, $) {
                         initialiseProjectAlert();
                     } else {
                         cleanProjectDirectory();
-                        alert("The build directory has been removed.");
+                        setStateBarMessage("Build directory cleaned");
                     }
                 }
             });
@@ -523,8 +545,7 @@ var dahuapp = (function(dahuapp, $) {
                     } else {
                         cleanProjectDirectory();
                         generateProject();
-                        alert('The project has been built in the "build"\n' +
-                            'of the project.');
+                        setStateBarMessage("Project successfully built");
                     }
                 }
             });
@@ -535,10 +556,9 @@ var dahuapp = (function(dahuapp, $) {
                     if (!initProject) {
                         initialiseProjectAlert();
                     } else {
-                        alert('Not implemented yet.');
-                        /*cleanProjectDirectory();
+                        cleanProjectDirectory();
                         generateProject();
-                        runPreview();*/
+                        runPreview();
                     }
                 }
             });
