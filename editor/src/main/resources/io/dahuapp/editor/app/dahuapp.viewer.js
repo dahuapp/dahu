@@ -36,15 +36,19 @@ var dahuapp = (function(dahuapp, $) {
                 /*
                  * Called when the button next is pressed.
                  */
-                self.next = createEvent();
+                self.onNext = createEvent();
                 /*
                  * Called when the button previous is pressed.
                  */
-                self.previous = createEvent();
+                self.onPrevious = createEvent();
                 /*
                  * Called when an action is over.
                  */
-                self.actionOver = createEvent();
+                self.onActionOver = createEvent();
+                /*
+                 * Called when an action starts.
+                 */
+                self.onActionStart = createEvent();
                 return self;
             })();
 
@@ -56,10 +60,13 @@ var dahuapp = (function(dahuapp, $) {
             var currentAction = 0;
 
             /*
-             * Function used when an "nextEvent" event is caught.
+             * Function used when an "onNextEvent" event is caught.
              */
-            var nextEventHandler = function() {
+            var onNextEventHandler = function() {
                 while (json.data[currentSlide]) {
+                    if (currentAction < 0) {
+                        currentAction = 0;
+                    }
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
                             launch(json.data[currentSlide].action[currentAction++]);
@@ -79,9 +86,9 @@ var dahuapp = (function(dahuapp, $) {
             };
 
             /*
-             * Function used when an "previousEvent" event is caught.
+             * Function used when an "onPreviousEvent" event is caught.
              */
-            var previousEventHandler = function() {
+            var onPreviousEventHandler = function() {
                 currentAction--;
                 while (json.data[currentSlide]) {
                     while (json.data[currentSlide].action[currentAction]) {
@@ -102,9 +109,31 @@ var dahuapp = (function(dahuapp, $) {
             };
 
             /*
-             * Function used when an "actionOverEvent" event is caught.
+             * Function used when an "onActionOverEvent" event is caught.
              */
-            var actionOverEventHandler = function() {
+            var onActionOverEventHandler = function() {
+                if (json.data[currentSlide].action[currentAction]) {
+                    if (json.data[currentSlide].action[currentAction].trigger === 'afterPrevious') {
+                        launch(json.data[currentSlide].action[currentAction++]);
+                    }
+                } else {
+                    if (currentSlide < json.data.length - 1) {
+                        lastSlide = currentSlide;
+                        currentSlide++;
+                        actualise();
+                        currentAction = 0;
+                    }
+                    if (json.data[currentSlide].action[currentAction]
+                            && json.data[currentSlide].action[currentAction].trigger === 'afterPrevious') {
+                        launch(json.data[currentSlide].action[currentAction++]);
+                    }
+                }
+            };
+
+            /*
+             * Function used when an "onActionStartEvent" event is caught.
+             */
+            var onActionStartEventHandler = function() {
                 if (json.data[currentSlide].action[currentAction]) {
                     if (json.data[currentSlide].action[currentAction].trigger === 'withPrevious') {
                         launch(json.data[currentSlide].action[currentAction++]);
@@ -135,11 +164,41 @@ var dahuapp = (function(dahuapp, $) {
              * Function used to realise actions.
              */
             var launch = function(action) {
+                var NextActionWithPrevious = hasNextActionWithPrevious(currentSlide, currentAction - 1);
+                events.onActionStart.publish();
                 var target = selector + ' .' + action.target;
                 var animation = eval('(' + action.execute + ')');
                 animation(target);
-                events.actionOver.publish();
+                if (!NextActionWithPrevious) {
+                    events.onActionOver.publish();
+                }
             };
+
+            /*
+             * Check the trigger of the next action.
+             * @param int idSlide 
+             * @param int idAction
+             * @returns true if the next action's trigger is "withPrevious"
+             */
+            var hasNextActionWithPrevious = function(idSlide, idAction) {
+                if (json.data[idSlide].action[idAction]) {
+                    if (json.data[idSlide].action[idAction].trigger === 'withPrevious') {
+                        return true;
+                    }
+                } else {
+                    if (idSlide < json.data.length - 1) {
+                        idSlide++;
+                        idAction = 0;
+                    }
+                    if (json.data[idSlide].action[idAction]
+                            && json.data[idSlide].action[idAction].trigger === 'withPrevious') {
+                        return true;
+                    }
+                }
+                return false;
+            };
+
+
 
             /* Public API */
 
@@ -160,9 +219,10 @@ var dahuapp = (function(dahuapp, $) {
                 /*
                  * Subscription of methods to their events.
                  */
-                events.next.subscribe(nextEventHandler);
-                events.previous.subscribe(previousEventHandler);
-                events.actionOver.subscribe(actionOverEventHandler);
+                events.onNext.subscribe(onNextEventHandler);
+                events.onPrevious.subscribe(onPreviousEventHandler);
+                events.onActionOver.subscribe(onActionOverEventHandler);
+                events.onActionStart.subscribe(onActionStartEventHandler);
                 /*
                  * Variable storing the total number of slides.
                  */
@@ -180,13 +240,13 @@ var dahuapp = (function(dahuapp, $) {
                  * A click on the "next" button publishes a nextSlide event
                  */
                 $(selector + " .next").click(function() {
-                    events.next.publish();
+                    events.onNext.publish();
                 });
                 /*
                  * A click on the "previous" button publishes a previousSlide event
                  */
                 $(selector + " .previous").click(function() {
-                    events.previous.publish();
+                    events.onPrevious.publish();
                 });
             };
         };
