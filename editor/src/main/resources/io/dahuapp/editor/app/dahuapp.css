@@ -33,7 +33,7 @@
 
 #main-container{
     position: absolute;
-    top: 80px;
+    top: 82px;
     bottom: 0px;
     margin: 0px;
     width: 100%;
@@ -45,30 +45,44 @@
     top: 0px;
     bottom: 20px;
     margin: 0px;
-    border:1px solid black;
+    border-right: 1px solid grey;
 }
 
 #current-image-container{
     position: absolute;
     left: 200px;
-    top: 0px;
     right: 0px;
     bottom: 20px;
     margin: 0px;
     padding: 4px;
-    border:1px solid black;
+}
+
+.extended-image-container {
+    top: 0px;
+}
+
+.reduced-image-container {
+    top: 108px;
 }
 
 #action-editor-container {
     position: absolute;
     left: 200px;
     right: 0px;
-    bottom: 20px;
+    top: 0px;
     margin: 0px;
     padding: 4px;
-    height: 200px;
+    height: 100px;
     background-color: gainsboro;
-    border: 1px solid black;
+    border: 1px solid grey;
+}
+
+#action-editor-title {
+    height: 20px;
+}
+
+.action-editor {
+    height: 80px;
 }
 
 #state-bar-container{
@@ -77,6 +91,11 @@
     width: 100%;
     bottom: 0px;
     background : Silver;
+    border-top: 1px solid grey;
+}
+
+#mouse-x-edit, #mouse-y-edit {
+    width: 30px;
 }
 
 #preview-image{
@@ -95,6 +114,7 @@
 }
 
 .selected-object {
+    margin: 2px;
     border: 2px solid red;
     margin:2px;
     border-radius: 4px;
@@ -104,32 +124,4 @@
     position: relative;
     top: 20px;
     left: 20px;
-}
-
-.debug1 {
-    background:blue;
-}
-
-.debug2 {
-    background:red;
-}
-
-.debug3 {
-        border:3px solid yellow;
-}
-
-.debug4 {
-        border:3px solid green;
-}
-
-.debug5 {
-    background:black;
-}
-
-.debug6 {
-    border:6px solid magenta;
-}
-
-.debug7 {
-    border:3px solid darkorange;
 }

@@ -14,12 +14,12 @@
 
 .my-viewer{
     position: relative;
-    width :100%;
+    width: 100%; /* put the same value as '.screen' width (100% or in PX) */
     list-style: none;
     margin: 0px;
     padding: 0px;
 }
 
-.control{
+.control {
     position: relative;
 }

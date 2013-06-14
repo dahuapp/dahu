@@ -119,10 +119,18 @@
                         case "background":
                             generateBackgroundImage($generated, object);
                             break;
+                        // no mouse image generated here
                     }
                 });
 
                 //!\\ careful here, i'm not sure if $.each is always over here
+
+                // mouse image
+                $('.components-list', $generated)
+                        .append($(document.createElement('li'))
+                        .attr({'class': 'mouse-cursor object'})
+                        .append($(document.createElement('img'))
+                        .attr({'src': 'cursor.png', 'alt': 'cursor.png'})));
 
                 // adding the control buttons to the page
                 $('.control', $generated)

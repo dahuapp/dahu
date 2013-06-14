@@ -197,7 +197,7 @@ var dahuapp = (function(dahuapp, $) {
                 dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
                 initProject = true;
                 newChanges = false;
-                selectedIndex = -1;
+                selectedSlide = -1;
                 events.onNewProjectCreated.publish();
             }
         };
@@ -233,6 +233,7 @@ var dahuapp = (function(dahuapp, $) {
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.js"), completeBuildDir + sep + "dahuapp.viewer.js");
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.css"), completeBuildDir + sep + "dahuapp.viewer.css");
             fileSystem.copyFile(fileSystem.getResource("dahuapp.js"), completeBuildDir + sep + "dahuapp.js");
+            fileSystem.copyFile(fileSystem.getResource("cursor.png"), completeBuildDir + sep + "cursor.png");
         };
         var runPreview = function() {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
@@ -298,18 +299,17 @@ var dahuapp = (function(dahuapp, $) {
         };
 
         /*
-         * Edit the current action.
+         * Sets the edit panel visible (or hides it if it was visible).
          */
         var editSelectedObject = function() {
-            if (selectedObjectOnSlide === -1) {
-                return;
-            }
-            
+            $('#action-editor-container').toggle();
+            $('#current-image-container').toggleClass('reduced-image-container');
+            $('#current-image-container').toogleClass('extended-image-container');
         };
         
         /*
          * Function to update the image list (when a new one is captured).
-         * img is the relative path to the image (relatively to the .dahu file)
+         * img is the relative path to the image (relatively to the .dahu file).
          */
         var updateImageList = function(idSlide) {
             if (idSlide === -1) {
