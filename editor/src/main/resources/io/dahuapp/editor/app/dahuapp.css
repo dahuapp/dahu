@@ -89,13 +89,14 @@
     position : absolute;
 }
 
-.selected-image {
+.selected-image { 
     border: 2px solid red;
     border-radius: 6px;
 }
 
 .selected-object {
     border: 2px solid red;
+    margin:2px;
     border-radius: 4px;
 }
 

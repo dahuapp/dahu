@@ -1,3 +1,25 @@
 .screen {
-    width: 500px;
+    position: relative;
+    width : 100%;
+}
+
+#my-dahu-presentation{
+    position : relative;
+}
+
+.mouse-cursor{
+    position : absolute;
+    margin: 0px;
+}
+
+.my-viewer{
+    position: relative;
+    width :100%;
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+}
+
+.control{
+    position: relative;
 }

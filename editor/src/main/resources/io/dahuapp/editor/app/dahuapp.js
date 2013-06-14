@@ -104,8 +104,12 @@
                         .append($(document.createElement('script'))
                         .append(getBasicCallCode()));
                 $('#my-dahu-presentation', $generated)
-                        .append($(document.createElement('div'))
+                        .append($(document.createElement('ul'))
+                        .attr({'class': 'my-viewer'})
+                        .append($(document.createElement('li'))
                         .attr({'class': 'image-list'}))
+                        .append($(document.createElement('li'))
+                        .attr({'class': 'mouse-cursor'})))
                         .append($(document.createElement('div'))
                         .attr({'class': 'control'}));
 
@@ -128,6 +132,10 @@
                         .append($(document.createElement('button'))
                         .attr({'class': 'next'})
                         .append('Next'));
+                
+                $('.mouse-cursor', $generated)
+                        .append($(document.createElement('img'))
+                        .attr({'src': 'cursor.png', 'alt':'cursor.png'}));
             };
 
             /*
