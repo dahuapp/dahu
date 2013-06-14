@@ -286,7 +286,7 @@
                 this.addObject(idSlide, "mouse");
                 this.setObjectMouse(idSlide, 1, mouseX, mouseY);
                 this.addAction(idSlide, json.data[idSlide].object[1].id, "onClick");
-                this.setActionAppear(idSlide, 0, mouseX, mouseY);
+                this.setActionMove(idSlide, 0, mouseX, mouseY);
             };
 
             /*
@@ -329,8 +329,27 @@
             this.setActionAppear = function(idSlide, idAction, abs, ord) {
                 json.data[idSlide].action[idAction].finalAbs = abs;
                 json.data[idSlide].action[idAction].finalOrd = ord;
-                var appear = function (target) { $(target).show();};
+                var appear = function(target, finalAbs, finalOrd) {
+                    $(target).show();
+                };
                 json.data[idSlide].action[idAction].execute = appear.toString();
+            };
+
+            /*
+             * Set abscissa, ordinate and function for the action idAction of the Slide idSlide.
+             * @param int idSlide
+             * @param int idAction
+             * @param double finalAbs
+             * @param double finalOrd
+             */
+            this.setActionMove = function(idSlide, idAction, finalAbs, finalOrd) {
+                json.data[idSlide].action[idAction].finalAbs = finalAbs;
+                json.data[idSlide].action[idAction].finalOrd = finalOrd;
+                var move = function(target, finalAbs, finalOrd) {
+                    $(target).animate({'top': finalAbs * 100 + '\%',
+                        'left': finalOrd * 100 + '\%'}, 5000);
+                };
+                json.data[idSlide].action[idAction].execute = move.toString();
             };
 
             /*
@@ -351,6 +370,7 @@
              * @param int mouseY
              */
             this.setObjectMouse = function(idSlide, idObject, mouseX, mouseY) {
+                json.data[idSlide].object[idObject].id = "mouseCursor";
                 json.data[idSlide].object[idObject].mouseX = mouseX;
                 json.data[idSlide].object[idObject].mouseY = mouseY;
             };
@@ -370,7 +390,7 @@
             this.addAnnotation = function(annotation) {
                 json.metaData.annotation = annotation;
             };
-            
+
             /*
              * Inverts the two slides (their positions on the table).
              * @param int idSlide1 Index of the first slide.
@@ -432,7 +452,7 @@
                 }
                 return slideList;
             };
-            
+
             /*
              * Removes the slide at the specified index.
              * @param {int} idSlide

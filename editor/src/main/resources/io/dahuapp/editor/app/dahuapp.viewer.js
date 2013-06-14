@@ -70,6 +70,9 @@ var dahuapp = (function(dahuapp, $) {
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
                             launch(json.data[currentSlide].action[currentAction++]);
+                            var mouseLocation = previousMouseLocation(currentSlide, currentAction);
+                            $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
+                                'left': mouseLocation.ord * 100 + "\%"}, 0);
                             return;
                         }
                         currentAction++;
@@ -80,6 +83,9 @@ var dahuapp = (function(dahuapp, $) {
                         currentAction = 0;
                         actualise();
                     } else {
+                        var mouseLocation = previousMouseLocation(currentSlide, currentAction);
+                        $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
+                            'left': mouseLocation.ord * 100 + "\%"}, 0);
                         return;
                     }
                 }
@@ -93,6 +99,9 @@ var dahuapp = (function(dahuapp, $) {
                 while (json.data[currentSlide]) {
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
+                            var mouseLocation = previousMouseLocation(currentSlide, currentAction);
+                            $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
+                                'left': mouseLocation.ord * 100 + "\%"}, 0);
                             return;
                         }
                         currentAction--;
@@ -103,6 +112,9 @@ var dahuapp = (function(dahuapp, $) {
                         actualise();
                         currentAction = json.data[currentSlide].indexAction - 1;
                     } else {
+                        var mouseLocation = previousMouseLocation(currentSlide, currentAction);
+                        $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
+                            'left': mouseLocation.ord * 100 + "\%"}, 0);
                         return;
                     }
                 }
@@ -168,7 +180,7 @@ var dahuapp = (function(dahuapp, $) {
                 events.onActionStart.publish();
                 var target = selector + ' .' + action.target;
                 var animation = eval('(' + action.execute + ')');
-                animation(target);
+                animation(target, action.finaAbs, action.finalOrd);
                 if (!NextActionWithPrevious) {
                     events.onActionOver.publish();
                 }
@@ -196,6 +208,32 @@ var dahuapp = (function(dahuapp, $) {
                     }
                 }
                 return false;
+            };
+
+            /*
+             * Looks for the previous mouse location.
+             * @param int idSlide 
+             * @param int idAction
+             * @returns the mouse location before the current action.
+             */
+            var previousMouseLocation = function(idSlide, idAction) {
+                var tempAction = 0;
+                var mouseLocation;
+                if (idAction === 0 && idSlide > 0) {
+                    idSlide--;
+                    idAction = json.data[idSlide].action.length;
+                } else if (idAction === 0 && idSlide === 0) {
+                    mouseLocation.abs = json.data[idSlide].action[tempAction].finalAbs;
+                    mouseLocation.ord = json.data[idSlide].action[tempAction].finalOrd;
+                }
+                while (tempAction < idAction) {
+                    if (json.data[idSlide].action[tempAction].target === "mouseCursor") {
+                        mouseLocation.abs = json.data[idSlide].action[tempAction].finalAbs;
+                        mouseLocation.ord = json.data[idSlide].action[tempAction].finalOrd;
+                    }
+                    tempAction++;
+                }
+                return mouseLocation;
             };
 
 
@@ -235,6 +273,8 @@ var dahuapp = (function(dahuapp, $) {
                     $(selector + " .s" + i + "-o0").hide();
                 }
                 $(selector + " ." + json.data[0].object[0].id).show();
+
+                $(selector + " ." + "mouseCursor").show();
 
                 /*
                  * A click on the "next" button publishes a nextSlide event
