@@ -341,12 +341,13 @@ var dahuapp = (function(dahuapp, $) {
         var addMouseOnPreview = function(mouseXp, mouseYp) {
             var ressourceImgDir = dahuapp.drivers.fileSystem.getResource("cursor.png");
             $("#preview-image").append($(document.createElement('li'))
-                    .attr({'class': "my-cursor"})
+                    .attr({ 'class': "my-cursor"})
                     .append($(document.createElement('img'))
                     .attr({'src': ressourceImgDir, 'alt': ressourceImgDir})));
             $('.my-cursor').css({
                 'left': mouseXp * 100 + "\%",
-                'top': mouseYp * 100 + "\%"
+                'top': mouseYp * 100 + "\%",
+                'cursor': 'move'
             });
         };
 
@@ -599,7 +600,7 @@ var dahuapp = (function(dahuapp, $) {
                     break;
             }
         };
-        
+                
         /*
          * Main function : by calling this function, we bind the
          * html components of the application with their behaviour.
@@ -631,17 +632,22 @@ var dahuapp = (function(dahuapp, $) {
             events.onPopupClosed.subscribe(closePopup);
             
             /*
+             * Private variable for the drag and drop
+             */
+            var cursorX, cursorY;
+            
+            /*
              * Basic events for the buttons and components.
              */
-            $('body').on('dragstart drop', function() {
+            //$('body').on('dragstart drop', function() {
                 // - This function is to avoid exceptions when dragging elements
                 //   on the webview (e.g. the preview or the images on the list).
                 //   The webview doesn't support image dragging, so we desactivate
                 //   it in the whole page.
                 // - If a drag & drop system have to be implemented, this event
                 //   will probably have to be removed.
-                return false;
-            });
+            //    return false;
+            //});
             $('#image-list').on('click', 'li', function() {
                 var imgId = $(this).index();
                 if (selectedSlide !== imgId) {
@@ -657,6 +663,38 @@ var dahuapp = (function(dahuapp, $) {
                     events.onSelectedObjectChanged.publish(selectedObjectOnSlide);
                 }
             });
+            $('#preview-image').on({
+                dragover: function(e) {
+                        if( $(this).hasClass('my-cursor')) {
+                            return ;
+                        }
+                            cursorY = event.y - $(this).offset().top;
+                            cursorX = event.x - $(this).offset().left;
+                            $('.my-cursor').css({
+                                'top': cursorY,
+                                'left': cursorX
+                            });
+                            setStateBarMessage("x : " + cursorX + ", y : " + cursorY);
+                    e.preventDefault();
+                },
+                dragend: function() {
+                        if ($(this).hasClass('my-cursor')) {
+                            var _x = cursorX / jsonModel.getImageWidth();
+                            var _y = cursorY / jsonModel.getImageHeight();
+                            setStateBarMessage("x : " + (_x * 100) + "% , y : " + (_y * 100) + "%");
+                        }
+                        /*
+                         * TODO : here we have to update the jsonModel to save the mouse cursor Position
+                         */
+                },
+                drop: function(e, ui) {
+                    //alert($(this).index());
+                    //alert("top : " + data.offset().top + "\nleft : " + data.offset().left);
+                 //   e.preventDefault();
+                }
+                
+            }, 'li'
+        );
             $('#capture-mode').click(function() {
                 if (initProject) {
                     switchCaptureMode();
