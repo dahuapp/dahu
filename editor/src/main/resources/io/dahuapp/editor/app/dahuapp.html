@@ -151,7 +151,30 @@
             <div id="state-bar-container">
                 
             </div>
-
+            
+            <!-- Block to manage popups
+                 To add a new popup, just put it in the popup-manager and
+                 add the property 'hidden' to the main div of the popup. -->
+            <div id="popup-manager" hidden>
+                <div id="modal-popups"></div>
+                <div id="centered-popups">
+                    <div id="output-settings-popup" hidden>
+                        <div class="popup-title">
+                            Output settings
+                        </div>
+                        <div class="popup-content">
+                            <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
+                            Required width : <input type="number" id="required-width"><br>
+                            Required height : <input type="number" id="required-height">
+                        </div>
+                        <!-- Controls must be direct children of the main popup div -->
+                        <div class="ok-cancel-popups-control">
+                            <button class="popup-confirm btn btn-success">OK</button>
+                            <button class="popup-cancel btn btn-danger">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Including dahuapp -->

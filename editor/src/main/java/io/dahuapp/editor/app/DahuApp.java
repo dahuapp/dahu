@@ -37,7 +37,7 @@ public class DahuApp extends Application {
     /**
      * Minimum height of the editor window.
      */
-    private static final int MIN_HEIGHT = 480;
+    private static final int MIN_HEIGHT = 520;
     /**
      * Webview of the application, all the elements will be displayed in this
      * webview.

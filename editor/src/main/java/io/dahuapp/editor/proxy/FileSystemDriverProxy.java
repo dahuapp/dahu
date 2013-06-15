@@ -159,24 +159,23 @@ public class FileSystemDriverProxy implements Proxy {
      * @param height Required height of the images (can be null).
      * @return The dimension of generated images.
      */
-    public Dimension copyAndResizeImages(String src, String dest, Integer width, Integer height) {
-        Dimension dimension = null;
+    public Dimension copyAndResizeImages(String src, String dest, int width, int height) {
+        Dimension dimension = new Dimension(0, 0);
         File source = new File(src);
         try {
             for (File imgFile : source.listFiles(imageFilter)) {
                 File destination = new File(dest + getSeparator() + imgFile.getName());
                 String imageURL = imgFile.toURI().toURL().toString();
                 Image image;
-                if (width != null && height == null) {
-                    image = new Image(imageURL, width, 0, true, true);
-                } else if (width == null && height != null) {
-                    image = new Image(imageURL, 0, height, true, true);
-                } else if (width != null && height != null) {
+                if (width != 0 && height != 0) {
                     image = new Image(imageURL, width, height, false, true);
+                } else if (width != 0 || height != 0) {
+                    image = new Image(imageURL, width, height, true, true);
                 } else {
                     image = new Image(imageURL);
                 }
-                dimension = new Dimension((int)image.getWidth(), (int)image.getHeight());
+                dimension.width = (int)image.getWidth();
+                dimension.height = (int)image.getHeight();
                 driver.writeImage(image, destination);
             }
         } catch (MalformedURLException e) {

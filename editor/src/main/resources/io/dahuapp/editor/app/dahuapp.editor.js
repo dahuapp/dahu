@@ -93,7 +93,8 @@ var dahuapp = (function(dahuapp, $) {
                 return {
                     publish: callbacks.fire,
                     subscribe: callbacks.add,
-                    unsubscribe: callbacks.remove
+                    unsubscribe: callbacks.remove,
+                    unsubscribeAll: callbacks.empty
                 };
             };
             
@@ -117,6 +118,17 @@ var dahuapp = (function(dahuapp, $) {
              * Called when an object is selected.
              */
             self.onSelectedObjectChanged = createEvent();
+            
+            /*
+             * Called when a popup is confirmed.
+             */
+            self.onPopupConfirmed = createEvent();
+            
+            /*
+             * Called when a popup is closed (confirmed, cancelled, or
+             * anything else).
+             */
+            self.onPopupClosed = createEvent();
             
             return self;
         })();
@@ -285,7 +297,6 @@ var dahuapp = (function(dahuapp, $) {
                     .append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs})));
             updateMouse(idSlide);
-
         };
 
         var updateMouse = function(idSlide) {
@@ -311,10 +322,46 @@ var dahuapp = (function(dahuapp, $) {
         };
         
         /*
+         * Methods to show/hide a specifid popup.
+         * @param {String} popupSelector Id of the popup to show.
+         */
+        var showPopup = function(popupSelector) {
+            $('#popup-manager ' + popupSelector).show();
+            $('#popup-manager').show();
+        };
+        var closePopup = function(popupSelector) {
+            $('#popup-manager ' + popupSelector).hide();
+            $('#popup-manager').hide();
+        };
+        
+        /*
          * Sets the ouput images size.
          */
         var setOutputImageSize = function() {
-            alert('Not implemented yet');
+            $('#output-settings-popup #required-width').val(jsonModel.getImageWidth());
+            $('#output-settings-popup #required-height').val(jsonModel.getImageHeight());
+            showPopup('#output-settings-popup');
+            events.onPopupConfirmed.subscribe(getOutputImageSize);
+        };
+        
+        /*
+         * Handler of confirmation for output image size popup.
+         */
+        var getOutputImageSize = function() {
+            newChanges = true;
+            var reqWidth = $('#required-width').val();
+            var reqHeight = $('#required-height').val();
+            if (reqWidth === "") {
+                reqWidth = 0;
+            } else {
+                reqWidth = parseInt(reqWidth);
+            }
+            if (reqHeight === "") {
+                reqHeight = 0;
+            } else {
+                reqHeight = parseInt(reqHeight);
+            }
+            jsonModel.setImageSizeRequirements(reqWidth, reqHeight);
         };
         
         /*
@@ -375,21 +422,21 @@ var dahuapp = (function(dahuapp, $) {
          * Removes the message in the state bar.
          */
         var removeStateBarMessage = function() {
-            $('#state-bar-container').contents().remove();
+            $('#state-bar-container').empty();
         };
         
         /*
          * Cleans the image list.
          */
         var cleanImageList = function() {
-            $('#image-list').contents().remove();
+            $('#image-list').empty();
         };
         
         /*
          * Cleans the preview.
          */
         var cleanPreview = function() {
-            $('#preview-image').contents().remove();
+            $('#preview-image').empty();
         };
         
         /*
@@ -399,14 +446,12 @@ var dahuapp = (function(dahuapp, $) {
         var removeSelectedSlide = function() {
             var selectedItem = $('#image-list > li').get(selectedSlide);
             var image = $(selectedItem).find('img').attr('src');
-            alert(image);
             $(selectedItem).remove();
             jsonModel.removeSlide(selectedSlide);
             
             // if the image is no longer used, we delete it
             var imageList = jsonModel.getImageList();
             if (imageList.indexOf(image) === -1) {
-                alert(image);
                 dahuapp.drivers.fileSystem.remove(image);
             }
             
@@ -512,6 +557,7 @@ var dahuapp = (function(dahuapp, $) {
             events.onNewProjectCreated.subscribe(cleanImageList);
             events.onNewProjectCreated.subscribe(cleanPreview);
             events.onSelectedObjectChanged.subscribe(setSelectedObjectOnSlide);
+            events.onPopupClosed.subscribe(closePopup);
             
             /*
              * Basic events for the buttons and components.
@@ -660,6 +706,15 @@ var dahuapp = (function(dahuapp, $) {
             $('#this-slide-down').click(moveSelectedSlideDown);
             $('#edit-action').click(function() {
                 alert('Not implemented yet');
+            });
+            $('.popup-confirm').click(function() {
+                events.onPopupConfirmed.publish();
+                events.onPopupConfirmed.unsubscribeAll();
+                events.onPopupClosed.publish('#' + $(this).parent().parent().attr('id'));
+            });
+            $('.popup-cancel').click(function() {
+                events.onPopupConfirmed.unsubscribeAll();
+                events.onPopupClosed.publish('#' + $(this).parent().parent().attr('id'));
             });
             //$('#edit-action').click(editSelectedObject);
             $('#set-ouput-image-size').click(function() {

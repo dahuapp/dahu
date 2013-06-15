@@ -161,7 +161,7 @@
             this.generateJsonString = function(jsonModel, imgDim) {
                 var generated = self.createScreencastModel();
                 generated.loadJson(jsonModel.getJson());
-                generated.setImageSize(imgDim.width, imgDim.height);
+                generated.setImageSizeRequirements(imgDim.width, imgDim.height);
                 return generated.getJson();
             };
         };
@@ -249,8 +249,8 @@
              */
             this.createPresentation = function() {
                 json.metaData = {};
-                json.metaData.imageWidth = null; // null means not imposed
-                json.metaData.imageHeight = null; // idem
+                json.metaData.imageWidth = 0; // 0 means not imposed
+                json.metaData.imageHeight = 0; // idem
                 json.data = new Array();
             };
 
@@ -489,33 +489,13 @@
             };
             
             /*
-             * Sets the width of images for the generated presentation.
-             * The height is set to null (not imposed).
-             * @param {int} width New width for the generated images.
-             */
-            this.setImageWidth = function(width) {
-                json.metaData.imageWidth = width;
-                json.metaData.imageHeight = null;
-            };
-            
-            /*
-             * Sets the height of images for the generated presentation.
-             * The width is set to null (not imposed).
-             * @param {int} height New height for the generated images.
-             */
-            this.setImageHeight = function(height) {
-                json.metaData.imageHeight = height;
-                json.metaData.imageWidth = null;
-            };
-            
-            /*
              * Sets the size of images for the generated presentation.
-             * For the viewer to work well, both image width and height
-             * must be set by this method in the generated json.
+             * The parameters can be null : it means there are no
+             * requirement for this dimension.
              * @param {int} width New width for the generated images.
              * @param {int} height New height for the generated images.
              */
-            this.setImageSize = function(width, height) {
+            this.setImageSizeRequirements = function(width, height) {
                 json.metaData.imageWidth = width;
                 json.metaData.imageHeight = height;
             };
