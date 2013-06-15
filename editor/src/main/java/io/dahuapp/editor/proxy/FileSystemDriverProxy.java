@@ -2,7 +2,11 @@ package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.app.DahuApp;
 import io.dahuapp.editor.drivers.FileSystemDriver;
+import java.awt.Dimension;
 import java.io.File;
+import java.io.FileFilter;
+import java.net.MalformedURLException;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
@@ -19,6 +23,16 @@ public class FileSystemDriverProxy implements Proxy {
      * Driver associated with this proxy.
      */
     private FileSystemDriver driver = new FileSystemDriver();
+    
+    /**
+     * Filter to choose only supported image files.
+     */
+    private FileFilter imageFilter = new FileFilter() {
+        @Override
+        public boolean accept(File pathname) {
+            return pathname.isFile() && pathname.getName().matches(".*\\.png$");
+        }
+    };
     
     /**
      * Constructor.
@@ -113,12 +127,12 @@ public class FileSystemDriverProxy implements Proxy {
     }
     
     /**
-     * Removes the specified directory.
-     * @param dir Directory to remove.
-     * @return True only if the directory was created.
+     * Removes the specified directory or file.
+     * @param fileName Directory or file to remove.
+     * @return True only if the directory or file was removed.
      */
-    public boolean remove(String dir) {
-        return driver.remove(dir);
+    public boolean remove(String fileName) {
+        return driver.remove(fileName);
     }
     
     /**
@@ -134,6 +148,41 @@ public class FileSystemDriverProxy implements Proxy {
                 driver.copy(f, new File(dest + getSeparator() + f.getName()));
             }
         }
+    }
+    
+    /**
+     * Copies the .png images from a directory to another, and resizes them
+     * with the specified ratio.
+     * @param src Directory containing the images.
+     * @param dest Directory where to put images (must exist).
+     * @param width Required width of the images (can be null).
+     * @param height Required height of the images (can be null).
+     * @return The dimension of generated images.
+     */
+    public Dimension copyAndResizeImages(String src, String dest, Integer width, Integer height) {
+        Dimension dimension = null;
+        File source = new File(src);
+        try {
+            for (File imgFile : source.listFiles(imageFilter)) {
+                File destination = new File(dest + getSeparator() + imgFile.getName());
+                String imageURL = imgFile.toURI().toURL().toString();
+                Image image;
+                if (width != null && height == null) {
+                    image = new Image(imageURL, width, 0, true, true);
+                } else if (width == null && height != null) {
+                    image = new Image(imageURL, 0, height, true, true);
+                } else if (width != null && height != null) {
+                    image = new Image(imageURL, width, height, false, true);
+                } else {
+                    image = new Image(imageURL);
+                }
+                dimension = new Dimension((int)image.getWidth(), (int)image.getHeight());
+                driver.writeImage(image, destination);
+            }
+        } catch (MalformedURLException e) {
+            LoggerProxy.severe("Malformed URL", e);
+        }
+        return dimension;
     }
     
     /**

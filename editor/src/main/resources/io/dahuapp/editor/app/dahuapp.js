@@ -14,16 +14,6 @@
 
         /* private API */
 
-        var _privateAttributeExample = ':o'; // eventually to remove
-
-        function _privateFunctionExample(args) { // eventually to remove
-            return "private hello " + args;
-        }
-
-        /* public API */
-
-        self.version = "0.0.1";
-
         var DahuScreencastGenerator = function() {
 
             /*
@@ -106,10 +96,10 @@
                 $('#my-dahu-presentation', $generated)
                         .append($(document.createElement('ul'))
                         .attr({'class': 'my-viewer'})
-                        .append($(document.createElement('li'))
-                        .attr({'class': 'image-list'}))
-                        .append($(document.createElement('li'))
-                        .attr({'class': 'mouse-cursor'})))
+                                .append($(document.createElement('li'))
+                                .attr({'class': 'image-list'}))
+                                .append($(document.createElement('li'))
+                                .attr({'class': 'mouse-cursor'})))
                         .append($(document.createElement('div'))
                         .attr({'class': 'control'}));
 
@@ -125,13 +115,6 @@
 
                 //!\\ careful here, i'm not sure if $.each is always over here
 
-                // mouse image
-                $('.components-list', $generated)
-                        .append($(document.createElement('li'))
-                        .attr({'class': 'mouse-cursor object'})
-                        .append($(document.createElement('img'))
-                        .attr({'src': 'cursor.png', 'alt': 'cursor.png'})));
-
                 // adding the control buttons to the page
                 $('.control', $generated)
                         .append($(document.createElement('button'))
@@ -140,10 +123,11 @@
                         .append($(document.createElement('button'))
                         .attr({'class': 'next'})
                         .append('Next'));
-
+                
+                // adding the mouse cursor image
                 $('.mouse-cursor', $generated)
                         .append($(document.createElement('img'))
-                        .attr({'src': 'cursor.png', 'alt': 'cursor.png'}));
+                        .attr({'src': 'img/cursor.png', 'alt':'img/cursor.png'}));
             };
 
             /*
@@ -171,11 +155,14 @@
 
             /*
              * Generates the generated JSON using the JSONmodel.
+             * @param {object} jsonModel The json model to transform.
+             * @param {java.awt.Dimension} imgDim The dimension of images.
              */
-            this.generateJsonString = function(jsonModel) {
-                // at the moment, the generated json is the same as
-                // the json used for edition
-                return jsonModel.getJson();
+            this.generateJsonString = function(jsonModel, imgDim) {
+                var generated = self.createScreencastModel();
+                generated.loadJson(jsonModel.getJson());
+                generated.setImageSize(imgDim.width, imgDim.height);
+                return generated.getJson();
             };
         };
 
@@ -262,6 +249,8 @@
              */
             this.createPresentation = function() {
                 json.metaData = {};
+                json.metaData.imageWidth = null; // null means not imposed
+                json.metaData.imageHeight = null; // idem
                 json.data = new Array();
             };
 
@@ -377,18 +366,18 @@
             };
 
             /*
-             * Add a title for the presentation.
-             * @param String title Title to add.
+             * Sets a title for the presentation.
+             * @param String title Title to set.
              */
-            this.addTitle = function(title) {
+            this.setTitle = function(title) {
                 json.metaData.title = title;
             };
 
             /*
-             * Add an annotation for the presentation.
-             * @param String annotation Annotation to add.
+             * Sets an annotation for the presentation.
+             * @param String annotation Annotation to set.
              */
-            this.addAnnotation = function(annotation) {
+            this.setAnnotation = function(annotation) {
                 json.metaData.annotation = annotation;
             };
 
@@ -453,6 +442,20 @@
                 }
                 return slideList;
             };
+            
+            /*
+             * Returns an array containing all the background images.
+             * @returns {Array} List of background images.
+             */
+            this.getImageList = function() {
+                var list = new Array();
+                var indexSlide = 0;
+                while (json.data[indexSlide]) {
+                    list.push(json.data[indexSlide].object[0].img);
+                    indexSlide++;
+                };
+                return list;
+            };
 
             /*
              * Removes the slide at the specified index.
@@ -484,7 +487,59 @@
             this.getSlide = function(idSlide) {
                 return json.data[idSlide];
             };
+            
+            /*
+             * Sets the width of images for the generated presentation.
+             * The height is set to null (not imposed).
+             * @param {int} width New width for the generated images.
+             */
+            this.setImageWidth = function(width) {
+                json.metaData.imageWidth = width;
+                json.metaData.imageHeight = null;
+            };
+            
+            /*
+             * Sets the height of images for the generated presentation.
+             * The width is set to null (not imposed).
+             * @param {int} height New height for the generated images.
+             */
+            this.setImageHeight = function(height) {
+                json.metaData.imageHeight = height;
+                json.metaData.imageWidth = null;
+            };
+            
+            /*
+             * Sets the size of images for the generated presentation.
+             * For the viewer to work well, both image width and height
+             * must be set by this method in the generated json.
+             * @param {int} width New width for the generated images.
+             * @param {int} height New height for the generated images.
+             */
+            this.setImageSize = function(width, height) {
+                json.metaData.imageWidth = width;
+                json.metaData.imageHeight = height;
+            };
+            
+            /*
+             * Gets the width of images for the generated presentation.
+             * @return {int or null} Width of generated images.
+             */
+            this.getImageWidth = function() {
+                return json.metaData.imageWidth;
+            };
+            
+            /*
+             * Gets the height of images for the generated presentation.
+             * @return {int or null} Height of generated images.
+             */
+            this.getImageHeight = function() {
+                return json.metaData.imageHeight;
+            };
         };
+
+        /* public API */
+
+        self.version = "0.0.1";
 
         self.createScreencastGenerator = function createScreencastGenerator() {
             return new DahuScreencastGenerator();

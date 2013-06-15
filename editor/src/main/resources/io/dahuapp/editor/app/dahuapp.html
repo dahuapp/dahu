@@ -52,14 +52,14 @@
                                         <a tabindex="-1" role="menuitem" id="exit">
                                             Exit
                                         </a>
-                                    </li>  
+                                    </li>
                                 </ul>
                             </li>
                             <li class="dropdown">
                                 <!-- link of the dropdown menu -->
                                 <a id="drop2" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
-                                    Generation 
-                                    <b class="caret"></b>  
+                                    Generation
+                                    <b class="caret"></b>
                                 </a>
                                 <!-- List of the dropdown menu links -->
                                 <ul class="dropdown-menu" aria-labelledby="drop2" role="menu">
@@ -75,9 +75,24 @@
                                     </li>
                                     <li role="presentation">
                                         <a tabindex="-1" role="menuitem" id="visual-mode">
-                                            Clean, generate and preview
+                                            Preview
                                         </a>
-                                    </li>                                  
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="dropdown">
+                                <!-- link of the dropdown menu -->
+                                <a id="drop3" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                                    Settings
+                                    <b class="caret"></b>
+                                </a>
+                                <!-- List of the dropdown menu links -->
+                                <ul class="dropdown-menu" aria-labelledby="drop3" role="menu">
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="set-ouput-image-size">
+                                            Output image size...
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                         </ul>
@@ -125,7 +140,9 @@
                 <div id="action-editor-container" hidden>
                     <span id="action-editor-title" class="label label-inverse">Action editor :</span>
                     <div id="action-editor-mouse" class="scroll action-editor">
-                        <button class="btn btn-primary" id="add-mouse-position">Add a mouse position</button>
+                        <p><button class="btn btn-primary" id="add-mouse-position">Add a mouse position</button></p>
+                        <p>Mouse X : <input id="edit-mouse-x" type="number"> %</p>
+                        <p>Mouse Y : <input id="edit-mouse-y" type="number"> %</p>
                     </div>
                 </div>
             </div>

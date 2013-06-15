@@ -77,11 +77,12 @@
     border: 1px solid grey;
 }
 
-#action-editor-title {
-    height: 20px;
+#edit-mouse-x, #edit-mouse-y {
+    width: 40px;
 }
 
 .action-editor {
+    margin-top: 4px;
     height: 80px;
 }
 

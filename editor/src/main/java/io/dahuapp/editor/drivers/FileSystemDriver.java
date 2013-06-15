@@ -9,8 +9,11 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import javafx.embed.swing.SwingFXUtils;
+import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
+import javax.imageio.ImageIO;
 
 /**
  * Driver of file system. Writes data to files on disk, or read data from files
@@ -71,13 +74,13 @@ public class FileSystemDriver implements Driver {
     }
     
     /**
-     * Removes the specified directory.
-     * @param dir Directory to remove.
-     * @return True only if the directory was created.
+     * Removes the specified file or directory.
+     * @param fileName Directory or file to remove.
+     * @return True only if the directory or file was removed.
      */
-    public boolean remove(String dir) {
-        File f = new File(dir);
-        return removeThisAndItsContent(f);
+    public boolean remove(String fileName) {
+        File file = new File(fileName);
+        return removeThisAndItsContent(file);
     }
 
     /**
@@ -167,6 +170,20 @@ public class FileSystemDriver implements Driver {
             return false;
         }
         return true;
+    }
+    
+    /**
+     * Writes the specified image into the specified file.
+     * @param image Image to write on a file.
+     * @param dest File where to write the specified image.
+     */
+    public void writeImage(Image image, File dest) {
+        String ext = dest.getName().replaceAll("^.*\\.", "");
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), ext, dest);
+        } catch (IOException ex) {
+            LoggerProxy.severe(getClass().getName(), ex);
+        }
     }
 
     @Override

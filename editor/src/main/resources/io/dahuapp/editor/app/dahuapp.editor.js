@@ -221,19 +221,22 @@ var dahuapp = (function(dahuapp, $) {
                         "have been created.");
                 return;
             }
+            // create img directory and adds the final forms of the images
+            var absImgDir = completeBuildDir + sep + imgDir;
+            fileSystem.create(absImgDir);
+            var imgDim = fileSystem.copyAndResizeImages(projectDir + sep + imgDir, absImgDir,
+                    jsonModel.getImageWidth(), jsonModel.getImageHeight());
+            // generates the json and html
             var htmlGen = generator.generateHtmlString(jsonModel);
-            var jsonGen = generator.generateJsonString(jsonModel);
+            var jsonGen = generator.generateJsonString(jsonModel, imgDim);
             // write the generated json and html
             fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
             fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
-            // create img directory and adds the final forms of the images
-            fileSystem.create(completeBuildDir + sep + imgDir);
-            fileSystem.copyDirectoryContent(projectDir + sep + imgDir, completeBuildDir + sep + imgDir);
             // copies the script files into the build directory
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.js"), completeBuildDir + sep + "dahuapp.viewer.js");
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.css"), completeBuildDir + sep + "dahuapp.viewer.css");
             fileSystem.copyFile(fileSystem.getResource("dahuapp.js"), completeBuildDir + sep + "dahuapp.js");
-            fileSystem.copyFile(fileSystem.getResource("cursor.png"), completeBuildDir + sep + "cursor.png");
+            fileSystem.copyFile(fileSystem.getResource("cursor.png"), completeBuildDir + sep + imgDir + sep + "cursor.png");
         };
         var runPreview = function() {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
@@ -305,6 +308,13 @@ var dahuapp = (function(dahuapp, $) {
             $('#action-editor-container').toggle();
             $('#current-image-container').toggleClass('reduced-image-container');
             $('#current-image-container').toogleClass('extended-image-container');
+        };
+        
+        /*
+         * Sets the ouput images size.
+         */
+        var setOutputImageSize = function() {
+            alert('Not implemented yet');
         };
         
         /*
@@ -384,14 +394,22 @@ var dahuapp = (function(dahuapp, $) {
         
         /*
          * Removes the selected slide.
-         * At the moment, we don't remove the .png image on disk, because
-         * two slides may have the same image as background (not now, but
-         * it can be the case).
+         * Also removes the image if no other slide has the same one.
          */
         var removeSelectedSlide = function() {
             var selectedItem = $('#image-list > li').get(selectedSlide);
+            var image = $(selectedItem).find('img').attr('src');
+            alert(image);
             $(selectedItem).remove();
             jsonModel.removeSlide(selectedSlide);
+            
+            // if the image is no longer used, we delete it
+            var imageList = jsonModel.getImageList();
+            if (imageList.indexOf(image) === -1) {
+                alert(image);
+                dahuapp.drivers.fileSystem.remove(image);
+            }
+            
             if (jsonModel.getNbSlide() === selectedSlide) {
                 selectedSlide--;
             }
@@ -626,11 +644,13 @@ var dahuapp = (function(dahuapp, $) {
                 if (captureMode) {
                     captureModeAlert();
                 } else {
+                    var fileSystem = dahuapp.drivers.fileSystem;
+                    var sep = fileSystem.getSeparator();
                     if (!initProject) {
                         initialiseProjectAlert();
+                    } else if (!fileSystem.exists(projectDir + sep + buildDir)) {
+                        alert('Please generate your project before.');
                     } else {
-                        cleanProjectDirectory();
-                        generateProject();
                         runPreview();
                     }
                 }
@@ -638,7 +658,21 @@ var dahuapp = (function(dahuapp, $) {
             $('#throw-this-slide').click(removeSelectedSlide);
             $('#this-slide-up').click(moveSelectedSlideUp);
             $('#this-slide-down').click(moveSelectedSlideDown);
-            $('#edit-action').click(editSelectedObject);
+            $('#edit-action').click(function() {
+                alert('Not implemented yet');
+            });
+            //$('#edit-action').click(editSelectedObject);
+            $('#set-ouput-image-size').click(function() {
+                if (captureMode) {
+                    captureModeAlert();
+                } else {
+                    if (!initProject) {
+                        initialiseProjectAlert();
+                    } else {
+                        setOutputImageSize();
+                    }
+                }
+            });
         };
 
         return self;
