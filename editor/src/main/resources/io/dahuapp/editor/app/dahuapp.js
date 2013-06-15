@@ -119,7 +119,7 @@
                         case "background":
                             generateBackgroundImage($generated, object);
                             break;
-                        // no mouse image generated here
+                            // no mouse image generated here
                     }
                 });
 
@@ -140,10 +140,10 @@
                         .append($(document.createElement('button'))
                         .attr({'class': 'next'})
                         .append('Next'));
-                
+
                 $('.mouse-cursor', $generated)
                         .append($(document.createElement('img'))
-                        .attr({'src': 'cursor.png', 'alt':'cursor.png'}));
+                        .attr({'src': 'cursor.png', 'alt': 'cursor.png'}));
             };
 
             /*
@@ -346,8 +346,9 @@
                 json.data[idSlide].action[idAction].finalAbs = finalAbs;
                 json.data[idSlide].action[idAction].finalOrd = finalOrd;
                 var move = function(target, finalAbs, finalOrd) {
-                    $(target).animate({'top': finalAbs * 100 + '\%',
-                        'left': finalOrd * 100 + '\%'}, 5000);
+                    $(target).animate({
+                        'left': finalAbs * 100 + '\%',
+                        'top': finalOrd * 100 + '\%'}, 1000);
                 };
                 json.data[idSlide].action[idAction].execute = move.toString();
             };
@@ -370,7 +371,7 @@
              * @param int mouseY
              */
             this.setObjectMouse = function(idSlide, idObject, mouseX, mouseY) {
-                json.data[idSlide].object[idObject].id = "mouseCursor";
+                json.data[idSlide].object[idObject].id = "mouse-cursor";
                 json.data[idSlide].object[idObject].mouseX = mouseX;
                 json.data[idSlide].object[idObject].mouseY = mouseY;
             };

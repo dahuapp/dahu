@@ -69,10 +69,10 @@ var dahuapp = (function(dahuapp, $) {
                     }
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
-                            launch(json.data[currentSlide].action[currentAction++]);
                             var mouseLocation = previousMouseLocation(currentSlide, currentAction);
-                            $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
-                                'left': mouseLocation.ord * 100 + "\%"}, 0);
+                            $(selector + " ." + "mouse-cursor").animate({'top': mouseLocation.ord * 100 + "\%",
+                                'left': mouseLocation.abs * 100 + "\%"}, 0);
+                            launch(json.data[currentSlide].action[currentAction++]);
                             return;
                         }
                         currentAction++;
@@ -84,8 +84,8 @@ var dahuapp = (function(dahuapp, $) {
                         actualise();
                     } else {
                         var mouseLocation = previousMouseLocation(currentSlide, currentAction);
-                        $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
-                            'left': mouseLocation.ord * 100 + "\%"}, 0);
+                        $(selector + " ." + "mouse-cursor").animate({'top': mouseLocation.ord * 100 + "\%",
+                            'left': mouseLocation.abs * 100 + "\%"}, 0);
                         return;
                     }
                 }
@@ -100,8 +100,8 @@ var dahuapp = (function(dahuapp, $) {
                     while (json.data[currentSlide].action[currentAction]) {
                         if (json.data[currentSlide].action[currentAction].trigger === 'onClick') {
                             var mouseLocation = previousMouseLocation(currentSlide, currentAction);
-                            $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
-                                'left': mouseLocation.ord * 100 + "\%"}, 0);
+                            $(selector + " ." + "mouse-cursor").animate({'top': mouseLocation.ord * 100 + "\%",
+                                'left': mouseLocation.abs * 100 + "\%"}, 0);
                             return;
                         }
                         currentAction--;
@@ -113,8 +113,8 @@ var dahuapp = (function(dahuapp, $) {
                         currentAction = json.data[currentSlide].indexAction - 1;
                     } else {
                         var mouseLocation = previousMouseLocation(currentSlide, currentAction);
-                        $(selector + " ." + "mouseCursor").animate({'top': mouseLocation.abs * 100 + "\%",
-                            'left': mouseLocation.ord * 100 + "\%"}, 0);
+                        $(selector + " ." + "mouse-cursor").animate({'top': mouseLocation.ord * 100 + "\%",
+                            'left': mouseLocation.abs * 100 + "\%"}, 0);
                         return;
                     }
                 }
@@ -129,15 +129,14 @@ var dahuapp = (function(dahuapp, $) {
                         launch(json.data[currentSlide].action[currentAction++]);
                     }
                 } else {
-                    if (currentSlide < json.data.length - 1) {
-                        lastSlide = currentSlide;
-                        currentSlide++;
-                        actualise();
-                        currentAction = 0;
-                    }
-                    if (json.data[currentSlide].action[currentAction]
-                            && json.data[currentSlide].action[currentAction].trigger === 'afterPrevious') {
-                        launch(json.data[currentSlide].action[currentAction++]);
+                    if (currentSlide < json.data.length - 1 && json.data[currentSlide + 1].action[0]) {
+                        if (json.data[currentSlide + 1].action[0].trigger === 'afterPrevious') {
+                            lastSlide = currentSlide;
+                            currentSlide++;
+                            actualise();
+                            currentAction = 0;
+                            launch(json.data[currentSlide].action[currentAction++]);
+                        }
                     }
                 }
             };
@@ -151,15 +150,13 @@ var dahuapp = (function(dahuapp, $) {
                         launch(json.data[currentSlide].action[currentAction++]);
                     }
                 } else {
-                    if (currentSlide < json.data.length - 1) {
-                        lastSlide = currentSlide;
-                        currentSlide++;
-                        actualise();
-                        currentAction = 0;
-                    }
-                    if (json.data[currentSlide].action[currentAction]
-                            && json.data[currentSlide].action[currentAction].trigger === 'withPrevious') {
-                        launch(json.data[currentSlide].action[currentAction++]);
+                    if (currentSlide < json.data.length - 1 && json.data[currentSlide + 1].action[0]) {
+                        if (json.data[currentSlide + 1].action[0].trigger === 'withPrevious') {
+                            lastSlide = currentSlide;
+                            currentSlide++;
+                            currentAction = 0;
+                            launch(json.data[currentSlide].action[currentAction++]);
+                        }
                     }
                 }
             };
@@ -180,7 +177,7 @@ var dahuapp = (function(dahuapp, $) {
                 events.onActionStart.publish();
                 var target = selector + ' .' + action.target;
                 var animation = eval('(' + action.execute + ')');
-                animation(target, action.finaAbs, action.finalOrd);
+                animation(target, action.finalAbs, action.finalOrd);
                 if (!NextActionWithPrevious) {
                     events.onActionOver.publish();
                 }
@@ -218,16 +215,16 @@ var dahuapp = (function(dahuapp, $) {
              */
             var previousMouseLocation = function(idSlide, idAction) {
                 var tempAction = 0;
-                var mouseLocation;
+                var mouseLocation = {};
                 if (idAction === 0 && idSlide > 0) {
                     idSlide--;
                     idAction = json.data[idSlide].action.length;
-                } else if (idAction === 0 && idSlide === 0) {
-                    mouseLocation.abs = json.data[idSlide].action[tempAction].finalAbs;
-                    mouseLocation.ord = json.data[idSlide].action[tempAction].finalOrd;
+                } else if (idAction === 0 && idSlide <= 0) {
+                    mouseLocation.abs = json.data[0].action[0].finalAbs;
+                    mouseLocation.ord = json.data[0].action[0].finalOrd;
                 }
                 while (tempAction < idAction) {
-                    if (json.data[idSlide].action[tempAction].target === "mouseCursor") {
+                    if (json.data[idSlide].action[tempAction].target === "mouse-cursor") {
                         mouseLocation.abs = json.data[idSlide].action[tempAction].finalAbs;
                         mouseLocation.ord = json.data[idSlide].action[tempAction].finalOrd;
                     }
@@ -274,7 +271,9 @@ var dahuapp = (function(dahuapp, $) {
                 }
                 $(selector + " ." + json.data[0].object[0].id).show();
 
-                $(selector + " ." + "mouseCursor").show();
+                $(selector + " ." + "mouse-cursor").css({'top': json.data[0].action[0].finalOrd * 100 + "\%",
+                    'left': json.data[0].action[0].finalAbs * 100 + "\%"});
+
 
                 /*
                  * A click on the "next" button publishes a nextSlide event
