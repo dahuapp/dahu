@@ -43,7 +43,7 @@
                                             Open project...
                                         </a>
                                     </li>
-                                    <li role="presentation">
+                                    <li role="presentation" class="disabled">
                                         <a tabindex="-1" role="menuitem" id="save-project">
                                             Save project
                                         </a>
@@ -63,17 +63,17 @@
                                 </a>
                                 <!-- List of the dropdown menu links -->
                                 <ul class="dropdown-menu" aria-labelledby="drop2" role="menu">
-                                    <li role="presentation">
+                                    <li role="presentation" class="disabled">
                                         <a tabindex="-1" role="menuitem" id="clean-project">
                                             Clean build directory
                                         </a>
                                     </li>
-                                    <li role="presentation">
+                                    <li role="presentation" class="disabled">
                                         <a tabindex="-1" role="menuitem" id="generate">
                                             Clean and generate
                                         </a>
                                     </li>
-                                    <li role="presentation">
+                                    <li role="presentation" class="disabled">
                                         <a tabindex="-1" role="menuitem" id="visual-mode">
                                             Preview
                                         </a>
@@ -88,8 +88,8 @@
                                 </a>
                                 <!-- List of the dropdown menu links -->
                                 <ul class="dropdown-menu" aria-labelledby="drop3" role="menu">
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="set-ouput-image-size">
+                                    <li role="presentation" class="disabled">
+                                        <a tabindex="-1" role="menuitem" id="set-output-image-size">
                                             Output image size...
                                         </a>
                                     </li>
@@ -99,7 +99,7 @@
                         <!-- Buttons on the right part of navbar -->
                         <ul class="nav pull-right">
                             <li>
-                                <button class="btn btn-primary" id="capture-mode">
+                                <button class="btn btn-primary" id="capture-mode" disabled>
                                     Capture mode
                                 </button>
                             </li>
@@ -113,12 +113,12 @@
                 <div class="navbar">
                     <div class="navbar-inner">
                         <ul class="nav">
-                            <li><button class="btn" id="this-slide-up"><i class="icon-arrow-up"></i></button></li>
-                            <li><button class="btn" id="this-slide-down"><i class="icon-arrow-down"></i></button></li>
+                            <li><button class="btn" id="this-slide-up" disabled><i class="icon-arrow-up"></i></button></li>
+                            <li><button class="btn" id="this-slide-down" disabled><i class="icon-arrow-down"></i></button></li>
                             <li class="divider-vertical"></li>
-                            <li><button class="btn btn-danger" id="throw-this-slide"><i class="icon-trash"></i></button></li>
+                            <li><button class="btn btn-danger" id="throw-this-slide" disabled><i class="icon-trash"></i></button></li>
                             <li class="divider-vertical"></li>
-                            <li><button class="btn" id="edit-action"><i class="icon-wrench"></i></button></li>
+                            <li><button class="btn" id="edit-action" disabled><i class="icon-wrench"></i></button></li>
                         </ul>
                     </div>
                 </div>

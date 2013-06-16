@@ -51,30 +51,30 @@
 #current-image-container{
     position: absolute;
     left: 200px;
-    right: 0px;
+    top: 0px;
     bottom: 20px;
     margin: 0px;
     padding: 4px;
 }
 
 .extended-image-container {
-    top: 0px;
+    right: 0px;
 }
 
 .reduced-image-container {
-    top: 108px;
+    right: 170px;
 }
 
 #action-editor-container {
     position: absolute;
-    left: 200px;
+    width: 160px;
     right: 0px;
     top: 0px;
-    margin: 0px;
+    bottom: 0px;
     padding: 4px;
-    height: 100px;
     background-color: gainsboro;
-    border: 1px solid grey;
+    margin-left: 1px;
+    border-left: 1px solid grey;
 }
 
 #edit-mouse-x, #edit-mouse-y {
@@ -82,8 +82,7 @@
 }
 
 .action-editor {
-    margin-top: 4px;
-    height: 80px;
+    
 }
 
 #state-bar-container{
