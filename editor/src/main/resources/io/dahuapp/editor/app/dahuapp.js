@@ -140,7 +140,6 @@
                         .append($(document.createElement('head')))
                         .append($(document.createElement('body')));
 
-
                 generateHtmlHeader($generated);
                 generateHtmlBody($generated, jsonModel);
 
@@ -155,79 +154,71 @@
              * @param {java.awt.Dimension} imgDim The dimension of images.
              */
             this.generateJsonString = function(jsonModel, imgDim) {
-                var generated = self.createScreencastModel();
-                generated.loadJson(jsonModel.getJson());
-                generated.setImageSizeRequirements(imgDim.width, imgDim.height);
+                var generated = self.createScreencastGeneratedModel();
+                generated.setImageSize(imgDim.width, imgDim.height);
+                generated.setInitialBackground(jsonModel.getInitialBackground());
+                generated.setInitialMousePos(jsonModel.getInitialMousePos());
+                for (var i = 0; i < jsonModel.getNbSlide(); i++) {
+                    var actionList = jsonModel.getActionList(i);
+                    for (var j = 0; j < actionList.length; j++) {
+                        // We don't add the two first actions of the first slide
+                        // because they are present in the presentation metadata.
+                        // It corresponds to the mouse initial pos and first background.
+                        if (i > 0 || j > 1) {
+                            generated.addAction(actionList[j]);
+                        }
+                    }
+                }
                 return generated.getJson();
+            };
+        };
+        
+        var DahuScreencastGeneratedModel = function() {
+            
+            /* Private API */
+            
+            var json = {
+                metaData: {},
+                action: new Array()
+            };
+            
+            /* Public API */
+            
+            /*
+             * Returns a string representation of this json.
+             * @returns {String}
+             */
+            this.getJson = function() {
+                return JSON.stringify(json, null, '    ');
+            };
+            
+            /*
+             * Setters for the generated json metadata.
+             */
+            this.setImageSize = function(width, height) {
+                json.metaData.imageWidth = width;
+                json.metaData.imageHeight = height;
+            };
+            
+            this.setInitialMousePos = function(pos) {
+                json.metaData.initialMouseX = pos.x;
+                json.metaData.initialMouseY = pos.y;
+            };
+            
+            this.setInitialBackground = function(id) {
+                json.metaData.initialBackgroundId = id;
+            };
+            
+            this.addAction = function(action) {
+                json.action.push(action);
             };
         };
 
         var DahuScreencastModel = function() {
 
-            var json = {};
-
             /* Private API */
 
-            /*
-             * Formats and indents JSON string.
-             * @param String val Text to format.
-             * @returns {String|dahuapp.editor.formatJson.retval}.
-             */
-            /*function formatJson(val) {
-                var retval = '';
-                var str = val;
-                var str2;
-                var strFunct;
-                var pos = 0;
-                var strLen = str.length;
-                var indentStr = '    ';
-                var newLine = '\n';
-                var char = '';
-                var formatEnable = true;
-                for (var i = 0; i < strLen; i++) {
-                    char = str.substring(i, i + 1);
-                    str2 = str.substring(i - 2, i);
-                    if (formatEnable === true) {
-                        if (i > 10) {
-                            strFunct = str.substring(i - 10, i);
-                            if (char === '"' && strFunct === '"execute":')
-                            {
-                                formatEnable = false;
-                            }
-                        }
-                        if (char === '}' || char === ']') {
-                            retval = retval + newLine;
-                            pos = pos - 1;
-                            for (var j = 0; j < pos; j++) {
-                                retval = retval + indentStr;
-                            }
-                        }
-
-                        retval = retval + char;
-                        if (char === '{' || char === '[' || char === ',') {
-                            retval = retval + newLine;
-                            if (char === '{' || char === '[') {
-                                pos = pos + 1;
-                            }
-
-                            for (var k = 0; k < pos; k++) {
-                                retval = retval + indentStr;
-                            }
-                        }
-                    } else if (str2 === '}"') {
-                        formatEnable = true;
-                        retval = retval + char;
-                    } else {
-                        if (char !== '\\') {
-                            retval = retval + char;
-                        } else {
-                            i++;
-                        }
-                    }
-                }
-
-                return retval;
-            }*/
+            var json = {};
 
             /* Public API */
 
@@ -238,7 +229,6 @@
             this.loadJson = function(stringJson) {
                 json = JSON.parse(stringJson);
             };
-
 
             /*
              * Create a new presentation variable in the JSON file which will contain slides.
@@ -266,7 +256,8 @@
                 json.data.splice(idSlide, 0, slide);
                 this.addObject(idSlide, "background", img);
                 this.addObject(idSlide, "mouse");
-                this.addAction(idSlide, "appear", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY);
+                this.addAction(idSlide, "move", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY, 800);
+                this.addAction(idSlide, "appear", json.data[idSlide].object[0].id, "afterPrevious");
             };
 
             /*
@@ -310,15 +301,21 @@
                 };
                 switch (type.toLowerCase()) {
                     case "appear":
-                        action.finalAbs = arguments[4] || 0.0;
-                        action.finalOrd = arguments[5] || 0.0;
+                        action.abs = arguments[4] || 0.0;
+                        action.ord = arguments[5] || 0.0;
                         action.duration = arguments[6] || 0;
                         action.execute = function(imgWidth, imgHeight) {
+                            events.onActionStart.publish();
                             $(target).css({
-                                'left': this.finalAbs * imgWidth + 'px',
-                                'top': this.finalOrd * imgHeight + 'px'
+                                'left': this.abs * imgWidth + 'px',
+                                'top': this.ord * imgHeight + 'px'
                             });
-                            $(target).show(this.duration);
+                            $(target).show(this.duration, function() {
+                                events.onActionOver.publish();
+                            });
+                        }.toString();
+                        action.executeReverse = function(imgWidth, imgHeight) {
+                            $(target).hide();
                         }.toString();
                         break;
                     case "move":
@@ -326,10 +323,21 @@
                         action.finalOrd = arguments[5] || 0.0;
                         action.duration = arguments[6] || 0;
                         action.execute = function(imgWidth, imgHeight) {
+                            events.onActionStart.publish();
+                            this.initialAbs = $(target).css('left');
+                            this.initialOrd = $(target).css('top');
                             $(target).animate({
                                 'left': this.finalAbs * imgWidth + 'px',
                                 'top': this.finalOrd * imgHeight + 'px'
-                            }, this.duration);
+                            }, this.duration, 'linear', function() {
+                                events.onActionOver.publish();
+                            });
+                        }.toString();
+                        action.executeReverse = function(imgWidth, imgHeight) {
+                            $(target).css({
+                                'left': this.initialAbs,
+                                'top': this.initialOrd
+                            });
                         }.toString();
                         break;
                 }
@@ -400,26 +408,6 @@
                 }
                 return objectList;
             };
-
-            /*
-             * Catches all the slides of the presentation
-             * @returns {Array} List of slides of the presentation
-             */
-            this.getSlideList = function() {
-                var slideList = new Array();
-                var indexSlide = 0;
-                while (json.data[indexSlide]) {
-                    var indexObject = 0;
-                    while (json.data[indexSlide].object[indexObject]) {
-                        if (json.data[indexSlide].object[indexObject].type === 'background') {
-                            slideList.push(json.data[indexSlide].object[indexObject].img);
-                        }
-                        indexObject++;
-                    }
-                    indexSlide++;
-                }
-                return slideList;
-            };
             
             /*
              * Returns an array containing all the background images.
@@ -433,6 +421,25 @@
                     indexSlide++;
                 };
                 return list;
+            };
+            
+            /*
+             * Returns an object containing the id of the first background.
+             * @returns {string} Id of the first background.
+             */
+            this.getInitialBackground = function() {
+                return json.data[0].object[0].id;
+            };
+            
+            /*
+             * Returns an object containing the initial mouse position.
+             * @returns {object} Initial position of mouse.
+             */
+            this.getInitialMousePos = function() {
+                var pos = {};
+                pos.x = json.data[0].action[0].finalAbs;
+                pos.y = json.data[0].action[0].finalOrd;
+                return pos;
             };
 
             /*
@@ -520,19 +527,6 @@
             this.getImageHeight = function() {
                 return json.metaData.imageHeight;
             };
-            
-            /*
-             * Make all the function in the JSON executable (they are not
-             * after a 'stringify', they must be 'eval' before).
-             */
-            this.setFunctionsExecutable = function() {
-                for (var i = 0; i < json.data.length; i++) {
-                    for (var j = 0; j < json.data[i].action.length; j++) {
-                        json.data[i].action[j].exec =
-                                eval('(' + json.data[i].action[j].exec + ')');
-                    }
-                }
-            };
         };
 
         /* public API */
@@ -545,6 +539,10 @@
 
         self.createScreencastModel = function createScreencastModel() {
             return new DahuScreencastModel();
+        };
+        
+        self.createScreencastGeneratedModel = function createScreencastGeneratedModel() {
+            return new DahuScreencastGeneratedModel();
         };
 
         return self;

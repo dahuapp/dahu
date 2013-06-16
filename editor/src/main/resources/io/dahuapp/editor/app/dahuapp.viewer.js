@@ -233,8 +233,6 @@ var dahuapp = (function(dahuapp, $) {
                 return mouseLocation;
             };
 
-
-
             /* Public API */
 
             this.load = function(url) {

@@ -231,7 +231,7 @@ var dahuapp = (function(dahuapp, $) {
                 initProject = true;
                 newChanges = false;
                 selectedSlide = -1;
-                enableProjectButtons();
+                selectedObjectOnSlide = -1;
                 events.onNewProjectCreated.publish();
             }
         };
@@ -313,7 +313,7 @@ var dahuapp = (function(dahuapp, $) {
         };
         
         /*
-         * Function to update the preview on the middle.
+         * Functions to update the preview on the middle.
          */
         var updatePreview = function(idSlide) {
             cleanPreview();
@@ -327,19 +327,26 @@ var dahuapp = (function(dahuapp, $) {
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
                     .attr({'src': abs, 'alt': abs})));
-            updateMouse(idSlide);
+            updateActions(idSlide);
         };
-
-        var updateMouse = function(idSlide) {
+        var updateActions = function(idSlide) {
+            var actionList = jsonModel.getActionList(idSlide);
+            for (var i = 0; i < actionList.length; i++) {
+                var action = actionList[i];
+                if (action.target === "mouse-cursor") {
+                    addMouseOnPreview(action.finalAbs, action.finalOrd);
+                }
+            }
+        };
+        var addMouseOnPreview = function(mouseXp, mouseYp) {
             var ressourceImgDir = dahuapp.drivers.fileSystem.getResource("cursor.png");
-            var slide = jsonModel.getSlide(idSlide);
             $("#preview-image").append($(document.createElement('li'))
                     .attr({'class': "my-cursor"})
                     .append($(document.createElement('img'))
                     .attr({'src': ressourceImgDir, 'alt': ressourceImgDir})));
             $('.my-cursor').css({
-                'top': slide.object[1].mouseY * 100 + "\%",
-                'left': slide.object[1].mouseX * 100 + "\%"
+                'left': mouseXp * 100 + "\%",
+                'top': mouseYp * 100 + "\%"
             });
         };
 
@@ -616,6 +623,9 @@ var dahuapp = (function(dahuapp, $) {
             events.onNewImageTaken.subscribe(updateImageList);
             events.onNewProjectCreated.subscribe(cleanImageList);
             events.onNewProjectCreated.subscribe(cleanPreview);
+            events.onNewProjectCreated.subscribe(enableProjectButtons);
+            events.onNewProjectCreated.subscribe(actualiseSlideButtonsState);
+            events.onNewProjectCreated.subscribe(actualiseObjectButtonsState);
             events.onSelectedObjectChanged.subscribe(setSelectedObjectOnSlide);
             events.onSelectedObjectChanged.subscribe(actualiseObjectButtonsState);
             events.onPopupClosed.subscribe(closePopup);
