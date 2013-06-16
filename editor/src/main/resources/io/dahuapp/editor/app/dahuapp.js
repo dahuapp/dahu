@@ -63,7 +63,7 @@
              * Generates a background image.
              */
             var generateBackgroundImage = function($generated, object) {
-                $('.image-list', $generated)
+                $('.object-list', $generated)
                         .append($(document.createElement('img'))
                         .attr({'src': object.img, 'alt': object.img, 'class': 'screen ' + object.id}));
             };
@@ -94,12 +94,8 @@
                         .append($(document.createElement('script'))
                         .append(getBasicCallCode()));
                 $('#my-dahu-presentation', $generated)
-                        .append($(document.createElement('ul'))
-                        .attr({'class': 'my-viewer'})
-                                .append($(document.createElement('li'))
-                                .attr({'class': 'image-list'}))
-                                .append($(document.createElement('li'))
-                                .attr({'class': 'mouse-cursor'})))
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'object-list'}))
                         .append($(document.createElement('div'))
                         .attr({'class': 'control'}));
 
@@ -125,9 +121,9 @@
                         .append('Next'));
                 
                 // adding the mouse cursor image
-                $('.mouse-cursor', $generated)
+                $('.object-list', $generated)
                         .append($(document.createElement('img'))
-                        .attr({'src': 'img/cursor.png', 'alt':'img/cursor.png'}));
+                        .attr({'src': 'img/cursor.png', 'alt':'img/cursor.png', 'class':'mouse-cursor'}));
             };
 
             /*

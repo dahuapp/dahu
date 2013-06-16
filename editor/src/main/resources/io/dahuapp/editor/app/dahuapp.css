@@ -100,7 +100,7 @@
 }
 
 #preview-image{
-    position : relative;
+    position : absolute;
     margin: 0px;
     list-style: none;
 }

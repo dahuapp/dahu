@@ -1,25 +1,15 @@
-.screen {
-    position: relative;
-    width : 100%;
-}
-
-#my-dahu-presentation{
-    position : relative;
-}
-
-.mouse-cursor{
-    position : absolute;
-    margin: 0px;
-}
-
-.my-viewer{
-    position: relative;
-    width: 100%; /* put the same value as '.screen' width (100% or in PX) */
-    list-style: none;
+.object-list{
+    position: absolute;
     margin: 0px;
     padding: 0px;
 }
 
-.control {
-    position: relative;
+.mouse-cursor{
+    position: absolute;
+    top: 0px;
+    left : 0px;
+}
+
+.control{
+    position :absolute;
 }
