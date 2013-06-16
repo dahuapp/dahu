@@ -173,7 +173,7 @@
              * @param String val Text to format.
              * @returns {String|dahuapp.editor.formatJson.retval}.
              */
-            function formatJson(val) {
+            /*function formatJson(val) {
                 var retval = '';
                 var str = val;
                 var str2;
@@ -227,7 +227,7 @@
                 }
 
                 return retval;
-            }
+            }*/
 
             /* Public API */
 
@@ -260,105 +260,80 @@
              */
             this.addSlide = function(idSlide, img, mouseX, mouseY) {
                 var slide = {
-                    "indexObject": 0,
-                    "indexAction": 0,
                     "object": new Array(),
                     "action": new Array()
                 };
                 json.data.splice(idSlide, 0, slide);
-                this.addObject(idSlide, "background");
-                this.setObjectImage(idSlide, 0, img);
+                this.addObject(idSlide, "background", img);
                 this.addObject(idSlide, "mouse");
-                this.setObjectMouse(idSlide, 1, mouseX, mouseY);
-                this.addAction(idSlide, json.data[idSlide].object[1].id, "onClick");
-                this.setActionMove(idSlide, 0, mouseX, mouseY);
+                this.addAction(idSlide, "appear", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY);
             };
 
             /*
+             * Object factory.
              * Add a new Object in the slide idSlide.
              * @param int idSlide
              * @param string type
+             * Other params can be specified depending on the object's type.
              */
             this.addObject = function(idSlide, type) {
                 var object = {
-                    "id": "s" + idSlide + "-o" + json.data[idSlide].indexObject,
                     "type": type
                 };
+                switch (type.toLowerCase()) {
+                    case "background":
+                        object.id = "s" + idSlide + "-o" + json.data[idSlide].object.length;
+                        object.img = arguments[2] || "";
+                        break;
+                    case "mouse":
+                        object.id = "mouse-cursor";
+                        break;
+                }
                 json.data[idSlide].object.push(object);
-                json.data[idSlide].indexObject++;
             };
 
             /*
+             * Action factory.
              * Add a new Action in the slide idSlide whose target is the id of an object.
              * Three types of trigger : "withPrevious", "afterPrevious", "onClick".
              * @param int idSlide
+             * @param string type
              * @param string target
              * @param string trigger
+             * Other params can be specified depending on the object's type.
              */
-            this.addAction = function(idSlide, target, trigger) {
+            this.addAction = function(idSlide, type, target, trigger) {
                 var action = {
+                    "type": type,
                     "target": target,
                     "trigger": trigger
                 };
+                switch (type.toLowerCase()) {
+                    case "appear":
+                        action.finalAbs = arguments[4] || 0.0;
+                        action.finalOrd = arguments[5] || 0.0;
+                        action.duration = arguments[6] || 0;
+                        action.execute = function(imgWidth, imgHeight) {
+                            $(target).css({
+                                'left': this.finalAbs * imgWidth + 'px',
+                                'top': this.finalOrd * imgHeight + 'px'
+                            });
+                            $(target).show(this.duration);
+                        }.toString();
+                        break;
+                    case "move":
+                        action.finalAbs = arguments[4] || 0.0;
+                        action.finalOrd = arguments[5] || 0.0;
+                        action.duration = arguments[6] || 0;
+                        action.execute = function(imgWidth, imgHeight) {
+                            $(target).animate({
+                                'left': this.finalAbs * imgWidth + 'px',
+                                'top': this.finalOrd * imgHeight + 'px'
+                            }, this.duration);
+                        }.toString();
+                        break;
+                }
                 json.data[idSlide].action.push(action);
-                json.data[idSlide].indexAction++;
-            };
-
-            /*
-             * Set abscissa, ordinate and function for the action idAction of the Slide idSlide.
-             * @param int idSlide
-             * @param int idAction
-             * @param int abs
-             * @param int ord
-             */
-            this.setActionAppear = function(idSlide, idAction, abs, ord) {
-                json.data[idSlide].action[idAction].finalAbs = abs;
-                json.data[idSlide].action[idAction].finalOrd = ord;
-                var appear = function(target, finalAbs, finalOrd) {
-                    $(target).show();
-                };
-                json.data[idSlide].action[idAction].execute = appear.toString();
-            };
-
-            /*
-             * Set abscissa, ordinate and function for the action idAction of the Slide idSlide.
-             * @param int idSlide
-             * @param int idAction
-             * @param double finalAbs
-             * @param double finalOrd
-             */
-            this.setActionMove = function(idSlide, idAction, finalAbs, finalOrd) {
-                json.data[idSlide].action[idAction].finalAbs = finalAbs;
-                json.data[idSlide].action[idAction].finalOrd = finalOrd;
-                var move = function(target, finalAbs, finalOrd) {
-                    $(target).animate({
-                        'left': finalAbs * 100 + '\%',
-                        'top': finalOrd * 100 + '\%'}, 1000);
-                };
-                json.data[idSlide].action[idAction].execute = move.toString();
-            };
-
-            /*
-             * Set image arguments for the object idObject of the slide idSlide.
-             * @param int idSlide
-             * @param int idObject
-             * @param int img
-             */
-            this.setObjectImage = function(idSlide, idObject, img) {
-                json.data[idSlide].object[idObject].img = img;
-            };
-
-            /*
-             * Set mouse arguments for the object idObject of the slide idSlide.
-             * @param int idSlide
-             * @param int idObject
-             * @param int mouseX
-             * @param int mouseY
-             */
-            this.setObjectMouse = function(idSlide, idObject, mouseX, mouseY) {
-                json.data[idSlide].object[idObject].id = "mouse-cursor";
-                json.data[idSlide].object[idObject].mouseX = mouseX;
-                json.data[idSlide].object[idObject].mouseY = mouseY;
             };
 
             /*
@@ -387,19 +362,26 @@
                 json.data[idSlide1] = json.data[idSlide2];
                 json.data[idSlide2] = tmp;
             };
-
+            
             /*
-             * Changes the mouse position values of the action identified by idAction
-             * of the slide identified by idSlide.
-             * @param int idSlide Identify the slide.
-             * @param double mouseX Abscissa mouse position in %.
-             * @param double mouseY Ordinate mouse position in %.
+             * Inverts the two actions (their positions on the table).
+             * @param int idSlide
+             * @param int idAction1
+             * @param int idAction2
              */
-            this.editMouse = function(idSlide, mouseX, mouseY) {
-                json.data[idSlide].object[1].mouseX = mouseX;
-                json.data[idSlide].object[1].mouseY = mouseY;
+            this.invertActions = function(idSlide, idAction1, idAction2) {
+                var tmp = json.data[idSlide].action[idAction1];
+                json.data[idSlide].action[idAction1] = json.data[idSlide].action[idAction2];
+                json.data[idSlide].action[idAction2] = tmp;
             };
-
+            
+            /*
+             * Returns the actions on the specified slide.
+             * @returns {Array}
+             */
+            this.getActionList = function(idSlide) {
+                return json.data[idSlide].action;
+            };
 
             /*
              * Catches all the objects of the presentation
@@ -460,14 +442,41 @@
             this.removeSlide = function(idSlide) {
                 json.data.splice(idSlide, 1);
             };
+            
+            /*
+             * Removes the action at the specified slide.
+             * @param {int} idSlide
+             * @param {int} idAction
+             */
+            this.removeAction = function(idSlide, idAction) {
+                json.data[idSlide].action.splice(idAction, 1);
+            };
+            
+            /*
+             * Removes the specified object from the slide.
+             * Also removes all the actions attached to this object.
+             * @param {int} idSlide
+             * @param {int} idObject
+             */
+            this.removeObject = function(idSlide, idObject) {
+                var removed = json.data[idSlide].object.splice(idObject, 1);
+                for (var i = 0; i < json.data.length; i++) {
+                    var j = 0;
+                    while (json.data[i].action[j]) {
+                        if (json.data[i].action[j].target === removed.id) {
+                            json.data[i].action.splice(j, 1);
+                        } else {
+                            j++;
+                        }
+                    }
+                }
+            };
 
             /*
              * @returns {String}
              */
             this.getJson = function() {
-                var stringJson;
-                stringJson = JSON.stringify(json);
-                return formatJson(stringJson);
+                return JSON.stringify(json, null, '    ');
             };
 
             /*
@@ -510,6 +519,19 @@
              */
             this.getImageHeight = function() {
                 return json.metaData.imageHeight;
+            };
+            
+            /*
+             * Make all the function in the JSON executable (they are not
+             * after a 'stringify', they must be 'eval' before).
+             */
+            this.setFunctionsExecutable = function() {
+                for (var i = 0; i < json.data.length; i++) {
+                    for (var j = 0; j < json.data[i].action.length; j++) {
+                        json.data[i].action[j].exec =
+                                eval('(' + json.data[i].action[j].exec + ')');
+                    }
+                }
             };
         };
 
