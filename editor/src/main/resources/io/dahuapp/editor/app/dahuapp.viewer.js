@@ -57,27 +57,27 @@ var dahuapp = (function(dahuapp, $) {
              * Variables used like index for methodes subscribed.
              */
             var currentAction = 0;
-            var nextAction = 0; 
+            var nextAction = 0;
             var allActionFinish = 0;
             /*
              * Function used when an "onNextEvent" event is caught.
              */
             var onNextEventHandler = function() {
                 $(selector + " .object-list").children().stop(true, true);
-                if(json.action[nextAction]) {
-                    launch(json.action[nextAction++]);
+                if (json.action[nextAction]) {
+                    launch(json.action[nextAction]);
                     currentAction = nextAction;
                 } else if (nextAction < 0) {
                     currentAction = 0;
                     nextAction = 0;
                 }
                 while (json.action[currentAction]) {
-                    switch(json.action[currentAction].trigger){
+                    switch (json.action[currentAction].trigger) {
                         case 'onClick':
                             nextAction = currentAction;
                             return;
                         case 'withPrevious':
-                            events.onActionStart.subscribe(json.data[currentAction].execute); 
+                            events.onActionStart.subscribe(json.data[currentAction].execute);
                             break;
                         case 'afterPrevious':
                             events.onAllActionFinish.subscribe(json.data[currentAction].execute);
@@ -85,7 +85,7 @@ var dahuapp = (function(dahuapp, $) {
                                 currentAction++;
                             }
                             nextAction = currentAction;
-                        break;
+                            break;
                     }
                     currentAction++;
                 }
@@ -96,7 +96,7 @@ var dahuapp = (function(dahuapp, $) {
              */
             var onPreviousEventHandler = function() {
                 $(selector + " .object-list").children().stop(true, true);
-                while(json.action[--currentAction].trigger !== 'onClick') {
+                while (json.action[--currentAction].trigger !== 'onClick') {
                     launch(json.action[currentAction]);
                 }
                 nextAction = currentAction;
@@ -105,22 +105,26 @@ var dahuapp = (function(dahuapp, $) {
             /*
              * Function used when an "onActionOverEvent" event is caught.
              */
-            var onActionOverEventHandler = function() { 
+            var onActionOverEventHandler = function() {
                 allActionFinish--;
                 if (allActionFinish === 0) {
                     events.onAllActionFinish.publish();
-                    events.onActionStart
-                    events.onAllActionFinish
-                }
-                switch (json.action[currentAction].trigger) {
-                    case 'onClick':
-                        return;
-                    case 'withPrevious':
-                        events.onActionStart.subscribe(json.data[currentAction].execute); 
-                        break;
-                    case 'afterPrevious':
-                        events.onAllActionFinish.subscribe(json.data[currentAction].execute);
-                        break;
+                    events.onActionStart.unsubscribeAll();
+                    events.onActionStart.subscribe(onActionStartEventHandler);
+                    events.onAllActionFinish.unsubscribeAll();
+                    while (json.data[currentAction]) {
+                        switch (json.action[currentAction].trigger) {
+                            case 'onClick':
+                                return;
+                            case 'withPrevious':
+                                events.onActionStart.subscribe(json.data[currentAction].execute);
+                                break;
+                            case 'afterPrevious':
+                                events.onAllActionFinish.subscribe(json.data[currentAction].execute);
+                                return;
+                        }
+                        currentAction++;
+                    }
                 }
             };
 
@@ -135,9 +139,9 @@ var dahuapp = (function(dahuapp, $) {
              * Function used to realise actions.
              */
             var launch = function(action) {
-                action.execute(json.metaData.image.width, json.metaData.image.Height);
+                action.execute(json.metaData.imageWidth, json.metaData.imageHeight);
             };
-            
+
             var launchReverse = function(action) {
                 action.executeReverse(json.metaData.image.width, json.metaData.image.Height);
             };
@@ -169,21 +173,18 @@ var dahuapp = (function(dahuapp, $) {
                 events.onPrevious.subscribe(onPreviousEventHandler);
                 events.onActionOver.subscribe(onActionOverEventHandler);
                 events.onActionStart.subscribe(onActionStartEventHandler);
-               
-                /*
-                 * Variable storing the total number of slides.
-                 */
-                var max = json.data.length;
 
                 /*
                  *At the beginning, the visible image is the first one of the presentation
                  */
-                $(selector + " .image-list").hide();
+                $(selector + " .object-list").children().hide();
 
-                $(selector + " ." + json.data[0].object[0].id).show();
+                $(selector + " .mouse-cursor").show();
 
-                $(selector + " ." + "mouse-cursor").css({'top': json.data[0].action[0].finalOrd * 100 + "\%",
-                    'left': json.data[0].action[0].finalAbs * 100 + "\%"});
+                $(selector + " ." + json.metaData.initialBackgroundId).show();
+
+                $(selector + " ." + "mouse-cursor").css({'top': json.metaData.initialMouseY * json.metaData.imageHeight + "px",
+                    'left': json.metaData.initialMouseX * json.metaData.imageWidth + "px"});
 
 
                 /*
