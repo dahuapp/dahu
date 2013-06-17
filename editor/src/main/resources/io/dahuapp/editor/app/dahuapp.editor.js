@@ -326,7 +326,7 @@ var dahuapp = (function(dahuapp, $) {
             
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
-                    .attr({'src': abs, 'alt': abs})));
+                    .attr({'src': abs, 'alt': abs, 'id': "image"})));
             updateActions(idSlide);
         };
         var updateActions = function(idSlide) {
@@ -662,26 +662,27 @@ var dahuapp = (function(dahuapp, $) {
                     selectedObjectOnSlide = objId;
                     events.onSelectedObjectChanged.publish(selectedObjectOnSlide);
                 }
+                alert("image size : " + $('#image').width() + "x" + $('#image').height());
             });
             $('#preview-image').on({
                 dragover: function(e) {
                         if( $(this).hasClass('my-cursor')) {
                             return ;
                         }
-                            cursorY = event.y - $(this).offset().top;
-                            cursorX = event.x - $(this).offset().left;
+                            cursorY = ((event.y - $(this).offset().top) / $('#image').height())*100;
+                            cursorX = ((event.x - $(this).offset().left) / $('#image').width())*100;
                             $('.my-cursor').css({
-                                'top': cursorY,
-                                'left': cursorX
+                                'top': cursorY + "\%",
+                                'left': cursorX + "\%"
                             });
                             setStateBarMessage("x : " + cursorX + ", y : " + cursorY);
                     e.preventDefault();
                 },
                 dragend: function() {
                         if ($(this).hasClass('my-cursor')) {
-                            var _x = cursorX / jsonModel.getImageWidth();
-                            var _y = cursorY / jsonModel.getImageHeight();
-                            setStateBarMessage("x : " + (_x * 100) + "% , y : " + (_y * 100) + "%");
+                            var _x = cursorX;
+                            var _y = cursorY;
+                            setStateBarMessage("x : " + _x + "% , y : " + _y + "%");
                         }
                         /*
                          * TODO : here we have to update the jsonModel to save the mouse cursor Position
