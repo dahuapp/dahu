@@ -345,6 +345,11 @@
                 }
                 json.data[idSlide].action.push(action);
             };
+            
+            this.editMouse = function(idSlide, idAction, mouseX, mouseY) {
+                json.data[idSlide].action[idAction].finalAbs = mouseX;
+                json.data[idSlide].action[idAction].finalOrd = mouseY;
+            };
 
             /*
              * Sets a title for the presentation.

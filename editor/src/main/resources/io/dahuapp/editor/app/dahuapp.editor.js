@@ -334,14 +334,16 @@ var dahuapp = (function(dahuapp, $) {
             for (var i = 0; i < actionList.length; i++) {
                 var action = actionList[i];
                 if (action.target === "mouse-cursor") {
-                    addMouseOnPreview(action.finalAbs, action.finalOrd);
+                    addMouseOnPreview(action.finalAbs, action.finalOrd, i);
                 }
             }
         };
-        var addMouseOnPreview = function(mouseXp, mouseYp) {
+        var addMouseOnPreview = function(mouseXp, mouseYp, idAction) {
             var ressourceImgDir = dahuapp.drivers.fileSystem.getResource("cursor.png");
             $("#preview-image").append($(document.createElement('li'))
-                    .attr({ 'class': "my-cursor"})
+                    .attr({ 'class': "my-cursor",
+                            'id': idAction
+                        })
                     .append($(document.createElement('img'))
                     .attr({'src': ressourceImgDir, 'alt': ressourceImgDir})));
             $('.my-cursor').css({
@@ -635,6 +637,7 @@ var dahuapp = (function(dahuapp, $) {
              * Private variable for the drag and drop
              */
             var cursorX, cursorY;
+            var idAction;
             
             /*
              * Basic events for the buttons and components.
@@ -665,7 +668,12 @@ var dahuapp = (function(dahuapp, $) {
                 alert("image size : " + $('#image').width() + "x" + $('#image').height());
             });
             $('#preview-image').on({
-                dragover: function(e) {
+                dragstart: function() {
+                    if( $(this).hasClass('my-cursor')) {
+                            idAction = $(this).attr('id');
+                        }
+                },
+                dragover: function() {
                         if( $(this).hasClass('my-cursor')) {
                             return ;
                         }
@@ -680,9 +688,7 @@ var dahuapp = (function(dahuapp, $) {
                 },
                 dragend: function() {
                         if ($(this).hasClass('my-cursor')) {
-                            var _x = cursorX;
-                            var _y = cursorY;
-                            setStateBarMessage("x : " + _x + "% , y : " + _y + "%");
+                            jsonModel.editMouse(selectedSlide, idAction, cursorX/100, cursorY/100);
                         }
                         /*
                          * TODO : here we have to update the jsonModel to save the mouse cursor Position
