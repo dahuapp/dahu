@@ -665,7 +665,6 @@ var dahuapp = (function(dahuapp, $) {
                     selectedObjectOnSlide = objId;
                     events.onSelectedObjectChanged.publish(selectedObjectOnSlide);
                 }
-                alert("image size : " + $('#image').width() + "x" + $('#image').height());
             });
             $('#preview-image').on({
                 dragstart: function() {
@@ -683,21 +682,13 @@ var dahuapp = (function(dahuapp, $) {
                                 'top': cursorY + "\%",
                                 'left': cursorX + "\%"
                             });
-                            setStateBarMessage("x : " + cursorX + ", y : " + cursorY);
+                            //setStateBarMessage("x : " + cursorX + ", y : " + cursorY);
                     e.preventDefault();
                 },
                 dragend: function() {
                         if ($(this).hasClass('my-cursor')) {
                             jsonModel.editMouse(selectedSlide, idAction, cursorX/100, cursorY/100);
                         }
-                        /*
-                         * TODO : here we have to update the jsonModel to save the mouse cursor Position
-                         */
-                },
-                drop: function(e, ui) {
-                    //alert($(this).index());
-                    //alert("top : " + data.offset().top + "\nleft : " + data.offset().left);
-                 //   e.preventDefault();
                 }
                 
             }, 'li'
