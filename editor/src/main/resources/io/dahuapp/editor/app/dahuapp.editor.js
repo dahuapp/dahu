@@ -431,7 +431,10 @@ var dahuapp = (function(dahuapp, $) {
             } else {
                 reqHeight = parseInt(reqHeight);
             }
-            jsonModel.setImageSizeRequirements(reqWidth, reqHeight);
+            var fileSystem = dahuapp.drivers.fileSystem;
+            var path = projectDir + fileSystem.getSeparator() + jsonModel.getABackgroundImage();
+            var dim = fileSystem.getResizedDimensions(path, reqWidth, reqHeight);
+            jsonModel.setImageSizeRequirements(dim.width, dim.height);
         };
         
         /*

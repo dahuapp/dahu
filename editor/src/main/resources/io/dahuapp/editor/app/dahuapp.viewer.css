@@ -11,5 +11,9 @@
 }
 
 .control{
-    position :absolute;
+    position: absolute;
+}
+
+.screen{
+    position: absolute;
 }

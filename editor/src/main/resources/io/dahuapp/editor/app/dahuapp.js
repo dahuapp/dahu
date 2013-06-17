@@ -113,6 +113,7 @@
 
                 // adding the control buttons to the page
                 $('.control', $generated)
+                        .css({'top': (jsonModel.getImageHeight() + 16) + 'px'})
                         .append($(document.createElement('button'))
                         .attr({'class': 'previous'})
                         .append('Previous'))
@@ -235,8 +236,8 @@
              */
             this.createPresentation = function() {
                 json.metaData = {};
-                json.metaData.imageWidth = 0; // 0 means not imposed
-                json.metaData.imageHeight = 0; // idem
+                json.metaData.imageWidth = 640;
+                json.metaData.imageHeight = 359;
                 json.data = new Array();
             };
 
@@ -316,7 +317,7 @@
                             });
                         }.toString();
                         action.executeReverse = function(selector, imgWidth, imgHeight) {
-                            $(selector + ' .' + this.target).hide();
+                            $(selector + ' .' + this.target).hide(this.duration);
                         }.toString();
                         break;
                     case "move":
@@ -336,10 +337,10 @@
                             });
                         }.toString();
                         action.executeReverse = function(selector, imgWidth, imgHeight) {
-                            $(selector + ' .' + target).css({
+                            $(selector + ' .' + this.target).animate({
                                 'left': this.initialAbs,
                                 'top': this.initialOrd
-                            });
+                            }, this.duration, 'linear');
                         }.toString();
                         break;
                 }
@@ -533,6 +534,21 @@
              */
             this.getImageHeight = function() {
                 return json.metaData.imageHeight;
+            };
+            
+            /*
+             * Gets a background image (no one in particular, the first met).
+             * @return {string} The name of a background image.
+             */
+            this.getABackgroundImage = function() {
+                for (var i = 0; i < json.data.length; i++) {
+                    for (var j = 0; j < json.data[i].object.length; j++) {
+                        if (json.data[i].object[j].type === "background") {
+                            return json.data[i].object[j].img;
+                        }
+                    }
+                }
+                return null;
             };
         };
 

@@ -77,42 +77,61 @@ var dahuapp = (function(dahuapp, $) {
             var onNextEventHandler = function() {
                 $(selector + " .object-list").children().stop(true, true);
                 reinitialiseCallbackLists();
-                if (json.action[nextAction]) {
-                    launch(json.action[nextAction]);
-                    currentAction = nextAction + 1;
-                } else if (nextAction < 0) {
-                    currentAction = 0;
-                    nextAction = 0;
-                }
-                while (json.action[currentAction]) {
+                nbActionsRunning = 0;
+                var tmpAction = nextAction;
+                var onlyWithPrevious = true;
+                nextAction++;
+                currentAction = nextAction;
+                while (json.action[currentAction] && onlyWithPrevious) {
                     switch (json.action[currentAction].trigger) {
                         case 'onClick':
                             nextAction = currentAction;
-                            return;
+                            onlyWithPrevious = false;
+                            break;
                         case 'withPrevious':
-                            events.onActionStart.subscribe(json.data[currentAction].execute);
+                            var tmp = currentAction;
+                            events.onActionStart.subscribe(function(selector, imageWidth, imageHeight) {
+                                json.action[tmp].execute(selector, imageWidth, imageHeight);
+                            });
                             break;
                         case 'afterPrevious':
-                            events.onAllActionFinish.subscribe(json.data[currentAction].execute);
-                            while (json.action[currentAction].trigger !== 'onClick') {
-                                currentAction++;
+                            var tmp = currentAction;
+                            events.onAllActionFinish.subscribe(function(selector, imageWidth, imageHeight) {
+                                json.action[tmp].execute(selector, imageWidth, imageHeight);
+                            });
+                            while (json.action[nextAction] && json.action[nextAction].trigger !== 'onClick') {
+                                nextAction++;
                             }
-                            nextAction = currentAction;
+                            onlyWithPrevious = false;
                             break;
                     }
                     currentAction++;
                 }
+                if (json.action[tmpAction]) {
+                    launch(json.action[tmpAction]);
+                }
+                if (nextAction > json.action.length) {
+                    nextAction = json.action.length;
+                }
             };
-
+            
             /*
              * Function used when an "onPreviousEvent" event is caught.
              */
             var onPreviousEventHandler = function() {
                 $(selector + " .object-list").children().stop(true, true);
-                while (json.action[--currentAction].trigger !== 'onClick') {
-                    launch(json.action[currentAction]);
+                reinitialiseCallbackLists();
+                currentAction = nextAction - 1;
+                while (json.action[currentAction] && json.action[currentAction].trigger !== 'onClick') {
+                    launchReverse(json.action[currentAction]);
+                    currentAction--;
+                }
+                launchReverse(json.action[currentAction]);
+                if (currentAction < 0) {
+                    currentAction = 0;
                 }
                 nextAction = currentAction;
+                nbActionsRunning = 0;
             };
 
             /*
@@ -122,18 +141,18 @@ var dahuapp = (function(dahuapp, $) {
                 nbActionsRunning--;
                 if (nbActionsRunning === 0) {
                     events.onAllActionFinish.publish(selector, json.metaData.imageWidth, json.metaData.imageHeight);
-                    events.onActionStart.unsubscribeAll();
-                    events.onActionStart.subscribe(onActionStartEventHandler);
-                    events.onAllActionFinish.unsubscribeAll();
-                    while (json.data[currentAction]) {
+                    reinitialiseCallbackLists();
+                    while (json.action[currentAction]) {
                         switch (json.action[currentAction].trigger) {
                             case 'onClick':
                                 return;
                             case 'withPrevious':
-                                events.onActionStart.subscribe(json.data[currentAction].execute);
+                                var tmp = currentAction;
+                                events.onActionStart.subscribe(function(selector, imageWidth, imageHeight) {json.action[tmp].execute(selector, imageWidth, imageHeight);});
                                 break;
                             case 'afterPrevious':
-                                events.onAllActionFinish.subscribe(json.data[currentAction].execute);
+                                var tmp = currentAction;
+                                events.onAllActionFinish.subscribe(function(selector, imageWidth, imageHeight) {json.action[tmp].execute(selector, imageWidth, imageHeight);});
                                 return;
                         }
                         currentAction++;
@@ -156,7 +175,7 @@ var dahuapp = (function(dahuapp, $) {
             };
 
             var launchReverse = function(action) {
-                action.executeReverse(selector, json.metaData.image.width, json.metaData.image.Height);
+                action.executeReverse(selector, json.metaData.imageWidth, json.metaData.imageHeight);
             };
 
             /* Public API */

@@ -185,6 +185,31 @@ public class FileSystemDriverProxy implements Proxy {
     }
     
     /**
+     * Returns the dimension of a resized image.
+     * @param path Path to an image.
+     * @param width Width required.
+     * @param height Height required.
+     * @return Dimension of resized image.
+     */
+    public Dimension getResizedDimensions(String path, int width, int height) {
+        try {
+            String imageURL = new File(path).toURI().toURL().toString();
+            Image image;
+            if (width != 0 && height != 0) {
+                image = new Image(imageURL, width, height, false, true);
+            } else if (width != 0 || height != 0) {
+                image = new Image(imageURL, width, height, true, true);
+            } else {
+                image = new Image(imageURL);
+            }
+            return new Dimension((int) image.getWidth(), (int) image.getHeight());
+        } catch (MalformedURLException e) {
+            LoggerProxy.severe("Malformed URL", e);
+        }
+        return null;
+    }
+    
+    /**
      * Copies the file denoted by its pathname to another file.
      * @param src Name of the file to copy.
      * @param dest Name of the file where to put the copy.
