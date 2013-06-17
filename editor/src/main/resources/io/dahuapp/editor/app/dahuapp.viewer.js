@@ -50,6 +50,11 @@ var dahuapp = (function(dahuapp, $) {
                  * Called when an action starts.
                  */
                 self.onActionStart = createEvent();
+                /*
+                 * Called when at least one action was running and has finished.
+                 */
+                self.onAllActionFinish = createEvent();
+                
                 return self;
             })();
 
@@ -58,15 +63,23 @@ var dahuapp = (function(dahuapp, $) {
              */
             var currentAction = 0;
             var nextAction = 0;
-            var allActionFinish = 0;
+            var nbActionsRunning = 0;
+            
+            var reinitialiseCallbackLists = function() {
+                events.onActionStart.unsubscribeAll();
+                events.onActionStart.subscribe(onActionStartEventHandler);
+                events.onAllActionFinish.unsubscribeAll();
+            };
+            
             /*
              * Function used when an "onNextEvent" event is caught.
              */
             var onNextEventHandler = function() {
                 $(selector + " .object-list").children().stop(true, true);
+                reinitialiseCallbackLists();
                 if (json.action[nextAction]) {
                     launch(json.action[nextAction]);
-                    currentAction = nextAction;
+                    currentAction = nextAction + 1;
                 } else if (nextAction < 0) {
                     currentAction = 0;
                     nextAction = 0;
@@ -106,9 +119,9 @@ var dahuapp = (function(dahuapp, $) {
              * Function used when an "onActionOverEvent" event is caught.
              */
             var onActionOverEventHandler = function() {
-                allActionFinish--;
-                if (allActionFinish === 0) {
-                    events.onAllActionFinish.publish();
+                nbActionsRunning--;
+                if (nbActionsRunning === 0) {
+                    events.onAllActionFinish.publish(selector, json.metaData.imageWidth, json.metaData.imageHeight);
                     events.onActionStart.unsubscribeAll();
                     events.onActionStart.subscribe(onActionStartEventHandler);
                     events.onAllActionFinish.unsubscribeAll();
@@ -132,18 +145,18 @@ var dahuapp = (function(dahuapp, $) {
              * Function used when an "onActionStartEvent" event is caught.
              */
             var onActionStartEventHandler = function() {
-                allActionFinish++;
+                nbActionsRunning++;
             };
 
             /*
              * Function used to realise actions.
              */
             var launch = function(action) {
-                action.execute(json.metaData.imageWidth, json.metaData.imageHeight);
+                action.execute(selector, json.metaData.imageWidth, json.metaData.imageHeight);
             };
 
             var launchReverse = function(action) {
-                action.executeReverse(json.metaData.image.width, json.metaData.image.Height);
+                action.executeReverse(selector, json.metaData.image.width, json.metaData.image.Height);
             };
 
             /* Public API */
@@ -166,6 +179,7 @@ var dahuapp = (function(dahuapp, $) {
                     json.action[i].execute = eval('(' + json.action[i].execute + ')');
                     json.action[i].executeReverse = eval('(' + json.action[i].executeReverse + ')');
                 }
+                
                 /*
                  * Subscription of methods to their events.
                  */
@@ -179,13 +193,12 @@ var dahuapp = (function(dahuapp, $) {
                  */
                 $(selector + " .object-list").children().hide();
 
-                $(selector + " .mouse-cursor").show();
-
                 $(selector + " ." + json.metaData.initialBackgroundId).show();
 
-                $(selector + " ." + "mouse-cursor").css({'top': json.metaData.initialMouseY * json.metaData.imageHeight + "px",
+                $(selector + " .mouse-cursor").css({'top': json.metaData.initialMouseY * json.metaData.imageHeight + "px",
                     'left': json.metaData.initialMouseX * json.metaData.imageWidth + "px"});
 
+                $(selector + " .mouse-cursor").show();
 
                 /*
                  * A click on the "next" button publishes a nextSlide event

@@ -304,37 +304,39 @@
                         action.abs = arguments[4] || 0.0;
                         action.ord = arguments[5] || 0.0;
                         action.duration = arguments[6] || 0;
-                        action.execute = function(imgWidth, imgHeight) {
-                            events.onActionStart.publish();
-                            $(target).css({
+                        action.execute = function(selector, imgWidth, imgHeight) {
+                            events.onActionStart.publish(selector, imgWidth, imgHeight);
+                            var sel = selector + ' .' + this.target;
+                            $(sel).css({
                                 'left': this.abs * imgWidth + 'px',
                                 'top': this.ord * imgHeight + 'px'
                             });
-                            $(target).show(this.duration, function() {
-                                events.onActionOver.publish();
+                            $(sel).show(this.duration, function() {
+                                events.onActionOver.publish(selector, imgWidth, imgHeight);
                             });
                         }.toString();
-                        action.executeReverse = function(imgWidth, imgHeight) {
-                            $(target).hide();
+                        action.executeReverse = function(selector, imgWidth, imgHeight) {
+                            $(selector + ' .' + this.target).hide();
                         }.toString();
                         break;
                     case "move":
                         action.finalAbs = arguments[4] || 0.0;
                         action.finalOrd = arguments[5] || 0.0;
                         action.duration = arguments[6] || 0;
-                        action.execute = function(imgWidth, imgHeight) {
-                            events.onActionStart.publish();
-                            this.initialAbs = $(target).css('left');
-                            this.initialOrd = $(target).css('top');
-                            $(target).animate({
+                        action.execute = function(selector, imgWidth, imgHeight) {
+                            events.onActionStart.publish(selector, imgWidth, imgHeight);
+                            var sel = selector + ' .' + this.target;
+                            this.initialAbs = $(sel).css('left');
+                            this.initialOrd = $(sel).css('top');
+                            $(sel).animate({
                                 'left': this.finalAbs * imgWidth + 'px',
                                 'top': this.finalOrd * imgHeight + 'px'
                             }, this.duration, 'linear', function() {
-                                events.onActionOver.publish();
+                                events.onActionOver.publish(selector, imgWidth, imgHeight);
                             });
                         }.toString();
-                        action.executeReverse = function(imgWidth, imgHeight) {
-                            $(target).css({
+                        action.executeReverse = function(selector, imgWidth, imgHeight) {
+                            $(selector + ' .' + target).css({
                                 'left': this.initialAbs,
                                 'top': this.initialOrd
                             });
