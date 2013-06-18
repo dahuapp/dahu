@@ -274,7 +274,7 @@
                 };
                 switch (type.toLowerCase()) {
                     case "background":
-                        object.id = "s" + idSlide + "-o" + json.data[idSlide].object.length;
+                        object.id = "s" + json.data.length + "-o" + json.data[idSlide].object.length;
                         object.img = arguments[2] || "";
                         break;
                     case "mouse":
