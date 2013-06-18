@@ -90,6 +90,22 @@ public class DahuAppProxy implements Proxy {
     public void setTitleProject(String project) {
         primaryStage.setTitle(DahuApp.TITLE + " - " + project);
     }
+    
+    /**
+     * Returns the width of the app window.
+     * @return The window width.
+     */
+    public int getWindowWidth() {
+        return (int) primaryStage.getWidth();
+    }
+    
+    /**
+     * Returns the height of the app window.
+     * @return The window height.
+     */
+    public int getWindowHeight() {
+        return (int) primaryStage.getHeight();
+    }
 
     @Override
     public void onLoad() {

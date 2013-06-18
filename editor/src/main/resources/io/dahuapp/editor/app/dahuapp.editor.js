@@ -178,9 +178,9 @@ var dahuapp = (function(dahuapp, $) {
             }
         };
         var openProject = function() {
-            var choice = prompt("Enter the absolute path to the dahu project directory :",
-                    "Dahu project directory.");
-            // projectDir = driver.askForProjectDir();
+            //var choice = prompt("Enter the absolute path to the dahu project directory :",
+            //        "Dahu project directory.");
+            projectDir = dahuapp.drivers.fileSystem.askForProjectDir();
             if (choice) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 var absolutePath = choice + fileSystem.getSeparator() + jsonFileName;
@@ -482,8 +482,24 @@ var dahuapp = (function(dahuapp, $) {
         };
         
         /*
-         * Sets the message in the state bar.
-         * @param String message to display in the state bar.
+         * Centers all the popups on the screen.
+         */
+        var centerPopups = function() {
+            var width = dahuapp.drivers.getWindowWidth();
+            var height = dahuapp.drivers.getWindowHeight();
+            $('#popup-manager').children().not('#modal-popups').each(function() {
+                var left = (width - $(this).width()) / 2;
+                // minus 30 for the toplevel bar
+                var top = (height - $(this).height() - 40) / 2;
+                $(this).css({
+                    'left': left + 'px',
+                    'top': top + 'px'
+                });
+            });
+        };
+        
+        /*
+         * State bar management functions.
          */
         var setStateBarMessage = function(message) {
             removeStateBarMessage();
@@ -498,15 +514,11 @@ var dahuapp = (function(dahuapp, $) {
         };
         
         /*
-         * Cleans the image list.
+         * Cleaning functions.
          */
         var cleanImageList = function() {
             $('#image-list').empty();
         };
-        
-        /*
-         * Cleans the preview.
-         */
         var cleanPreview = function() {
             $('#preview-image').empty();
         };
@@ -530,11 +542,12 @@ var dahuapp = (function(dahuapp, $) {
             if (jsonModel.getNbSlide() === selectedSlide) {
                 selectedSlide--;
             }
+            newChanges = true;
             events.onSelectedImageChanged.publish(selectedSlide);
         };
         
         /*
-         * Move the selected slide (up and down).
+         * Move the selected slide (up or down).
          */
         var moveSelectedSlideUp = function() {
             if (selectedSlide > 0) {
@@ -544,6 +557,7 @@ var dahuapp = (function(dahuapp, $) {
                 var previousItem = $('#image-list > li').get(selectedSlide - 1);
                 $(previousItem).before(selectedItem);
                 selectedSlide--;
+                newChanges = true;
             }
         };
         var moveSelectedSlideDown = function() {
@@ -554,6 +568,7 @@ var dahuapp = (function(dahuapp, $) {
                 var nextItem = $('#image-list > li').get(selectedSlide);
                 $(nextItem).after(selectedItem);
                 selectedSlide++;
+                newChanges = true;
             }
         };
         
@@ -654,6 +669,7 @@ var dahuapp = (function(dahuapp, $) {
                 //   will probably have to be removed.
             //    return false;
             //});
+            centerPopups();
             $('#image-list').on('click', 'li', function() {
                 var imgId = $(this).index();
                 if (selectedSlide !== imgId) {
@@ -702,8 +718,7 @@ var dahuapp = (function(dahuapp, $) {
                         }
                 }
                 
-            }, 'li'
-        );
+            }, 'li');
             $('#capture-mode').click(function() {
                 if (initProject) {
                     switchCaptureMode();
@@ -805,6 +820,12 @@ var dahuapp = (function(dahuapp, $) {
                 if (!captureMode && initProject) {
                     setOutputImageSize();
                 }
+            });
+            $('#about-us').click(function() {
+                showPopup('#about-us-popup');
+            });
+            $(window).resize(function() {
+                centerPopups();
             });
         };
 

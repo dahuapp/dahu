@@ -95,6 +95,21 @@
                                     </li>
                                 </ul>
                             </li>
+                            <li class="dropdown">
+                                <!-- link of the dropdown menu -->
+                                <a id="drop4" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                                    Help
+                                    <b class="caret"></b>
+                                </a>
+                                <!-- List of the dropdown menu links -->
+                                <ul class="dropdown-menu" aria-labelledby="drop4" role="menu">
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="about-us">
+                                            About us
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
                         </ul>
                         <!-- Buttons on the right part of navbar -->
                         <ul class="nav pull-right">
@@ -156,21 +171,41 @@
                  add the property 'hidden' to the main div of the popup. -->
             <div id="popup-manager" hidden>
                 <div id="modal-popups"></div>
-                <div id="centered-popups">
-                    <div id="output-settings-popup" hidden>
-                        <div class="popup-title">
-                            Output settings
-                        </div>
-                        <div class="popup-content">
-                            <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
-                            Required width : <input type="number" id="required-width"><br>
-                            Required height : <input type="number" id="required-height">
-                        </div>
-                        <!-- Controls must be direct children of the main popup div -->
-                        <div class="ok-cancel-popups-control">
-                            <button class="popup-confirm btn btn-success">OK</button>
-                            <button class="popup-cancel btn btn-danger">Cancel</button>
-                        </div>
+                <div id="output-settings-popup" hidden>
+                    <div class="popup-title">
+                        Output settings
+                    </div>
+                    <div class="popup-content">
+                        <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
+                        Required width : <input type="number" id="required-width"><br>
+                        Required height : <input type="number" id="required-height">
+                    </div>
+                    <!-- Controls must be direct children of the main popup div -->
+                    <div class="ok-cancel-popups-control">
+                        <button class="popup-confirm btn btn-success">OK</button>
+                        <button class="popup-cancel btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+                <div id="about-us-popup" hidden>
+                    <div class="popup-title">
+                        About us
+                    </div>
+                    <div class="popup-content scroll">
+                        <p>This piece of software was created during a school project by five students of the Ensimag (Grenoble Institute of Technology, France) with the precious help of our two supervisers, from whom came the idea and the project.</p>
+                        <p>Changing a single line of code in DahuApp allows you to put your name herebelow (adding your name doesn't count as changing a line of code) :</p>
+                        <ul>
+                            <li>Rémi Barraquand</li>
+                            <li>Denis Becker</li>
+                            <li>Clément Collignon</li>
+                            <li>Mathieu Gaudron</li>
+                            <li>Matthieu Moy</li>
+                            <li>Jérémy Rasser</li>
+                            <li>Jean-Baptiste Viller</li>
+                        </ul>
+                    </div>
+                    <!-- Controls must be direct children of the main popup div -->
+                    <div class="ok-cancel-popups-control">
+                        <button class="popup-confirm btn btn-success">OK</button>
                     </div>
                 </div>
             </div>

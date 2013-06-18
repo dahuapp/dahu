@@ -33,7 +33,7 @@ public class DahuApp extends Application {
     /**
      * Minimum width of the editor window.
      */
-    private static final int MIN_WIDTH = 640;
+    private static final int MIN_WIDTH = 720;
     /**
      * Minimum height of the editor window.
      */

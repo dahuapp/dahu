@@ -317,7 +317,7 @@
                             });
                         }.toString();
                         action.executeReverse = function(selector, imgWidth, imgHeight) {
-                            $(selector + ' .' + this.target).hide(this.duration);
+                            $(selector + ' .' + this.target).hide();
                         }.toString();
                         break;
                     case "move":
@@ -337,10 +337,10 @@
                             });
                         }.toString();
                         action.executeReverse = function(selector, imgWidth, imgHeight) {
-                            $(selector + ' .' + this.target).animate({
+                            $(selector + ' .' + this.target).css({
                                 'left': this.initialAbs,
                                 'top': this.initialOrd
-                            }, this.duration, 'linear');
+                            });
                         }.toString();
                         break;
                 }

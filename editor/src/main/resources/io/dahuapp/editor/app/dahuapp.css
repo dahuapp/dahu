@@ -144,12 +144,6 @@
     right: 0px;
 }
 
-#centered-popups {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-}
-
 .popup-title {
     position: absolute;
     padding: 4px;
@@ -164,9 +158,9 @@
 .popup-content {
     position: absolute;
     padding: 4px;
-    padding-top: 16px;
+    padding-top: 8px;
     padding-bottom: 8px;
-    top: 18px;
+    top: 28px;
 }
 
 .ok-cancel-popups-control {
@@ -190,12 +184,24 @@
 }
 
 #output-settings-popup {
-    position: relative;
-    left: -115px; /* width / 2 */
+    position: absolute;
     width: 230px;
-    top: -110px;  /* height / 2 */
     height: 220px;
     background: white;
     margin: 4px;
     border: 4px inset lightgray;
+}
+
+#about-us-popup {
+    position: relative;
+    width: 400px;
+    height: 420px;
+    background: white;
+    margin: 4px;
+    border: 4px inset lightgray;
+}
+
+/* special for the scrolling of about us popup */
+#about-us-popup .popup-content {
+    height: 336px;
 }
