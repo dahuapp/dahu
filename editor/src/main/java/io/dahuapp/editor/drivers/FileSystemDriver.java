@@ -80,7 +80,13 @@ public class FileSystemDriver implements Driver {
      */
     public boolean remove(String fileName) {
         File file = new File(fileName);
-        return removeThisAndItsContent(file);
+        if (removeThisAndItsContent(file)) {
+            LoggerProxy.info(getClass().getName(), "remove", fileName + " succesfully removed");
+            return true;
+        } else {
+            LoggerProxy.severe(getClass().getName(), "remove", "failed to remove " + fileName);
+            return false;
+        }
     }
 
     /**
@@ -156,6 +162,7 @@ public class FileSystemDriver implements Driver {
             in = new FileInputStream(src);
             out = new FileOutputStream(dest);
         } catch (FileNotFoundException e) {
+            LoggerProxy.severe(getClass().getName(), "copy", e.getMessage(), e);
             return false;
         }
         int length;
@@ -167,8 +174,10 @@ public class FileSystemDriver implements Driver {
             in.close();
             out.close();
         } catch (IOException e) {
+            LoggerProxy.severe(getClass().getName(), "copy", e.getMessage(), e);
             return false;
         }
+        LoggerProxy.info(getClass().getName(), "copy", "copy " + src + " to " + dest + " success");
         return true;
     }
     

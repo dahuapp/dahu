@@ -639,7 +639,7 @@ var dahuapp = (function(dahuapp, $) {
             /*
              * Private variable for the drag and drop
              */
-            var cursorX, cursorY;
+            var cursorX, cursorY, oldPosX, oldPosY;
             var idAction;
             
             /*
@@ -673,6 +673,8 @@ var dahuapp = (function(dahuapp, $) {
                 dragstart: function() {
                     if( $(this).hasClass('my-cursor')) {
                             idAction = $(this).attr('id');
+                            oldPosX = $(this).css('left');
+                            oldPosY = $(this).css('top');
                         }
                 },
                 dragover: function() {
@@ -690,6 +692,13 @@ var dahuapp = (function(dahuapp, $) {
                 dragend: function() {
                         if ($(this).hasClass('my-cursor')) {
                             jsonModel.editMouse(selectedSlide, idAction, cursorX/100, cursorY/100);
+                            dahuapp.drivers.logger.JSconfig("dahuapp.editor.js", 
+                                                            "dragend",
+                                                            "[idSlide : " + selectedSlide +
+                                                            "; idAction : " + idAction +
+                                                            "] mouse cursor moved from " +
+                                                            oldPosX + ", " + oldPosY + "to " +
+                                                            cursorX + ", " + cursorY);
                         }
                 }
                 
