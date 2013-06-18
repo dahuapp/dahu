@@ -489,7 +489,7 @@ var dahuapp = (function(dahuapp, $) {
             removeStateBarMessage();
             $('#state-bar-container').append(message);
         };
-
+        
         /*
          * Removes the message in the state bar.
          */
@@ -685,8 +685,7 @@ var dahuapp = (function(dahuapp, $) {
                                 'top': cursorY + "\%",
                                 'left': cursorX + "\%"
                             });
-                            //setStateBarMessage("x : " + cursorX + ", y : " + cursorY);
-                    e.preventDefault();
+                            setStateBarMessage("x : " + cursorX + "\%, y : " + cursorY + "\%");
                 },
                 dragend: function() {
                         if ($(this).hasClass('my-cursor')) {
