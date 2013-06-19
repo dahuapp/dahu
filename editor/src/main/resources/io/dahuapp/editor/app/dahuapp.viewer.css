@@ -18,6 +18,7 @@
 
 .tooltip {
     position: absolute;
+    width: 100px;
     padding: 4px;
     margin: 2px;
     border: 2px black solid;

@@ -71,7 +71,7 @@
                 $('.object-list', $generated)
                         .append($(document.createElement('div'))
                         .attr({'class': 'tooltip ' + object.id})
-                        .css({'background': object.color})
+                        .css({'background-color': object.color})
                         .append(object.text));
             };
 
@@ -227,7 +227,7 @@
                 switch (action.type.toLowerCase()) {
                     case "appear":
                         executableAction.execute = "function(selector) { " +
-                            "events.onActionStart.publish(selector, imgWidth, imgHeight); " +
+                            "events.onActionStart.publish(selector); " +
                             "var sel = selector + ' ." + action.target + "'; " +
                             "$(sel).css({ " +
                                 "'left': '" + Math.round(action.abs * imgWidth) + "px', " +
@@ -245,10 +245,6 @@
                         executableAction.execute = "function(selector) { " +
                             "events.onActionStart.publish(selector); " +
                             "var sel = selector + ' ." + action.target + "'; " +
-                            "$(sel).css({ " +
-                                "'left': '" + Math.round(action.abs * imgWidth) + "px', " +
-                                "'top': '" + Math.round(action.ord * imgHeight) + "px' " +
-                            "}); " +
                             "$(sel).hide(" + action.duration + ", function() { " +
                             "    events.onActionOver.publish(selector); " +
                             "}); " +
@@ -379,9 +375,7 @@
                         action.duration = arguments[6] || 0;
                         break;
                     case "disappear":
-                        action.abs = arguments[4] || 0.0;
-                        action.ord = arguments[5] || 0.0;
-                        action.duration = arguments[6] || 0;
+                        action.duration = arguments[4] || 0;
                         break;
                     case "move":
                         action.finalAbs = arguments[4] || 0.0;
