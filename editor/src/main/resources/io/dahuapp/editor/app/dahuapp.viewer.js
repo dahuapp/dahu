@@ -90,14 +90,18 @@ var dahuapp = (function(dahuapp, $) {
                             break;
                         case 'withPrevious':
                             var tmp = currentAction;
-                            events.onActionStart.subscribe(function(selector, imageWidth, imageHeight) {
-                                json.action[tmp].execute(selector, imageWidth, imageHeight);
+                            events.onActionStart.subscribe(function(selector) {
+                                // we can't directly pass 'execute' as callback because we
+                                // allow the 'execute' function to reference a property of the
+                                // object (by using 'this.property') so we have to call the
+                                // function in the containing object to make that available
+                                json.action[tmp].execute(selector);
                             });
                             break;
                         case 'afterPrevious':
                             var tmp = currentAction;
-                            events.onAllActionFinish.subscribe(function(selector, imageWidth, imageHeight) {
-                                json.action[tmp].execute(selector, imageWidth, imageHeight);
+                            events.onAllActionFinish.subscribe(function(selector) {
+                                json.action[tmp].execute(selector);
                             });
                             while (json.action[nextAction] && json.action[nextAction].trigger !== 'onClick') {
                                 nextAction++;
@@ -140,7 +144,7 @@ var dahuapp = (function(dahuapp, $) {
             var onActionOverEventHandler = function() {
                 nbActionsRunning--;
                 if (nbActionsRunning === 0) {
-                    events.onAllActionFinish.publish(selector, json.metaData.imageWidth, json.metaData.imageHeight);
+                    events.onAllActionFinish.publish(selector);
                     reinitialiseCallbackLists();
                     while (json.action[currentAction]) {
                         switch (json.action[currentAction].trigger) {
@@ -148,11 +152,15 @@ var dahuapp = (function(dahuapp, $) {
                                 return;
                             case 'withPrevious':
                                 var tmp = currentAction;
-                                events.onActionStart.subscribe(function(selector, imageWidth, imageHeight) {json.action[tmp].execute(selector, imageWidth, imageHeight);});
+                                events.onActionStart.subscribe(function(selector) {
+                                    json.action[tmp].execute(selector);
+                                });
                                 break;
                             case 'afterPrevious':
                                 var tmp = currentAction;
-                                events.onAllActionFinish.subscribe(function(selector, imageWidth, imageHeight) {json.action[tmp].execute(selector, imageWidth, imageHeight);});
+                                events.onAllActionFinish.subscribe(function(selector) {
+                                    json.action[tmp].execute(selector);
+                                });
                                 return;
                         }
                         currentAction++;
@@ -171,11 +179,11 @@ var dahuapp = (function(dahuapp, $) {
              * Function used to realise actions.
              */
             var launch = function(action) {
-                action.execute(selector, json.metaData.imageWidth, json.metaData.imageHeight);
+                action.execute(selector);
             };
 
             var launchReverse = function(action) {
-                action.executeReverse(selector, json.metaData.imageWidth, json.metaData.imageHeight);
+                action.executeReverse(selector);
             };
 
             /* Public API */
@@ -214,8 +222,8 @@ var dahuapp = (function(dahuapp, $) {
 
                 $(selector + " ." + json.metaData.initialBackgroundId).show();
 
-                $(selector + " .mouse-cursor").css({'top': json.metaData.initialMouseY * json.metaData.imageHeight + "px",
-                    'left': json.metaData.initialMouseX * json.metaData.imageWidth + "px"});
+                $(selector + " .mouse-cursor").css({'top': (json.metaData.initialMouseY * json.metaData.imageHeight) + "px",
+                    'left': (json.metaData.initialMouseX * json.metaData.imageWidth) + "px"});
 
                 $(selector + " .mouse-cursor").show();
 

@@ -60,12 +60,19 @@
             };
 
             /*
-             * Generates a background image.
+             * Generates the objects.
              */
             var generateBackgroundImage = function($generated, object) {
                 $('.object-list', $generated)
                         .append($(document.createElement('img'))
-                        .attr({'src': object.img, 'alt': object.img, 'class': 'screen ' + object.id}));
+                        .attr({'src': object.img, 'alt': object.img, 'class': 'background ' + object.id}));
+            };
+            var generateTooltip = function($generated, object) {
+                $('.object-list', $generated)
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'tooltip ' + object.id})
+                        .css({'background': object.color})
+                        .append(object.text));
             };
 
             /*
@@ -104,6 +111,9 @@
                     switch (object.type) {
                         case "background":
                             generateBackgroundImage($generated, object);
+                            break;
+                        case "tooltip":
+                            generateTooltip($generated, object);
                             break;
                             // no mouse image generated here
                     }
@@ -166,7 +176,7 @@
                         // because they are present in the presentation metadata.
                         // It corresponds to the mouse initial pos and first background.
                         if (i > 0 || j > 1) {
-                            generated.addAction(actionList[j]);
+                            generated.addAction(actionList[j], imgDim.width, imgDim.height);
                         }
                     }
                 }
@@ -210,8 +220,65 @@
                 json.metaData.initialBackgroundId = id;
             };
             
-            this.addAction = function(action) {
-                json.action.push(action);
+            this.addAction = function(action, imgWidth, imgHeight) {
+                var executableAction = {
+                    'trigger': action.trigger
+                };
+                switch (action.type.toLowerCase()) {
+                    case "appear":
+                        executableAction.execute = "function(selector) { " +
+                            "events.onActionStart.publish(selector, imgWidth, imgHeight); " +
+                            "var sel = selector + ' ." + action.target + "'; " +
+                            "$(sel).css({ " +
+                                "'left': '" + Math.round(action.abs * imgWidth) + "px', " +
+                                "'top': '" + Math.round(action.ord * imgHeight) + "px' " +
+                            "}); " +
+                            "$(sel).show(" + action.duration + ", function() { " +
+                            "    events.onActionOver.publish(selector); " +
+                            "}); " +
+                        "}";
+                        executableAction.executeReverse = "function(selector) { " +
+                            "$(selector + ' ." + action.target + "').hide(); " +
+                        "}";
+                        break;
+                    case "disappear":
+                        executableAction.execute = "function(selector) { " +
+                            "events.onActionStart.publish(selector); " +
+                            "var sel = selector + ' ." + action.target + "'; " +
+                            "$(sel).css({ " +
+                                "'left': '" + Math.round(action.abs * imgWidth) + "px', " +
+                                "'top': '" + Math.round(action.ord * imgHeight) + "px' " +
+                            "}); " +
+                            "$(sel).hide(" + action.duration + ", function() { " +
+                            "    events.onActionOver.publish(selector); " +
+                            "}); " +
+                        "}";
+                        executableAction.executeReverse = "function(selector) { " +
+                            "$(selector + ' ." + action.target + "').show(); " +
+                        "}";
+                        break;
+                    case "move":
+                        executableAction.execute = "function(selector) { " +
+                            "events.onActionStart.publish(selector); " +
+                            "var sel = selector + ' ." + action.target + "'; " +
+                            "this.initialAbs = $(sel).css('left'); " +
+                            "this.initialOrd = $(sel).css('top'); " +
+                            "$(sel).animate({ " +
+                                "'left': '" + Math.round(action.finalAbs * imgWidth) + "px', " +
+                                "'top': '" + Math.round(action.finalOrd * imgHeight) + "px' " +
+                            "}, " + action.duration + ", 'linear', function() { " +
+                                "events.onActionOver.publish(selector); " +
+                            "}); " +
+                        "}";
+                        executableAction.executeReverse = "function(selector) { " +
+                            "$(selector + ' ." + action.target + "').css({ " +
+                                "'left': this.initialAbs, " +
+                                "'top': this.initialOrd " +
+                            "}); " +
+                        "}";
+                        break;
+                }
+                json.action.push(executableAction);
             };
         };
 
@@ -280,6 +347,11 @@
                     case "mouse":
                         object.id = "mouse-cursor";
                         break;
+                    case "tooltip":
+                        object.id = "s" + json.data.length + "-o" + json.data[idSlide].object.length;
+                        object.text = arguments[2] || "";
+                        object.color = arguments[3] || "#FFFFFF";
+                        break;
                 }
                 json.data[idSlide].object.push(object);
             };
@@ -305,43 +377,16 @@
                         action.abs = arguments[4] || 0.0;
                         action.ord = arguments[5] || 0.0;
                         action.duration = arguments[6] || 0;
-                        action.execute = function(selector, imgWidth, imgHeight) {
-                            events.onActionStart.publish(selector, imgWidth, imgHeight);
-                            var sel = selector + ' .' + this.target;
-                            $(sel).css({
-                                'left': this.abs * imgWidth + 'px',
-                                'top': this.ord * imgHeight + 'px'
-                            });
-                            $(sel).show(this.duration, function() {
-                                events.onActionOver.publish(selector, imgWidth, imgHeight);
-                            });
-                        }.toString();
-                        action.executeReverse = function(selector, imgWidth, imgHeight) {
-                            $(selector + ' .' + this.target).hide();
-                        }.toString();
+                        break;
+                    case "disappear":
+                        action.abs = arguments[4] || 0.0;
+                        action.ord = arguments[5] || 0.0;
+                        action.duration = arguments[6] || 0;
                         break;
                     case "move":
                         action.finalAbs = arguments[4] || 0.0;
                         action.finalOrd = arguments[5] || 0.0;
                         action.duration = arguments[6] || 0;
-                        action.execute = function(selector, imgWidth, imgHeight) {
-                            events.onActionStart.publish(selector, imgWidth, imgHeight);
-                            var sel = selector + ' .' + this.target;
-                            this.initialAbs = $(sel).css('left');
-                            this.initialOrd = $(sel).css('top');
-                            $(sel).animate({
-                                'left': this.finalAbs * imgWidth + 'px',
-                                'top': this.finalOrd * imgHeight + 'px'
-                            }, this.duration, 'linear', function() {
-                                events.onActionOver.publish(selector, imgWidth, imgHeight);
-                            });
-                        }.toString();
-                        action.executeReverse = function(selector, imgWidth, imgHeight) {
-                            $(selector + ' .' + this.target).css({
-                                'left': this.initialAbs,
-                                'top': this.initialOrd
-                            });
-                        }.toString();
                         break;
                 }
                 json.data[idSlide].action.push(action);

@@ -1,19 +1,24 @@
-.object-list{
+.object-list {
     position: absolute;
     margin: 0px;
     padding: 0px;
 }
 
-.mouse-cursor{
-    position: absolute;
-    top: 0px;
-    left : 0px;
-}
-
-.control{
+.mouse-cursor {
     position: absolute;
 }
 
-.screen{
+.control {
     position: absolute;
+}
+
+.background {
+    position: absolute;
+}
+
+.tooltip {
+    position: absolute;
+    padding: 4px;
+    margin: 2px;
+    border: 2px black solid;
 }
