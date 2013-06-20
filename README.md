@@ -1,5 +1,10 @@
 ## Summary ##
 
+Here are the links to the [wiki pages](https://github.com/dahuapp/Dahu/wiki/_pages).
+
+You may view a presentation of the Dahu project by cloning the Dahu.git repository
+and opening the dahuproject.html file in the presentation sub-repository.
+
 The objective of this project is to develop a "real" alternative to existing screencasting software. Even if there is a wide variety of software that offers to make screencasts, none of these programs do offer effective solutions combining the features / properties that we could expect of this kind of tool. 
 
 Generally the approach is to make a video recording of an area of ​​your screen and to couple the audio. This approach sets several problems for the capture (an error in your manipulation or speech implies restarting everything or do some video collage), post-editing (adding text, animations, and other, means video editing), export (the formats are owner, and often too heavy), indexing (very difficult to index a video or a Flash file), reading (not practical to have to move the cursor to find the piece of information we are looking for: the time or this or that thing is explained), aso..
@@ -19,7 +24,3 @@ The developed solution will consist in three parts:
 * Intermediate Format: an intermediate format to store the content, form and dynamics of screencasts. This format must be defined on open standards (XML, JSON, other), be extensible, and portable.
 * Reading: a reader to view screencasts in a web browser (HTML5, JS, CSS).
 
-Here are the links to the [wiki pages](https://github.com/dahuapp/Dahu/wiki/_pages).
-
-You may view a presentation of the Dahu project by cloning the Dahu.git repository
-and opening the dahuproject.html file in the presentation sub-repository.
