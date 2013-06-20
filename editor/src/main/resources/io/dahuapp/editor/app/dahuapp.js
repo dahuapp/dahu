@@ -184,6 +184,116 @@
             };
         };
         
+        /*
+         * Model for a JSON object that will only be used by the viewer, never
+         * saved on a file, used to transform the properties of actions
+         * specified on the JSON file of a presentation to executable
+         * functions for each action.
+         */
+        var DahuScreencastExecutableModel = function() {
+            
+            /* Private API */
+            
+            var json = {
+                metaData: {},
+                action: new Array()
+            };
+            
+            /*
+             * Creates a functions representing the specified action, and adds
+             * it to this object.
+             * @param {object} action
+             */
+            var addExecutableAction = function(action) {
+                var executableAction  = {
+                    'trigger': action.trigger,
+                    'target': action.target
+                };
+                switch (action.type.toLowerCase()) {
+                    case "appear":
+                        executableAction.abs = (action.abs * json.metaData.imageWidth) + 'px';
+                        executableAction.ord = (action.ord * json.metaData.imageHeight) + 'px';
+                        executableAction.duration = action.duration;
+                        executableAction.execute = function(events, selector) {
+                            events.onActionStart.publish(events, selector);
+                            var sel = selector + ' .' + this.target;
+                            $(sel).css({
+                                'left': this.abs,
+                                'top': this.ord
+                            });
+                            $(sel).show(this.duration, function() {
+                                events.onActionOver.publish(events, selector);
+                            });
+                        };
+                        executableAction.executeReverse = function(selector) {
+                            $(selector + ' .' + this.target).hide();
+                        };
+                        break;
+                    case "disappear":
+                        executableAction.duration = action.duration;
+                        executableAction.execute = function(events, selector) {
+                            events.onActionStart.publish(events, selector);
+                            $(selector + ' .' + this.target).hide(this.duration, function() {
+                                events.onActionOver.publish(events, selector);
+                            });
+                        };
+                        executableAction.executeReverse = function(selector) {
+                            $(selector + ' .' + this.target).show();
+                        };
+                        break;
+                    case "move":
+                        executableAction.finalAbs = (action.finalAbs * json.metaData.imageWidth) + 'px';
+                        executableAction.finalOrd = (action.finalOrd * json.metaData.imageHeight) + 'px';
+                        executableAction.duration = action.duration;
+                        executableAction.execute = function(events, selector) {
+                            events.onActionStart.publish(events, selector);
+                            var sel = selector + ' .' + this.target;
+                            this.initialAbs = $(sel).css('left');
+                            this.initialOrd = $(sel).css('top');
+                            $(sel).animate({
+                                'left': this.finalAbs,
+                                'top': this.finalOrd
+                            }, this.duration, 'linear', function() {
+                                events.onActionOver.publish(events, selector);
+                            });
+                        };
+                        executableAction.executeReverse = function(selector) {
+                            $(selector + ' .' + this.target).css({
+                                'left': this.initialAbs,
+                                'top': this.initialOrd
+                            });
+                        };
+                        break;
+                }
+                json.action.push(executableAction);
+            };
+            
+            /* Public API */
+            
+            /*
+             * Loads the specified JSON read from a 'presentation.json' file,
+             * and stores the functions representing each actions in an object.
+             * @param {object} jsonToLoad
+             */
+            this.loadJson = function(jsonToLoad) {
+                json.metaData = jsonToLoad.metaData;
+                for (var i = 0; i < jsonToLoad.action.length; i++) {
+                    addExecutableAction(jsonToLoad.action[i]);
+                }
+            };
+            
+            /*
+             * Returns the object containing the functions.
+             */
+            this.getJson = function() {
+                return json;
+            };
+        };
+        
+        /*
+         * Used to transform the 'dahu' file to a JSON file used by the viewer,
+         * which only contains some metaData and a list of actions.
+         */
         var DahuScreencastGeneratedModel = function() {
             
             /* Private API */
@@ -220,64 +330,32 @@
                 json.metaData.initialBackgroundId = id;
             };
             
-            this.addAction = function(action, imgWidth, imgHeight) {
-                var executableAction = {
-                    'trigger': action.trigger
+            this.addAction = function(action) {
+                json.action.push(action);
+            };
+            
+            /*
+             * Transforms a JSON containing action properties to a JSON containing
+             * the execution functions.
+             * @param {Object} json
+             * @returns {Object} A json object containing the execution functions
+             * for all the actions of the presentation.
+             */
+            this.toExecutableList = function(json) {
+                var executableList = {
+                    metaData: json.metaData,
+                    action: new Array()
                 };
-                switch (action.type.toLowerCase()) {
-                    case "appear":
-                        executableAction.execute = "function(selector) { " +
-                            "events.onActionStart.publish(selector); " +
-                            "var sel = selector + ' ." + action.target + "'; " +
-                            "$(sel).css({ " +
-                                "'left': '" + Math.round(action.abs * imgWidth) + "px', " +
-                                "'top': '" + Math.round(action.ord * imgHeight) + "px' " +
-                            "}); " +
-                            "$(sel).show(" + action.duration + ", function() { " +
-                            "    events.onActionOver.publish(selector); " +
-                            "}); " +
-                        "}";
-                        executableAction.executeReverse = "function(selector) { " +
-                            "$(selector + ' ." + action.target + "').hide(); " +
-                        "}";
-                        break;
-                    case "disappear":
-                        executableAction.execute = "function(selector) { " +
-                            "events.onActionStart.publish(selector); " +
-                            "var sel = selector + ' ." + action.target + "'; " +
-                            "$(sel).hide(" + action.duration + ", function() { " +
-                            "    events.onActionOver.publish(selector); " +
-                            "}); " +
-                        "}";
-                        executableAction.executeReverse = "function(selector) { " +
-                            "$(selector + ' ." + action.target + "').show(); " +
-                        "}";
-                        break;
-                    case "move":
-                        executableAction.execute = "function(selector) { " +
-                            "events.onActionStart.publish(selector); " +
-                            "var sel = selector + ' ." + action.target + "'; " +
-                            "this.initialAbs = $(sel).css('left'); " +
-                            "this.initialOrd = $(sel).css('top'); " +
-                            "$(sel).animate({ " +
-                                "'left': '" + Math.round(action.finalAbs * imgWidth) + "px', " +
-                                "'top': '" + Math.round(action.finalOrd * imgHeight) + "px' " +
-                            "}, " + action.duration + ", 'linear', function() { " +
-                                "events.onActionOver.publish(selector); " +
-                            "}); " +
-                        "}";
-                        executableAction.executeReverse = "function(selector) { " +
-                            "$(selector + ' ." + action.target + "').css({ " +
-                                "'left': this.initialAbs, " +
-                                "'top': this.initialOrd " +
-                            "}); " +
-                        "}";
-                        break;
+                for (var i = 0; i < json.action.length; i++) {
+                    addExecutableAction(executableList, json.action[i]);
                 }
-                json.action.push(executableAction);
+                return executableList;
             };
         };
 
+        /*
+         * Represents a 'dahu' file for a project.
+         */
         var DahuScreencastModel = function() {
 
             /* Private API */
@@ -601,6 +679,10 @@
 
         self.createScreencastModel = function createScreencastModel() {
             return new DahuScreencastModel();
+        };
+        
+        self.createScreencastExecutableModel = function createScreencastExecutableModel() {
+            return new DahuScreencastExecutableModel();
         };
         
         self.createScreencastGeneratedModel = function createScreencastGeneratedModel() {
