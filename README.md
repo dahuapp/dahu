@@ -18,3 +18,5 @@ The developed solution will consist in three parts:
 * Capture: a tool for capturing and editing, written in JavaFX and Java. It will allow : a) the recording of information linked to the screencasts and b) post-editing screencasts to add meta-data (eg, texts, animations and information about screencasts.
 * Intermediate Format: an intermediate format to store the content, form and dynamics of screencasts. This format must be defined on open standards (XML, JSON, other), be extensible, and portable.
 * Reading: a reader to view screencasts in a web browser (HTML5, JS, CSS).
+
+Here are the links to the [wiki pages](https://github.com/dahuapp/Dahu/wiki/_pages).
