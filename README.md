@@ -20,3 +20,5 @@ The developed solution will consist in three parts:
 * Reading: a reader to view screencasts in a web browser (HTML5, JS, CSS).
 
 Here are the links to the [wiki pages](https://github.com/dahuapp/Dahu/wiki/_pages).
+
+Here is the link to the [Dahu project presentation](https://github.com/dahuapp/Dahu/blob/master/presentation/dahuproject.html)
