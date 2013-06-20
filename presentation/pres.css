@@ -1,0 +1,127 @@
+#title-image{
+    position: absolute;
+    top: 35%;
+    left: 35%;
+    width: 30%;
+}
+
+#up{
+    position: absolute;
+    top: 20%;
+}
+
+#thanks{
+    position: absolute;
+    top: 85%;
+    width: 90%;
+    font-size: 20px;
+    text-align: center;
+}
+
+#names{
+    position: absolute;
+    top: 90%;
+    width: 90%;
+    text-align: center;
+    font-size: 20px;
+}
+
+#date{
+    position: absolute;
+    top: 75%;
+    width: 90%;
+    text-align: center;
+    font-size: 30px;
+}
+
+.icon{
+    position: absolute;
+    top:5px;
+    left:90%;
+    width: 60px;
+}
+
+#my-dahu-presentation{
+    position: absolute;
+    top: 120px;
+}
+
+.screen-example{
+    position: absolute;
+    top: 25%;
+    left: 25%;
+}
+
+.abime{
+    position: absolute;
+    top: 25%;
+    left: 25%;
+    width : 50%;
+}
+
+#title-intro{
+    position: absolute;
+    top: 18%;
+    width: 95%;
+    text-align: center;
+    font-size: 150%;
+}
+
+#captures{
+    position: absolute;
+    top : 40%;
+    left: 3%;
+    width: 20%;
+    text-align: center;
+}
+
+#use-capture{
+    position: absolute;
+    top : 36%;
+    left: 77%;
+    width: 20%;
+    text-align: center;
+}
+
+#left{
+    position: absolute;
+    left: 500%;
+}
+
+.editor{
+    width: 5%;
+}
+
+.viewer{
+    width: 5%;
+}
+
+.icon-community{
+    position: absolute;
+    top:25%;
+    left:77%;
+    width: 160px;
+}
+
+
+.mail{
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    width: 80%;
+}
+
+#middle{
+    position: absolute;
+    top: 40%;
+    text-align: center;
+    width: 100%;
+    font-size: 200%;
+}
+
+.bonhomme{
+    position: absolute;
+    left: 45%;
+    bottom: 0%;
+    width: 30%;
+}
