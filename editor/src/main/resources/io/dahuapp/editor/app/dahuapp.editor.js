@@ -163,6 +163,7 @@ var dahuapp = (function(dahuapp, $) {
         var enableProjectButtons = function() {
             setElementDisabled('#capture-mode', false);
             setElementDisabled('#save-project', false);
+            setElementDisabled('#reload-project', false);
             setElementDisabled('#clean-project', false);
             setElementDisabled('#generate', false);
             setElementDisabled('#visual-mode', false);
@@ -177,10 +178,26 @@ var dahuapp = (function(dahuapp, $) {
                 setElementDisabled('#edit-action');
             }
         };
+        var loadFromProjectDir = function() {
+            var fileSystem = dahuapp.drivers.fileSystem;
+            var stringJson = fileSystem.readFile(projectDir + fileSystem.getSeparator() + jsonFileName);
+            events.onNewProjectCreated.publish();
+            jsonModel.loadJson(stringJson);
+            var nbSlides = jsonModel.getNbSlide();
+            for (var i = 0; i < nbSlides; i++) {
+                events.onNewImageTaken.publish(i);
+            }
+            selectedSlide = nbSlides - 1;
+            events.onSelectedImageChanged.publish(selectedSlide);
+            dahuapp.drivers.setTitleProject(projectDir);
+            initProject = true;
+            newChanges = false;
+            setStateBarMessage("Project successfully loaded.");
+        };
         var openProject = function() {
             var choice = prompt("Enter the absolute path to the dahu project directory :",
                     "Dahu project directory.");
-            //projectDir = dahuapp.drivers.fileSystem.askForProjectDir();
+            //choice = dahuapp.drivers.fileSystem.askForProjectDir();
             if (choice) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 var absolutePath = choice + fileSystem.getSeparator() + jsonFileName;
@@ -191,25 +208,14 @@ var dahuapp = (function(dahuapp, $) {
                     return;
                 }
                 projectDir = choice;
-                var stringJson = fileSystem.readFile(absolutePath);
-                events.onNewProjectCreated.publish();
-                jsonModel.loadJson(stringJson);
-                var nbSlides = jsonModel.getNbSlide();
-                for (var i = 0; i < nbSlides; i++) {
-                    events.onNewImageTaken.publish(i);
-                }
-                selectedSlide = nbSlides - 1;
-                events.onSelectedImageChanged.publish(selectedSlide);
-                dahuapp.drivers.setTitleProject(projectDir);
-                initProject = true;
-                newChanges = false;
+                loadFromProjectDir();
                 enableProjectButtons();
             }
         };
         var newProject = function() {
             var choice = prompt("Enter the absolute path of the project directory :",
                     "Dahu project directory.");
-            // projectDir = driver.askForProjectDir();
+            //choice = dahuapp.drivers.fileSystem.askForProjectDir();
             if (choice) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 if (!fileSystem.exists(choice)) {
@@ -300,6 +306,7 @@ var dahuapp = (function(dahuapp, $) {
             setElementDisabled('#new-project', captureMode);
             setElementDisabled('#open-project', captureMode);
             setElementDisabled('#save-project', captureMode);
+            setElementDisabled('#reload-project', captureMode);
             setElementDisabled('#clean-project', captureMode);
             setElementDisabled('#generate', captureMode);
             setElementDisabled('#visual-mode', captureMode);
@@ -750,6 +757,19 @@ var dahuapp = (function(dahuapp, $) {
                         }
                     } else {
                         openProject();
+                    }
+                }
+            });
+            $('#reload-project').click(function() {
+                if (!captureMode) {
+                    if (newChanges) {
+                        var discard = confirm("There are unsaved changes.\n" +
+                                "Discard them and still reload the 'dahu' file ?");
+                        if (discard) {
+                            loadFromProjectDir();
+                        }
+                    } else {
+                        loadFromProjectDir();
                     }
                 }
             });

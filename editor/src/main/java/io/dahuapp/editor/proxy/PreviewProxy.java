@@ -27,7 +27,12 @@ public class PreviewProxy implements Proxy {
      */
     public void runPreview(String htmlFile) {
         try {
-            final URI u = new URI("file://" + htmlFile);
+            /* 
+             * The 'replaceAll' is a fix for windows.
+             * The URI seems not to support strings with '\' so we replace all
+             * of them by '/' otherwise a malformed URI exception is thrown.
+             */
+            final URI u = new URI("file://" + htmlFile.replaceAll("\\\\", "/"));
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {

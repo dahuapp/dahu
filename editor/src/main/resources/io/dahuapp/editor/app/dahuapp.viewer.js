@@ -139,7 +139,10 @@ var dahuapp = (function(dahuapp, $) {
                     launchReverse(json.action[currentAction]);
                     currentAction--;
                 }
-                launchReverse(json.action[currentAction]);
+                /* currentAction = -1 means that it's the beginning */
+                if (currentAction > -1) {
+                    launchReverse(json.action[currentAction]);
+                }
                 if (currentAction < 0) {
                     currentAction = 0;
                 }
@@ -152,7 +155,7 @@ var dahuapp = (function(dahuapp, $) {
             var onActionOverEventHandler = function() {
                 nbActionsRunning--;
                 if (nbActionsRunning === 0) {
-                    events.onAllActionFinish.publish(selector);
+                    events.onAllActionFinish.publish(events, selector);
                     reinitialiseCallbackLists();
                     while (json.action[currentAction]) {
                         switch (json.action[currentAction].trigger) {

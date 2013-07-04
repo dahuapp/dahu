@@ -106,7 +106,7 @@
                         .append($(document.createElement('div'))
                         .attr({'class': 'control'}));
 
-                // adding the objects to the page
+                /* Adding the objects to the page */
                 $.each(jsonModel.getObjectList(), function(id, object) {
                     switch (object.type) {
                         case "background":
@@ -115,13 +115,13 @@
                         case "tooltip":
                             generateTooltip($generated, object);
                             break;
-                            // no mouse image generated here
+                        /* no mouse image generated here */
                     }
                 });
 
-                //!\\ careful here, i'm not sure if $.each is always over here
+                /* Warning here, i'm not sure if $.each is always over, here */
 
-                // adding the control buttons to the page
+                /* Adding the control buttons to the page */
                 $('.control', $generated)
                         .css({'top': (jsonModel.getImageHeight() + 16) + 'px'})
                         .append($(document.createElement('button'))
@@ -131,7 +131,7 @@
                         .attr({'class': 'next'})
                         .append('Next'));
                 
-                // adding the mouse cursor image
+                /* Adding the mouse cursor image */
                 $('.object-list', $generated)
                         .append($(document.createElement('img'))
                         .attr({'src': 'img/cursor.png', 'alt':'img/cursor.png', 'class':'mouse-cursor'}));
@@ -141,10 +141,10 @@
              * Generates the html String with the Json model.
              */
             this.generateHtmlString = function(jsonModel) {
-                // initialising the compilation area
+                /* Initialising the compilation area */
                 var $generated = $(document.createElement('div'));
 
-                // we create the html using the json
+                /* We create the html using the json */
                 $generated.append($(document.createElement('html'))
                         .attr({'lang': 'en'}));
                 $('html', $generated)
@@ -172,9 +172,11 @@
                 for (var i = 0; i < jsonModel.getNbSlide(); i++) {
                     var actionList = jsonModel.getActionList(i);
                     for (var j = 0; j < actionList.length; j++) {
-                        // We don't add the two first actions of the first slide
-                        // because they are present in the presentation metadata.
-                        // It corresponds to the mouse initial pos and first background.
+                        /* 
+                         * We don't add the two first actions of the first slide
+                         * because they are present in the presentation metadata.
+                         * It corresponds to the mouse initial pos and first background.
+                         */
                         if (i > 0 || j > 1) {
                             generated.addAction(actionList[j], imgDim.width, imgDim.height);
                         }

@@ -50,7 +50,7 @@ public class DahuApp extends Application {
 
         // init dahuapp
         initDahuApp(primaryStage);
-
+        
         // pin it to stackpane
         root.getChildren().add(webview);
 
