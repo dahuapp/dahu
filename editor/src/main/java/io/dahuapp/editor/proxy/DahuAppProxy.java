@@ -24,7 +24,7 @@ public class DahuAppProxy implements Proxy {
      */
     public LoggerProxy logger;
     public RootDirectoryProxy rootDirectory;
-    public PreviewProxy preview;
+    public BrowserProxy browser;
     
     /**
      * Engine.
@@ -49,7 +49,7 @@ public class DahuAppProxy implements Proxy {
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
         rootDirectory = new RootDirectoryProxy();
-        preview = new PreviewProxy();
+        browser = new BrowserProxy();
         // attributes
         this.webEngine = webEngine;
         this.primaryStage = primaryStage;
@@ -69,7 +69,7 @@ public class DahuAppProxy implements Proxy {
         screen = new ScreenDriverProxy();
         mouse = new MouseDriverProxy();
         rootDirectory = new RootDirectoryProxy();
-        preview = new PreviewProxy();
+        browser = new BrowserProxy();
         // attributes
         this.webEngine = webEngine;
         this.primaryStage = primaryStage;
@@ -115,7 +115,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem.onLoad();
         screen.onLoad();
         mouse.onLoad();
-        preview.onLoad();
+        browser.onLoad();
     }
 
     @Override
@@ -124,7 +124,7 @@ public class DahuAppProxy implements Proxy {
         fileSystem.onStop();
         screen.onStop();
         mouse.onStop();
-        preview.onStop();
+        browser.onStop();
         // idem for 'logger.stop'
         logger.onStop();
     }

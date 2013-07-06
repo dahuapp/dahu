@@ -281,7 +281,7 @@ var dahuapp = (function(dahuapp, $) {
         var runPreview = function() {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var target = projectDir + sep + buildDir + sep + generatedHtmlName;
-            dahuapp.drivers.preview.runPreview(target);
+            dahuapp.drivers.browser.runPreview(target);
         };
 
         /*
@@ -694,37 +694,36 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#preview-image').on({
                 dragstart: function() {
-                    if( $(this).hasClass('my-cursor')) {
-                            idAction = $(this).attr('id');
-                            oldPosX = $(this).css('left');
-                            oldPosY = $(this).css('top');
-                        }
+                    if ($(this).hasClass('my-cursor')) {
+                        idAction = $(this).attr('id');
+                        oldPosX = $(this).css('left');
+                        oldPosY = $(this).css('top');
+                    }
                 },
                 dragover: function() {
-                        if( $(this).hasClass('my-cursor')) {
-                            return ;
-                        }
-                            cursorY = ((event.y - $(this).offset().top) / $('#image').height())*100;
-                            cursorX = ((event.x - $(this).offset().left) / $('#image').width())*100;
-                            $('.my-cursor').css({
-                                'top': cursorY + "\%",
-                                'left': cursorX + "\%"
-                            });
-                            setStateBarMessage("x : " + cursorX + "\%, y : " + cursorY + "\%");
+                    if ($(this).hasClass('my-cursor')) {
+                        return;
+                    }
+                    cursorY = ((event.y - $(this).offset().top) / $('#image').height()) * 100;
+                    cursorX = ((event.x - $(this).offset().left) / $('#image').width()) * 100;
+                    $('.my-cursor').css({
+                        'top': cursorY + "\%",
+                        'left': cursorX + "\%"
+                    });
+                    setStateBarMessage("x : " + cursorX + "\%, y : " + cursorY + "\%");
                 },
                 dragend: function() {
-                        if ($(this).hasClass('my-cursor')) {
-                            jsonModel.editMouse(selectedSlide, idAction, cursorX/100, cursorY/100);
-                            dahuapp.drivers.logger.JSconfig("dahuapp.editor.js", 
-                                                            "dragend",
-                                                            "[idSlide : " + selectedSlide +
-                                                            "; idAction : " + idAction +
-                                                            "] mouse cursor moved from " +
-                                                            oldPosX + ", " + oldPosY + "to " +
-                                                            cursorX + ", " + cursorY);
-                        }
+                    if ($(this).hasClass('my-cursor')) {
+                        jsonModel.editMouse(selectedSlide, idAction, cursorX / 100, cursorY / 100);
+                        dahuapp.drivers.logger.JSconfig("dahuapp.editor.js",
+                                "dragend",
+                                "[idSlide : " + selectedSlide +
+                                "; idAction : " + idAction +
+                                "] mouse cursor moved from " +
+                                oldPosX + ", " + oldPosY + "to " +
+                                cursorX + ", " + cursorY);
+                    }
                 }
-                
             }, 'li');
             $('#capture-mode').click(function() {
                 if (initProject) {
@@ -843,6 +842,9 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#about-us').click(function() {
                 showPopup('#about-us-popup');
+            });
+            $('#online-help').click(function() {
+                dahuapp.drivers.browser.openURL("https://github.com/dahuapp/Dahu/wiki/_pages");
             });
             $(window).resize(function() {
                 centerPopups();

@@ -1,20 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package io.dahuapp.editor.proxy;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import javafx.application.Platform;
 
 /**
- *
- * @author denis
+ * Proxy used when a web browser needs to be opened.
  */
-public class PreviewProxy implements Proxy {
+public class BrowserProxy implements Proxy {
 
     /**
      * Allows this proxy to open the default browser.
@@ -46,6 +42,23 @@ public class PreviewProxy implements Proxy {
         } catch (URISyntaxException e) {
             LoggerProxy.severe("Error in URI Syntax", e);
         }
+    }
+    
+    /**
+     * Open the default web browser and open the specified URL.
+     * @param url Page to display on the browser.
+     */
+    public void openURL(final String url) {
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    desktop.browse(new URL(url).toURI());
+                } catch (URISyntaxException | IOException e) {
+                    LoggerProxy.severe("Browser couldn't have been opened.", e);
+                }
+            }
+        });
     }
     
     @Override
