@@ -19,6 +19,8 @@ import javafx.scene.web.PromptData;
 import javafx.scene.web.WebEvent;
 import javafx.stage.WindowEvent;
 import javafx.util.Callback;
+import java.util.List;
+import java.io.File;
 
 /**
  * Main class of the application. Runs the GUI to allow the user to take
@@ -124,6 +126,19 @@ public class DahuApp extends Application {
 
                     // load the drivers
                     webview.getEngine().executeScript("dahuapp.drivers.onLoad();");
+
+                    List<String> args = getParameters().getUnnamed();
+                    if (args.size() == 1) {
+                        File project = new File(args.get(0));
+                        if (!project.exists()) {
+                            System.out.println("No such project: " + project);
+                        }
+                        if (!project.isDirectory()) {
+                            System.out.println("Not a directory: " + project);
+                        }
+                        System.out.println("Opening project: " + project.getAbsolutePath());
+                        webview.getEngine().executeScript("dahuapp.editor.openProject(\"" + project.getAbsolutePath().replace("\"", "\\\"") + "\");");
+                    }
                 }
             }
         });

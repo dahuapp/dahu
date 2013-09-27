@@ -627,6 +627,12 @@ var dahuapp = (function(dahuapp, $) {
                     break;
             }
         };
+
+        self.openProject = function openProject(dir) {
+            projectDir = dir;
+            loadFromProjectDir();
+            enableProjectButtons();
+        }
                 
         /*
          * Main function : by calling this function, we bind the

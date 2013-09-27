@@ -29,6 +29,17 @@ to the directory that contains /rt/lib/jfxrt.jar"""
 
 // environment is ok
 
+// allow command-line arguments with gradle run -Pargs="..."
+// http://gradle.1045684.n5.nabble.com/Command-line-arguments-to-application-td3999977.html
+run {
+   if ( project.hasProperty('args') ) {
+       args project.args.split('\\s+')
+   }
+   if ( project.hasProperty('workingDir') ) {
+       workingDir project.workingDir
+   }
+}
+
 /***************************************
  * The build script proper
  ***************************************/
