@@ -21,9 +21,9 @@ public class KeyboardDriver implements Driver {
      * Listeners for this driver.
      */
     public interface KeyboardListener {
-        public void keyTyped(int keyCode);
-        public void keyPressed(int keyCode);
-        public void keyReleased(int keyCode);
+        public void keyTyped(int keyCode, final String keyName);
+        public void keyPressed(int keyCode, final String keyName);
+        public void keyReleased(int keyCode, final String keyName);
     }
     
     /**
@@ -69,21 +69,21 @@ public class KeyboardDriver implements Driver {
             @Override
             public void nativeKeyReleased(NativeKeyEvent nke) {
                 for (final KeyboardListener listener : listeners) {
-                    listener.keyReleased(nke.getKeyCode());
+                    listener.keyReleased(nke.getKeyCode(), nke.getKeyText(nke.getKeyCode()));
                 }
             }
             
             @Override
             public void nativeKeyTyped(NativeKeyEvent nke) {
                 for (final KeyboardListener listener : listeners) {
-                    listener.keyTyped(nke.getKeyCode());
+                    listener.keyTyped(nke.getKeyCode(), nke.getKeyText(nke.getKeyCode()));
                 }
             }
             
             @Override
             public void nativeKeyPressed(NativeKeyEvent nke) {
                 for (final KeyboardListener listener : listeners) {
-                    listener.keyPressed(nke.getKeyCode());
+                    listener.keyPressed(nke.getKeyCode(), nke.getKeyText(nke.getKeyCode()));
                 }
             }
         });

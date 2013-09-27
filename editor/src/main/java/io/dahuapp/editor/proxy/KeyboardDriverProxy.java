@@ -32,22 +32,22 @@ public class KeyboardDriverProxy implements Proxy {
         }
 
         @Override
-        public void keyTyped(final int keyCode) {
+        public void keyTyped(final int keyCode, final String keyName) {
             // ignored
         }
 
         @Override
-        public void keyPressed(final int keyCode) {
+        public void keyPressed(final int keyCode, final String keyName) {
             // ignored
         }
 
         @Override
-        public void keyReleased(final int keyCode) {
+        public void keyReleased(final int keyCode, final String keyName) {
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
                     JSObject editor = (JSObject)webEngine.executeScript("window.dahuapp.editor");
-                    editor.call(callback, keyCode);
+                    editor.call(callback, keyCode, keyName);
                 }
             });
         }
@@ -112,24 +112,6 @@ public class KeyboardDriverProxy implements Proxy {
                     KeyboardListener kl = listeners.remove(functionName);
                     driver.removeKeyListener(kl);
                 }
-        }
-    }
-    
-    /**
-     * Returns a string identifying the specified key code.
-     * @param keyCode Key code to identify with a string.
-     * @return A string identifying the specified keyCode.
-     */
-    public String keyToString(int keyCode) {
-        switch (keyCode) {
-            case VK_F7:
-                return "f7";
-            case VK_F8:
-                return "f8";
-            case VK_ESCAPE:
-                return "escape";
-            default:
-                return "unknown";
         }
     }
     

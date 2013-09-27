@@ -597,10 +597,10 @@ var dahuapp = (function(dahuapp, $) {
          * 
          * @param int key Key that caused the event.
          */
-        self.handleCaptureModeEvent = function handleCaptureModeEvent(key) {
+        self.handleCaptureModeEvent = function handleCaptureModeEvent(keyCode, keyName) {
             // shortcuts
             var drivers = dahuapp.drivers;
-            switch (drivers.keyboard.keyToString(key).toLowerCase()) {
+            switch (keyName.toLowerCase()) {
                 case "f7":
                     var fileSystem = dahuapp.drivers.fileSystem;
                     var sep = fileSystem.getSeparator();
