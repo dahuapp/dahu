@@ -236,6 +236,17 @@ var dahuapp = (function(dahuapp, $) {
             newChanges = false;
             setStateBarMessage("Project successfully loaded.");
         };
+        var createFromProjectDir = function () {
+            jsonModel.createPresentation();
+            dahuapp.drivers.setTitleProject(projectDir);
+            dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
+            initProject = true;
+            newChanges = false;
+            selectedSlide = -1;
+            selectedObjectOnSlide = -1;
+            events.onNewProjectCreated.publish();
+            setStateBarMessage("New project created. Click 'Capture mode' to start adding slides.");
+        };
         var openProject = function() {
             var choice = prompt("Enter the absolute path to the dahu project directory :",
                     "Dahu project directory.");
@@ -262,7 +273,7 @@ var dahuapp = (function(dahuapp, $) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 if (!fileSystem.exists(choice)) {
                     if (!fileSystem.create(choice)) {
-                        alert("The directory couldn't have been created.\n"
+                        alert("The directory couldn't be created.\n"
                                 + "Maybe it's an issue with rights.");
                         return;
                     } else {
@@ -273,14 +284,7 @@ var dahuapp = (function(dahuapp, $) {
                             "It's not a problem, but be careful !");
                 }
                 projectDir = choice;
-                jsonModel.createPresentation();
-                dahuapp.drivers.setTitleProject(projectDir);
-                dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
-                initProject = true;
-                newChanges = false;
-                selectedSlide = -1;
-                selectedObjectOnSlide = -1;
-                events.onNewProjectCreated.publish();
+                createFromProjectDir();
             }
         };
         var cleanProjectDirectory = function() {
@@ -684,12 +688,6 @@ var dahuapp = (function(dahuapp, $) {
             }
         };
 
-        self.openProject = function openProject(dir) {
-            projectDir = dir;
-            loadFromProjectDir();
-            enableProjectButtons();
-        };
-        
         /*
          * Handle events for the changing of the capture key.
          * This callback handles key pressed events for keys between F1 and F12.
@@ -705,6 +703,17 @@ var dahuapp = (function(dahuapp, $) {
                     break;
             }
         };
+
+        self.openOrCreateProject = function openOrCreateProject(dir) {
+            projectDir = dir;
+            var fileSystem = dahuapp.drivers.fileSystem;
+            if (fileSystem.exists(dir + "/presentation.dahu")) {
+                loadFromProjectDir();
+                enableProjectButtons();
+            } else {
+                createFromProjectDir();
+            }
+        }
 
         /*
          * Main function : by calling this function, we bind the
