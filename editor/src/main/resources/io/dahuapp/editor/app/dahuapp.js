@@ -72,6 +72,7 @@
                         .append($(document.createElement('div'))
                         .attr({'class': 'tooltip ' + object.id})
                         .css({'background-color': object.color})
+                        .css({'width': object.width})
                         .append(object.text));
             };
 
