@@ -22,7 +22,7 @@ public class FileSystemDriverProxy implements Proxy {
     /**
      * Name of the configuration directory (in the home directory).
      */
-    private static final String CONFIGURATION_DIRECTORY_NAME = ".dahuapp";
+    private static final String CONFIGURATION_DIRECTORY_NAME = ".config/dahu";
     
     /**
      * Main stage of the window (for modal dialogs).
