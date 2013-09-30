@@ -27,7 +27,7 @@ var dahuapp = (function(dahuapp, $) {
          * @type String|String|String|String|String|String
          */
         var jsonFileName = "presentation.dahu";
-        var generatedHtmlName = "presentation.html";
+        var generatedHtmlName = "index.html";
         var generatedJsonName = "presentation.json";
         var buildDir = "build";
         var imgDir = "img";
@@ -57,7 +57,7 @@ var dahuapp = (function(dahuapp, $) {
          *                  |--------- screen1.png
          *                  |--------- ...
          *                  |--------- screen2.png
-         *                  |--------- presentation.html
+         *                  |--------- index.html
          *                  |--------- presentation.css
          *      
          * The default value must be discussed.
