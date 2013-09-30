@@ -160,7 +160,8 @@ public class Dialogs {
         alert.showAndWait();
         // fix for windows (we hope this fix is as temporary as it's dirty)
         if (defVal.equals("Dahu project directory.") &&
-                System.getProperty("os.name").contains("Windows")) {
+                System.getProperty("os.name").contains("Windows")
+                && promptResult != null) {
             promptResult = System.getProperty("file.separator") + promptResult;
         }
         return promptResult;

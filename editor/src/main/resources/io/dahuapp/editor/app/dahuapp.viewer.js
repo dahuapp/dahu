@@ -227,7 +227,7 @@ var dahuapp = (function(dahuapp, $) {
                 events.onActionStart.subscribe(onActionStartEventHandler);
 
                 /*
-                 *At the beginning, the visible image is the first one of the presentation
+                 * At the beginning, the visible image is the first one of the presentation
                  */
                 $(selector + " .object-list").children().hide();
 

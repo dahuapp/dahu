@@ -115,6 +115,25 @@ public class KeyboardDriverProxy implements Proxy {
         }
     }
     
+    /**
+     * Returns a string identifying the specified key code.
+     * @param keyCode Key code to identify with a string.
+     * @return A string identifying the specified keyCode.
+     */
+    public String keyToString(int keyCode) {
+        /* For all F* keys (F1, F2, etc) */
+        if (keyCode >= VK_F1 && keyCode <= VK_F12) {
+            return "f" + (keyCode - VK_F1 + 1);
+        }
+        /* Other keys */
+        switch (keyCode) {
+            case VK_ESCAPE:
+                return "escape";
+            default:
+                return "unknown";
+        }
+    }
+    
     @Override
     public void onLoad() {
         driver.onLoad();

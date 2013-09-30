@@ -142,6 +142,48 @@ var dahuapp = (function(dahuapp, $) {
          * Instanciates the DahuScreencastGenerator class.
          */
         var generator;
+        
+        /*
+         * Settings for the application.
+         * ------ Not saved at the moment, only active while application is open.
+         * In a future version, may be hard saved to be kept when
+         * the application is closed, but this will allow the user to manually
+         * modify it : so need to check in loading if the parameters are consistent.
+         * 
+         * To implement this, change the methods 'loadSettings'
+         * and 'saveSettings' in the following model.
+         */
+        var ApplicationSettingsModel = function() {
+            var settings = {};
+            
+            var saveSettings = function() {
+                var stringJson = JSON.stringify(settings, null, '    ');
+                dahuapp.drivers.fileSystem.writeConfigurationFile(stringJson);
+            };
+            
+            var setDefaultSettings = function() {
+                settings.captureKey = "f7";
+            };
+            
+            this.loadSettings = function() {
+                var stringJson = dahuapp.drivers.fileSystem.loadConfigurationFile();
+                if (stringJson !== null) {
+                    settings = JSON.parse(stringJson);
+                } else {
+                    setDefaultSettings();
+                }
+            };
+            
+            this.getCaptureKey = function() {
+                return settings.captureKey;
+            };
+            
+            this.setCaptureKey = function(key) {
+                settings.captureKey = key;
+                saveSettings();
+            };
+        };
+        var applicationSettings;
 
         /*
          * Standard message printers.
@@ -198,7 +240,7 @@ var dahuapp = (function(dahuapp, $) {
             var choice = prompt("Enter the absolute path to the dahu project directory :",
                     "Dahu project directory.");
             //choice = dahuapp.drivers.fileSystem.askForProjectDir();
-            if (choice) {
+            if (choice !== null) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 var absolutePath = choice + fileSystem.getSeparator() + jsonFileName;
                 if (!fileSystem.exists(absolutePath)) {
@@ -216,7 +258,7 @@ var dahuapp = (function(dahuapp, $) {
             var choice = prompt("Enter the absolute path of the project directory :",
                     "Dahu project directory.");
             //choice = dahuapp.drivers.fileSystem.askForProjectDir();
-            if (choice) {
+            if (choice !== null) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 if (!fileSystem.exists(choice)) {
                     if (!fileSystem.create(choice)) {
@@ -293,7 +335,9 @@ var dahuapp = (function(dahuapp, $) {
             // if we're in capture mode, we exit it, otherwise we enter it
             if (!captureMode) {
                 keyboardDriver.addKeyListener(self.handleCaptureModeEvent);
-                setStateBarMessage("Capture mode ON (F7 to take a screenshot / ESC to exit capture mode)");
+                setStateBarMessage("Capture mode ON (" +
+                        applicationSettings.getCaptureKey().toUpperCase() +
+                        " to take a screenshot / ESC to exit capture mode)");
             } else {
                 keyboardDriver.removeKeyListener(self.handleCaptureModeEvent);
                 setStateBarMessage("Capture mode OFF");
@@ -310,6 +354,7 @@ var dahuapp = (function(dahuapp, $) {
             setElementDisabled('#clean-project', captureMode);
             setElementDisabled('#generate', captureMode);
             setElementDisabled('#visual-mode', captureMode);
+            setElementDisabled('#set-capture-key', captureMode);
             setElementDisabled('#set-output-image-size', captureMode);
             actualiseObjectButtonsState();
             if (captureMode) {
@@ -412,7 +457,7 @@ var dahuapp = (function(dahuapp, $) {
         };
         
         /*
-         * Sets the ouput images size.
+         * Functions to change the output image size.
          */
         var setOutputImageSize = function() {
             $('#output-settings-popup #required-width').val(jsonModel.getImageWidth());
@@ -420,10 +465,6 @@ var dahuapp = (function(dahuapp, $) {
             showPopup('#output-settings-popup');
             events.onPopupConfirmed.subscribe(getOutputImageSize);
         };
-        
-        /*
-         * Handler of confirmation for output image size popup.
-         */
         var getOutputImageSize = function() {
             newChanges = true;
             var reqWidth = $('#required-width').val();
@@ -444,6 +485,21 @@ var dahuapp = (function(dahuapp, $) {
             jsonModel.setImageSizeRequirements(dim.width, dim.height);
         };
         
+        /*
+         * Functions to set the key used to take a screenshot in capture mode.
+         */
+        var setCaptureKey = function() {
+            $('#set-capture-key-popup #new-capture-key').empty()
+                    .append(applicationSettings.getCaptureKey().toUpperCase());
+            showPopup('#set-capture-key-popup');
+            dahuapp.drivers.keyboard.addKeyListener(self.handleChangeCaptureKey);
+            events.onPopupConfirmed.subscribe(getCaptureKey);
+        };
+        var getCaptureKey = function() {
+            applicationSettings.setCaptureKey($('#set-capture-key-popup #new-capture-key').html());
+            dahuapp.drivers.keyboard.removeKeyListener(self.handleChangeCaptureKey);
+        };
+
         /*
          * Function to update the image list (when a new one is captured).
          * img is the relative path to the image (relatively to the .dahu file).
@@ -601,8 +657,8 @@ var dahuapp = (function(dahuapp, $) {
             // shortcuts
             var drivers = dahuapp.drivers;
             switch (keyName.toLowerCase()) {
-                case "f7":
-                    var fileSystem = dahuapp.drivers.fileSystem;
+                case applicationSettings.getCaptureKey().toLowerCase():
+                    var fileSystem = drivers.fileSystem;
                     var sep = fileSystem.getSeparator();
                     // creation of imgDir if it doesn't exist
                     var imgDirAbsolute = projectDir + sep + imgDir;
@@ -632,8 +688,24 @@ var dahuapp = (function(dahuapp, $) {
             projectDir = dir;
             loadFromProjectDir();
             enableProjectButtons();
-        }
-                
+        };
+        
+        /*
+         * Handle events for the changing of the capture key.
+         * This callback handles key pressed events for keys between F1 and F12.
+         */
+        self.handleChangeCaptureKey = function handleChangeCaptureKey(key) {
+            var stringKey = dahuapp.drivers.keyboard.keyToString(key);
+            switch (stringKey.toLowerCase()) {
+                case "f1": case "f2": case "f3": case "f4":
+                case "f5": case "f6": case "f7": case "f8":
+                case "f9": case "f10": case "f11": case "f12":
+                    $('#set-capture-key-popup #new-capture-key').empty()
+                            .append(stringKey.toUpperCase());
+                    break;
+            }
+        };
+
         /*
          * Main function : by calling this function, we bind the
          * html components of the application with their behaviour.
@@ -646,6 +718,12 @@ var dahuapp = (function(dahuapp, $) {
              */
             jsonModel = dahuapp.createScreencastModel();
             generator = dahuapp.createScreencastGenerator();
+            
+            /*
+             * Get the application settings.
+             */
+            applicationSettings = new ApplicationSettingsModel();
+            applicationSettings.loadSettings();
             
             /*
              * Private events callbacks subscribals.
@@ -844,6 +922,11 @@ var dahuapp = (function(dahuapp, $) {
             $('#set-output-image-size').click(function() {
                 if (!captureMode && initProject) {
                     setOutputImageSize();
+                }
+            });
+            $('#set-capture-key').click(function() {
+                if (!captureMode) {
+                    setCaptureKey();
                 }
             });
             $('#about-us').click(function() {

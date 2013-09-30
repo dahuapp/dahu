@@ -192,6 +192,15 @@
     border: 4px inset lightgray;
 }
 
+#set-capture-key-popup {
+    position: absolute;
+    width: 300px;
+    height: 280px;
+    background: white;
+    margin: 4px;
+    border: 4px inset lightgray;
+}
+
 #about-us-popup {
     position: relative;
     width: 400px;

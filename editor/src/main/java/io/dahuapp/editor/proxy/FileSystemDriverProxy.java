@@ -15,6 +15,16 @@ import javafx.stage.Stage;
 public class FileSystemDriverProxy implements Proxy {
     
     /**
+     * Name of the configuration file for the application.
+     */
+    private static final String CONFIGURATION_FILE_NAME = "config.json";
+    
+    /**
+     * Name of the configuration directory (in the home directory).
+     */
+    private static final String CONFIGURATION_DIRECTORY_NAME = ".dahuapp";
+    
+    /**
      * Main stage of the window (for modal dialogs).
      */
     private Stage primaryStage;
@@ -64,6 +74,38 @@ public class FileSystemDriverProxy implements Proxy {
     }
     
     /**
+     * Writes the text in the configuration file.
+     * 
+     * @param text Json text to write (new configuration).
+     * @return True if the file was writed.
+     */
+    public boolean writeConfigurationFile(String text) {
+        /* Creation of configuration directory if it doesn't exist */
+        String configDir = System.getProperty("user.home")
+                + getSeparator() + CONFIGURATION_DIRECTORY_NAME;
+        if (!driver.exists(configDir)) {
+            if (!driver.create(configDir)) {
+                return false;
+            }
+        }
+        
+        /* Write the file */
+        String fileName = configDir + getSeparator() + CONFIGURATION_FILE_NAME;
+        return driver.writeFile(fileName, text);
+    }
+    
+    /**
+     * Reads the configuration file and returns its content.
+     * 
+     * @return The content of the configuration file.
+     */
+    public String loadConfigurationFile() {
+        return readFile(System.getProperty("user.home") + getSeparator()
+                + CONFIGURATION_DIRECTORY_NAME + getSeparator()
+                + CONFIGURATION_FILE_NAME);
+    }
+    
+    /**
      * Returns the file separator depending on the OS.
      * @return The file separator string (depends on the OS).
      */
@@ -81,7 +123,6 @@ public class FileSystemDriverProxy implements Proxy {
         if (driver.exists(fileName)) {
             return driver.readFile(fileName);
         }
-        LoggerProxy.warning("Unable to read file : " + fileName);
         return null;
     }
 
