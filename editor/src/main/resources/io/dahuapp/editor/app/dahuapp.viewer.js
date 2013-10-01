@@ -247,6 +247,12 @@ var dahuapp = (function(dahuapp, $) {
                 $(selector + " .next").click(function() {
                     events.onNext.publish();
                 });
+
+		/*
+		 * Everything is ready, show the presentation (hidden with style="display: none").
+		 */
+                $("#loading").hide();
+                $(selector + " .object-list").show();
                 
                 /*
                  * A click on the "previous" button publishes a previousSlide event

@@ -103,7 +103,10 @@
                         .append(getBasicCallCode()));
                 $('#my-dahu-presentation', $generated)
                         .append($(document.createElement('div'))
-                        .attr({'class': 'object-list'}))
+                        .attr({'id': 'loading'}).append("Loading presentation..."))
+                        .append($(document.createElement('div'))
+                        .attr({'class': 'object-list',
+			       'style': 'display: none'}))
                         .append($(document.createElement('div'))
                         .attr({'class': 'control'}));
 
