@@ -187,7 +187,7 @@ var dahuapp = (function(dahuapp, $) {
             };
 
             /*
-             * Function used to realise actions.
+             * Function used to perform actions.
              */
             var launch = function(action) {
                 action.execute(events, selector);
