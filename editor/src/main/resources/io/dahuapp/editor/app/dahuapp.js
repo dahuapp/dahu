@@ -248,11 +248,27 @@
                         executableAction.finalAbs = (action.finalAbs * json.metaData.imageWidth) + 'px';
                         executableAction.finalOrd = (action.finalOrd * json.metaData.imageHeight) + 'px';
                         executableAction.duration = action.duration;
+                        executableAction.speed = action.speed;
                         executableAction.execute = function(events, selector) {
                             events.onActionStart.publish(events, selector);
                             var sel = selector + ' .' + this.target;
                             this.initialAbs = $(sel).css('left');
                             this.initialOrd = $(sel).css('top');
+                            if (!this.duration) {
+                                var initialAbsPix = this.initialAbs.replace('px', '');
+                                var initialOrdPix = this.initialOrd.replace('px', '');
+                                var finalAbsPix = this.finalAbs.replace('px', '');
+                                var finalOrdPix = this.finalOrd.replace('px', '');
+                                var distance = Math.sqrt(Math.pow(finalAbsPix - initialAbsPix, 2) +
+                                                         Math.pow(finalOrdPix - initialOrdPix, 2));
+                                if (!this.speed) {
+                                    this.speed = .8; // in pixel per milisecond: fast, but not too much.
+                                }
+                                this.duration = distance + this.speed;
+                                if (this.duration < 200) { // Slow down a bit for short distances.
+                                    this.duration = 200;
+                                }
+                            }
                             $(sel).animate({
                                 'left': this.finalAbs,
                                 'top': this.finalOrd
