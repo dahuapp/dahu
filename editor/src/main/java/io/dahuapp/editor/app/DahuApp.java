@@ -130,10 +130,6 @@ public class DahuApp extends Application {
                     List<String> args = getParameters().getUnnamed();
                     if (args.size() == 1) {
                         File project = new File(args.get(0));
-                        if (project.exists() && !project.isDirectory()) {
-                            System.out.println("ERROR: not a directory: " + project);
-                        }
-                        System.out.println("Opening project: " + project.getAbsolutePath());
                         webview.getEngine().executeScript(
                             "dahuapp.editor.openOrCreateProject(\""
                             + project.getAbsolutePath().replace("\"", "\\\"")

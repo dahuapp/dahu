@@ -707,6 +707,11 @@ var dahuapp = (function(dahuapp, $) {
         self.openOrCreateProject = function openOrCreateProject(dir) {
             projectDir = dir;
             var fileSystem = dahuapp.drivers.fileSystem;
+            if (fileSystem.exists(dir) &&
+                !fileSystem.isDirectory(dir)) {
+                alert("Error: " + dir + " is not a directory");
+                return;
+            }
             if (fileSystem.exists(dir + "/presentation.dahu")) {
                 loadFromProjectDir();
                 enableProjectButtons();

@@ -40,6 +40,17 @@ public class FileSystemDriver implements Driver {
     }
     
     /**
+     * Indicates if a specified path is a directory.
+     *
+     * @param name The name of the directory (absolute or relative).
+     * @return True if the name is a directory.
+     */
+    public boolean isDirectory(String name) {
+        File dir = new File(name);
+        return dir.isDirectory();
+    }
+    
+    /**
      * Creates the specified directory.
      * 
      * @param dir Directory to create.

@@ -148,13 +148,23 @@ public class FileSystemDriverProxy implements Proxy {
     }
     
     /**
-     * Check the existence of the specified directory.
+     * Check the existence of the specified file or directory.
      * 
-     * @param dir Directory to check for a new project.
-     * @return True only if the directory exists.
+     * @param name File or directory to check for a new project.
+     * @return True only if the file or directory exists.
      */
-    public boolean exists(String dir) {
-        return driver.exists(dir);
+    public boolean exists(String name) {
+        return driver.exists(name);
+    }
+    
+    /**
+     * Indicates if a specified path is a directory.
+     *
+     * @param name The name of the directory (absolute or relative).
+     * @return True if the name is a directory.
+     */
+    public boolean isDirectory(String name) {
+        return driver.isDirectory(name);
     }
     
     /**
