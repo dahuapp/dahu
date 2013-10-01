@@ -713,10 +713,9 @@ var dahuapp = (function(dahuapp, $) {
          */
         self.handleCaptureModeEvent = function handleCaptureModeEvent(keyCode, keyName) {
             // shortcuts
-            var drivers = dahuapp.drivers;
             switch (keyName.toLowerCase()) {
                 case applicationSettings.getCaptureKey().toLowerCase():
-                    var fileSystem = drivers.fileSystem;
+                    var fileSystem = dahuapp.drivers.fileSystem;
                     var sep = fileSystem.getSeparator();
                     // creation of imgDir if it doesn't exist
                     var imgDirAbsolute = projectDir + sep + imgDir;
