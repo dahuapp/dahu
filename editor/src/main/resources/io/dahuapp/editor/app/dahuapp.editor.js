@@ -328,7 +328,7 @@ var dahuapp = (function(dahuapp, $) {
             if (fileSystem.exists(completeBuildDir)) {
                 if (!fileSystem.remove(completeBuildDir)) {
                     alert("Error, the build directory couldn't\n" +
-                            "have been removed.");
+                            "be removed.");
                     return;
                 }
             }
@@ -339,7 +339,7 @@ var dahuapp = (function(dahuapp, $) {
             var completeBuildDir = projectDir + sep + buildDir;
             if (!fileSystem.create(completeBuildDir)) {
                 alert("Error, the build directory couldn't\n" +
-                        "have been created.");
+                        "be created.");
                 return;
             }
             // create img directory and adds the final forms of the images

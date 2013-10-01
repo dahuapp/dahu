@@ -35,7 +35,7 @@ public class BrowserProxy implements Proxy {
                     try {
                         desktop.browse(u);
                     } catch (IOException  e) {
-                        LoggerProxy.severe("Browser couldn't have been opened.", e);
+                        LoggerProxy.severe("Browser couldn't be opened.", e);
                     }
                 }
             });
@@ -55,7 +55,7 @@ public class BrowserProxy implements Proxy {
                 try {
                     desktop.browse(new URL(url).toURI());
                 } catch (URISyntaxException | IOException e) {
-                    LoggerProxy.severe("Browser couldn't have been opened.", e);
+                    LoggerProxy.severe("Browser couldn't be opened.", e);
                 }
             }
         });
