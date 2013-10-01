@@ -204,7 +204,7 @@ var dahuapp = (function(dahuapp, $) {
             this.setDefaultSpeed = function (s) {
                 settings.defaultSpeed = parseFloat(s);
                 saveSettings();
-            }
+            };
         };
         var applicationSettings;
 
@@ -771,7 +771,7 @@ var dahuapp = (function(dahuapp, $) {
             } else {
                 createFromProjectDir();
             }
-        }
+        };
 
         /*
          * Main function : by calling this function, we bind the
