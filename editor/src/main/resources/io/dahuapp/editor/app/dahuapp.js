@@ -212,6 +212,7 @@
              */
             var addExecutableAction = function(action) {
                 var executableAction  = {
+                    'id': action.id,
                     'trigger': action.trigger,
                     'target': action.target
                 };
@@ -234,6 +235,14 @@
                         executableAction.executeReverse = function(selector) {
                             $(selector + ' .' + this.target).hide();
                         };
+                        executableAction.executeImmediately = function(selector) {
+                            var sel = selector + ' .' + this.target;
+                            $(sel).css({
+                                'left': this.abs,
+                                'top': this.ord
+                            });
+                            $(sel).show();
+                        };
                         break;
                     case "disappear":
                         executableAction.duration = action.duration;
@@ -245,6 +254,9 @@
                         };
                         executableAction.executeReverse = function(selector) {
                             $(selector + ' .' + this.target).show();
+                        };
+                        executableAction.executeImmediately = function(selector) {
+                            $(selector + ' .' + this.target).hide();
                         };
                         break;
                     case "move":
@@ -285,6 +297,15 @@
                                 'top': this.initialOrd
                             });
                         };
+                        executableAction.executeImmediately = function(selector) {
+                            var sel = selector + ' .' + this.target;
+                            this.initialAbs = $(sel).css('left');
+                            this.initialOrd = $(sel).css('top');
+                            $(sel).css({
+                                'left': this.finalAbs,
+                                'top': this.finalOrd
+                            });
+                        };
                         break;
                     case "delay":
                         executableAction.duration = action.duration;
@@ -296,6 +317,9 @@
                         };
                         executableAction.executeReverse = function(selector) {
                             // Nothing!
+                        };
+                        executableAction.executeImmediately = function(selector) {
+                            // Nothing too!
                         };
                         break;
                 }
@@ -396,6 +420,44 @@
 
             var json = {};
 
+            /*
+             * Generates a unique action ID.
+             *
+             * With this implementation, this ID is unique as long as the user
+             * doesn't replace it manually with a not kind value or replace
+             * the nextUniqueId with bad intentions.
+             * But maybe that a UUID is a bit tiresome to put as an anchor...
+             */
+            var generateUniqueActionId = function() {
+                return json.metaData.nextUniqueId++;
+            };
+
+            /*
+             * This method checks if the json representing a dahu project is
+             * in the good version. It's in case a project file was created
+             * with a previous version of Dahu, and that some fields are
+             * missing.
+             *
+             * It doesn't control each field (at the moment) but only the
+             * fields that can be missing due to a new Dahu version and not
+             * to a manual editing.
+             *
+             * This method doesn't check any Json syntax or something like that.
+             */
+            var checkJsonVersion = function() {
+                // Checks if unique IDs are in the project file
+                if (!json.metaData.nextUniqueId) {
+                    var currentId = 0;
+                    for (var i = 0; i < json.data.length; i++) {
+                        for (var j = 0; j < json.data[i].action.length; j++) {
+                            json.data[i].action[j].id = currentId;
+                            currentId++;
+                        }
+                    }
+                    json.metaData.nextUniqueId = currentId;
+                }
+            };
+
             /* Public API */
 
             /*
@@ -404,6 +466,7 @@
              */
             this.loadJson = function(stringJson) {
                 json = JSON.parse(stringJson);
+                checkJsonVersion();
             };
 
             /*
@@ -413,6 +476,7 @@
                 json.metaData = {};
                 json.metaData.imageWidth = width;
                 json.metaData.imageHeight = height;
+                json.metaData.nextUniqueId = 0;
                 json.data = new Array();
             };
 
@@ -476,6 +540,7 @@
              */
             this.addAction = function(idSlide, type, target, trigger) {
                 var action = {
+                    "id": generateUniqueActionId(),
                     "type": type,
                     "target": target,
                     "trigger": trigger

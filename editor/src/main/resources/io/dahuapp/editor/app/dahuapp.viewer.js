@@ -197,6 +197,28 @@ var dahuapp = (function(dahuapp, $) {
                 action.executeReverse(selector);
             };
 
+            /*
+             * Returns an array containing the actions that are before the
+             * given anchor (the action which has this anchor is excluded).
+             *
+             * If the given anchor matches none of the actions, then an empty
+             * array is returned.
+             */
+            var getActionsBeforeAnchor = function(anchor) {
+                var actionsBeforeAnchor = new Array();
+                for (var i = 0; i < json.action.length; i++) {
+                    // '==' and not '===' because we compare indifferently a
+                    // number or a string or anything else
+                    if (json.action[i].id == anchor) {
+                        return actionsBeforeAnchor;
+                    } else {
+                        actionsBeforeAnchor.push(json.action[i]);
+                    }
+                }
+                // Here, the anchor has not been found during the action scan
+                return null;
+            };
+
             /* Public API */
 
             this.load = function(url) {
@@ -230,6 +252,7 @@ var dahuapp = (function(dahuapp, $) {
                 /*
                  * At the beginning, the visible image is the first one of the presentation
                  */
+
                 $(selector + " .object-list").children().hide();
 
                 $(selector + " ." + json.metaData.initialBackgroundId).show();
@@ -242,17 +265,29 @@ var dahuapp = (function(dahuapp, $) {
                 $(selector + " .mouse-cursor").show();
 
                 /*
+                 * If an anchor has been specified, we place the presentation
+                 * in the right position.
+                 */
+
+                var anchor = window.location.hash.substring(1);
+                var actionsBeforeAnchor = null;
+                if (anchor !== '') {
+                    actionsBeforeAnchor = getActionsBeforeAnchor(anchor);
+                }
+
+                if (actionsBeforeAnchor !== null) {
+                    for (var i = 0; i < actionsBeforeAnchor.length; i++) {
+                        actionsBeforeAnchor[i].executeImmediately(selector);
+                    }
+                    nextAction = actionsBeforeAnchor.length;
+                };
+
+                /*
                  * A click on the "next" button publishes a nextSlide event
                  */
                 $(selector + " .next").click(function() {
                     events.onNext.publish();
                 });
-
-		/*
-		 * Everything is ready, show the presentation (hidden with style="display: none").
-		 */
-                $("#loading").hide();
-                $(selector + " .object-list").show();
                 
                 /*
                  * A click on the "previous" button publishes a previousSlide event
@@ -260,6 +295,12 @@ var dahuapp = (function(dahuapp, $) {
                 $(selector + " .previous").click(function() {
                     events.onPrevious.publish();
                 });
+
+		/*
+		 * Everything is ready, show the presentation (hidden with style="display: none").
+		 */
+                $("#loading").hide();
+                $(selector + " .object-list").show();
             };
         };
 
