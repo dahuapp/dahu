@@ -394,10 +394,10 @@
             /*
              * Create a new presentation variable in the JSON file which will contain slides.
              */
-            this.createPresentation = function() {
+            this.createPresentation = function(width, height) {
                 json.metaData = {};
-                json.metaData.imageWidth = 640;
-                json.metaData.imageHeight = 359;
+                json.metaData.imageWidth = width;
+                json.metaData.imageHeight = height;
                 json.data = new Array();
             };
 

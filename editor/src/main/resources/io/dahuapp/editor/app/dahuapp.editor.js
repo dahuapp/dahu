@@ -163,6 +163,8 @@ var dahuapp = (function(dahuapp, $) {
             
             var setDefaultSettings = function() {
                 settings.captureKey = "f7";
+                settings.defaultWidth = 800;
+                settings.defaultHeight = 600;
             };
             
             this.loadSettings = function() {
@@ -180,6 +182,22 @@ var dahuapp = (function(dahuapp, $) {
             
             this.setCaptureKey = function(key) {
                 settings.captureKey = key;
+                saveSettings();
+            };
+
+            this.getDefaultWidth = function() {
+                return settings.defaultWidth;
+            };
+
+            this.getDefaultHeight = function() {
+                return settings.defaultHeight;
+            };
+
+            this.setDefaultSize = function(w, h) {
+                settings.defaultHeight = parseInt(h);
+                settings.defaultWidth = parseInt(w);
+                // No error checking: should be managed by the WebView
+                // since we use input type="number"
                 saveSettings();
             };
         };
@@ -247,7 +265,9 @@ var dahuapp = (function(dahuapp, $) {
             setStateBarMessage("Project successfully loaded.");
         };
         var createFromProjectDir = function () {
-            jsonModel.createPresentation();
+            var width = applicationSettings.getDefaultWidth();
+            var height = applicationSettings.getDefaultHeight();
+            jsonModel.createPresentation(width, height);
             dahuapp.drivers.setTitleProject(projectDir);
             dahuapp.drivers.logger.JSinfo("dahuapp.editor.js", "init", "project created !");
             initProject = true;
@@ -512,6 +532,22 @@ var dahuapp = (function(dahuapp, $) {
         var getCaptureKey = function() {
             applicationSettings.setCaptureKey($('#set-capture-key-popup #new-capture-key').html());
             dahuapp.drivers.keyboard.removeKeyListener(self.handleChangeCaptureKey);
+        };
+
+        /*
+         * User preferences management
+         */
+        var setUserPrefs = function() {
+            $('#user-prefs-popup #default-width').val(applicationSettings.getDefaultWidth());
+            $('#user-prefs-popup #default-height').val(applicationSettings.getDefaultHeight());
+            showPopup('#user-prefs-popup');
+            events.onPopupConfirmed.subscribe(saveUserPrefs);
+        };
+
+        var saveUserPrefs = function () {
+            var defWidth = $('#user-prefs-popup #default-width').val();
+            var defHeight = $('#user-prefs-popup #default-height').val();
+            applicationSettings.setDefaultSize(defWidth, defHeight);
         };
 
         /*
@@ -951,6 +987,11 @@ var dahuapp = (function(dahuapp, $) {
             $('#set-capture-key').click(function() {
                 if (!captureMode) {
                     setCaptureKey();
+                }
+            });
+            $('#set-user-prefs').click(function() {
+                if (!captureMode) {
+                    setUserPrefs();
                 }
             });
             $('#about-us').click(function() {

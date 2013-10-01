@@ -107,6 +107,11 @@
                                             Change capture key...
                                         </a>
                                     </li>
+                                    <li role="presentation">
+                                        <a tabindex="-1" role="menuitem" id="set-user-prefs">
+                                            Preferences...
+                                        </a>
+                                    </li>
                                 </ul>
                             </li>
                             <li class="dropdown">
@@ -215,6 +220,22 @@
                         <p>Press the key you want to set as capture mode key (i.e. this key will take a screenshot when pressed while capture mode is on).</p>
                         <p>Current key : <span id="new-capture-key"></span></p>
                         <p>Note : you can only set F* keys as capture keys (from F1 to F12).</p>
+                    </div>
+                    <!-- Controls must be direct children of the main popup div -->
+                    <div class="ok-cancel-popups-control">
+                        <button class="popup-confirm btn btn-success">OK</button>
+                        <button class="popup-cancel btn btn-danger">Cancel</button>
+                    </div>
+                </div>
+		<!-- Miscellaneous user-wide settings -->
+		<div id="user-prefs-popup" hidden>
+                    <div class="popup-title">
+                        User Preferences
+                    </div>
+                    <div class="popup-content">
+                        <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
+                        Default width : <input type="number" id="default-width"><br>
+			Default height : <input type="number" id="default-height">
                     </div>
                     <!-- Controls must be direct children of the main popup div -->
                     <div class="ok-cancel-popups-control">
