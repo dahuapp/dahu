@@ -165,6 +165,7 @@ var dahuapp = (function(dahuapp, $) {
                 settings.captureKey = "f7";
                 settings.defaultWidth = 800;
                 settings.defaultHeight = 600;
+                settings.defaultSpeed = 0.8;
             };
             
             this.loadSettings = function() {
@@ -200,6 +201,15 @@ var dahuapp = (function(dahuapp, $) {
                 // since we use input type="number"
                 saveSettings();
             };
+
+            this.getDefaultSpeed = function () {
+                return settings.defaultSpeed;
+            };
+
+            this.setDefaultSpeed = function (s) {
+                settings.defaultSpeed = parseFloat(s);
+                saveSettings();
+            }
         };
         var applicationSettings;
 
@@ -540,6 +550,7 @@ var dahuapp = (function(dahuapp, $) {
         var setUserPrefs = function() {
             $('#user-prefs-popup #default-width').val(applicationSettings.getDefaultWidth());
             $('#user-prefs-popup #default-height').val(applicationSettings.getDefaultHeight());
+            $('#user-prefs-popup #default-speed').val(applicationSettings.getDefaultSpeed());
             showPopup('#user-prefs-popup');
             events.onPopupConfirmed.subscribe(saveUserPrefs);
         };
@@ -548,6 +559,8 @@ var dahuapp = (function(dahuapp, $) {
             var defWidth = $('#user-prefs-popup #default-width').val();
             var defHeight = $('#user-prefs-popup #default-height').val();
             applicationSettings.setDefaultSize(defWidth, defHeight);
+            var defSpeed = $('#user-prefs-popup #default-speed').val();
+            applicationSettings.setDefaultSpeed(defSpeed);
         };
 
         /*
@@ -723,7 +736,8 @@ var dahuapp = (function(dahuapp, $) {
                     var mouse = dahuapp.drivers.mouse;
                     // the new screen shot is inserted just after the current slide
                     selectedSlide++;
-                    jsonModel.addSlide(selectedSlide, imgRelative, mouse.getMouseX(), mouse.getMouseY());
+                    jsonModel.addSlide(selectedSlide, imgRelative, mouse.getMouseX(), mouse.getMouseY(),
+                                        applicationSettings.getDefaultSpeed());
                     events.onNewImageTaken.publish(selectedSlide);
                     events.onSelectedImageChanged.publish(selectedSlide);
                     newChanges = true;

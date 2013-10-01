@@ -203,8 +203,8 @@
 
 #user-prefs-popup {
     position: absolute;
-    width: 300px;
-    height: 280px;
+    width: 400px;
+    height: 400px;
     background: white;
     margin: 4px;
     border: 4px inset lightgray;

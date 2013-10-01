@@ -409,7 +409,7 @@
              * @param double mouseY Ordinate mouse position in %.
              * @return Index of the newly added slide.
              */
-            this.addSlide = function(idSlide, img, mouseX, mouseY) {
+            this.addSlide = function(idSlide, img, mouseX, mouseY, speed) {
                 var slide = {
                     "object": new Array(),
                     "action": new Array()
@@ -417,7 +417,7 @@
                 json.data.splice(idSlide, 0, slide);
                 this.addObject(idSlide, "background", img);
                 this.addObject(idSlide, "mouse");
-                this.addAction(idSlide, "move", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY, .8);
+                this.addAction(idSlide, "move", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY, speed);
                 this.addAction(idSlide, "appear", json.data[idSlide].object[0].id, "afterPrevious");
             };
 
