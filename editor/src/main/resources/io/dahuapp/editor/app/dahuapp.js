@@ -417,7 +417,7 @@
                 json.data.splice(idSlide, 0, slide);
                 this.addObject(idSlide, "background", img);
                 this.addObject(idSlide, "mouse");
-                this.addAction(idSlide, "move", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY, 800);
+                this.addAction(idSlide, "move", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY, .8);
                 this.addAction(idSlide, "appear", json.data[idSlide].object[0].id, "afterPrevious");
             };
 
@@ -477,7 +477,7 @@
                     case "move":
                         action.finalAbs = arguments[4] || 0.0;
                         action.finalOrd = arguments[5] || 0.0;
-                        action.duration = arguments[6] || 0;
+                        action.speed = arguments[6] || 0;
                         break;
                 }
                 json.data[idSlide].action.push(action);
