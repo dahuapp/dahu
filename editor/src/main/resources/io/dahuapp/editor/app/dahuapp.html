@@ -8,6 +8,12 @@
         <script src="jquery-1.9.1.min.js"></script>
         <!-- bootstrap's javascript uses jQuery -->
         <script src="bootstrap/js/bootstrap.min.js"></script>
+	<!-- To use <a rel="tooltip"> for hover-tooltips -->
+        <script>
+    jQuery(function ($) {
+        $("a").tooltip()
+    });
+    </script>
     </head>
 
     <body>
@@ -233,10 +239,19 @@
                         User Preferences
                     </div>
                     <div class="popup-content">
-                        <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
-                        Default width : <input type="number" id="default-width"><br>
-			Default height : <input type="number" id="default-height"><br>
-                        Default mouse speed : <input type="number" id="default-speed">
+                        <p>Preferences are saved in <tt>~/.config/dahu/config.json</tt>.</p>
+                        <a rel="tooltip" href="#"
+                           title="Image width, in pixels, for new projects (See 'output image size' in 'settings' menu to set it for individual projects)."
+                           >Default width</a>:
+                           <input type="number" id="default-width"><br>
+			<a rel="tooltip" href="#"
+                           title="Image height, in pixels, for new projects (See 'output image size' in 'settings' menu to set it for individual projects)."
+                           >Default height</a>:
+                           <input type="number" id="default-height"><br>
+                        <a rel="tooltip" href="#"
+                           title="Speed, in pixel per milisecond, for mouse animations. Reasonable values are around 1.0."
+                           >Default mouse speed</a> :
+                           <input type="number" id="default-speed">
                     </div>
                     <!-- Controls must be direct children of the main popup div -->
                     <div class="ok-cancel-popups-control">
