@@ -7,7 +7,7 @@ and opening the dahuproject.html file in the presentation/ sub-repository.
 
 ## Documentation ##
 
-The [user-manual](https://github.com/dahuapp/Dahu/wiki/User-manual) is available on [Dahu's wiki](https://github.com/dahuapp/Dahu/wiki/User-manual).
+The [user-manual](https://github.com/dahuapp/Dahu/wiki/User-manual) is available on [Dahu's wiki](https://github.com/dahuapp/Dahu/wiki/_pages).
 
 ## Project Goals ##
 
