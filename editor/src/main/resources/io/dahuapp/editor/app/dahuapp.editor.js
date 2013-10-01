@@ -222,9 +222,19 @@ var dahuapp = (function(dahuapp, $) {
         };
         var loadFromProjectDir = function() {
             var fileSystem = dahuapp.drivers.fileSystem;
-            var stringJson = fileSystem.readFile(projectDir + fileSystem.getSeparator() + jsonFileName);
+            var jsonFullName = projectDir + fileSystem.getSeparator() + jsonFileName;
+            var stringJson = fileSystem.readFile(jsonFullName);
             events.onNewProjectCreated.publish();
-            jsonModel.loadJson(stringJson);
+            try {
+                jsonModel.loadJson(stringJson);
+            } catch (e) {
+                alert("Cannot parse " + jsonFullName + ":\n" + e
+                      + "\nIf you edited the file manually, you may try to validate it with"
+                      + " a tool like http://jsonlint.com/ for better syntax errors."
+                      + " If you did not edit the file, please report the bug to the Dahu team.");
+                setStateBarMessage("Could not load project.");
+                return;
+            }
             var nbSlides = jsonModel.getNbSlide();
             for (var i = 0; i < nbSlides; i++) {
                 events.onNewImageTaken.publish(i);
