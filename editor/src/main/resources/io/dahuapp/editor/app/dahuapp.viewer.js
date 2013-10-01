@@ -172,6 +172,7 @@ var dahuapp = (function(dahuapp, $) {
                                 events.onAllActionFinish.subscribe(function(events, selector) {
                                     json.action[tmp].execute(events, selector);
                                 });
+                                currentAction++;
                                 return;
                         }
                         currentAction++;
