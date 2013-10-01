@@ -145,13 +145,8 @@ var dahuapp = (function(dahuapp, $) {
         
         /*
          * Settings for the application.
-         * ------ Not saved at the moment, only active while application is open.
-         * In a future version, may be hard saved to be kept when
-         * the application is closed, but this will allow the user to manually
-         * modify it : so need to check in loading if the parameters are consistent.
-         * 
-         * To implement this, change the methods 'loadSettings'
-         * and 'saveSettings' in the following model.
+         *
+         * Saved on disk in ~/.config/dahu/config.json.
          */
         var ApplicationSettingsModel = function() {
             var settings = {};
