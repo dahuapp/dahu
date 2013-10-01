@@ -283,6 +283,18 @@
                             });
                         };
                         break;
+                    case "delay":
+                        executableAction.duration = action.duration;
+                        executableAction.execute = function(events, selector) {
+                            events.onActionStart.publish(events, selector);
+                            setTimeout(function() {
+                                events.onActionOver.publish(events, selector);
+                            }, this.duration);
+                        };
+                        executableAction.executeReverse = function(selector) {
+                            // Nothing!
+                        };
+                        break;
                 }
                 json.action.push(executableAction);
             };
