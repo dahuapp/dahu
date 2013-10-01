@@ -226,7 +226,7 @@ var dahuapp = (function(dahuapp, $) {
          * that are disabled when no project is open.
          */
         var enableProjectButtons = function() {
-            setElementDisabled('#capture-mode', false);
+            $('#capture-mode').parent().show();
             setElementDisabled('#save-project', false);
             setElementDisabled('#reload-project', false);
             setElementDisabled('#clean-project', false);
