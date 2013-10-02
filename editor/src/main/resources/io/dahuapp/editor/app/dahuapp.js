@@ -214,8 +214,17 @@
                 var executableAction  = {
                     'id': action.id,
                     'trigger': action.trigger,
-                    'target': action.target
+                    'target': action.target,
+                    'delayAfter': action.delayAfter,
+                    'doneFunction': function(events, selector) {
+                        setTimeout(function () {
+                            events.onActionOver.publish(events, selector);
+                        }, this.delayAfter);
+                    }
                 };
+                if (executableAction.delayAfter == null) {
+                    executableAction.delayAfter = 200;
+                }
                 switch (action.type.toLowerCase()) {
                     case "appear":
                         executableAction.abs = (action.abs * json.metaData.imageWidth) + 'px';
@@ -229,7 +238,7 @@
                                 'top': this.ord
                             });
                             $(sel).show(this.duration, function() {
-                                events.onActionOver.publish(events, selector);
+                                executableAction.doneFunction(events, selector);
                             });
                         };
                         executableAction.executeReverse = function(selector) {
@@ -249,7 +258,7 @@
                         executableAction.execute = function(events, selector) {
                             events.onActionStart.publish(events, selector);
                             $(selector + ' .' + this.target).hide(this.duration, function() {
-                                events.onActionOver.publish(events, selector);
+                                executableAction.doneFunction(events, selector);
                             });
                         };
                         executableAction.executeReverse = function(selector) {
@@ -287,8 +296,8 @@
                             $(sel).animate({
                                 'left': this.finalAbs,
                                 'top': this.finalOrd
-                            }, this.duration, 'linear', function() {
-                                events.onActionOver.publish(events, selector);
+                            }, this.duration, 'linear', function () {
+                                executableAction.doneFunction(events, selector);
                             });
                         };
                         executableAction.executeReverse = function(selector) {
