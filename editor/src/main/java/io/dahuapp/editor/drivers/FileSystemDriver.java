@@ -109,9 +109,9 @@ public class FileSystemDriver implements Driver {
      */
     public boolean writeFile(String fileName, String text) {
         try {
-            FileWriter fw = new FileWriter(fileName, false);
-            fw.write(text);
-            fw.close();
+            try (FileWriter fw = new FileWriter(fileName, false)) {
+                fw.write(text);
+            }
             LoggerProxy.info(getClass().getName(), "writeFile",
                     "file " + fileName + " created");
             return true;

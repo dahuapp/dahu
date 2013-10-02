@@ -41,8 +41,8 @@ public class DahuApp extends Application {
      */
     private static final int MIN_HEIGHT = 520;
     /**
-     * Webview of the application, all the elements will be displayed in this
-     * webview.
+     * WebView of the application, all the elements will be displayed in this
+     * WebView.
      */
     private WebView webview;
 
@@ -100,8 +100,8 @@ public class DahuApp extends Application {
     }
 
     /**
-     * Initialises the webview with the html content and binds the drivers to
-     * the dahuapp javascript object.
+     * Initializes the WebView with the HTML content and binds the drivers to
+     * the Dahuapp JavaScript object.
      *
      * @param primaryStage Main stage of the app (for the proxy).
      */

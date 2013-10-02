@@ -69,21 +69,21 @@ public class KeyboardDriver implements Driver {
             @Override
             public void nativeKeyReleased(NativeKeyEvent nke) {
                 for (final KeyboardListener listener : listeners) {
-                    listener.keyReleased(nke.getKeyCode(), nke.getKeyText(nke.getKeyCode()));
+                    listener.keyReleased(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
                 }
             }
             
             @Override
             public void nativeKeyTyped(NativeKeyEvent nke) {
                 for (final KeyboardListener listener : listeners) {
-                    listener.keyTyped(nke.getKeyCode(), nke.getKeyText(nke.getKeyCode()));
+                    listener.keyTyped(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
                 }
             }
             
             @Override
             public void nativeKeyPressed(NativeKeyEvent nke) {
                 for (final KeyboardListener listener : listeners) {
-                    listener.keyPressed(nke.getKeyCode(), nke.getKeyText(nke.getKeyCode()));
+                    listener.keyPressed(nke.getKeyCode(), NativeKeyEvent.getKeyText(nke.getKeyCode()));
                 }
             }
         });

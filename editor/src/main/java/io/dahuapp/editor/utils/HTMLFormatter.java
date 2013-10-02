@@ -19,7 +19,7 @@ public class HTMLFormatter extends Formatter {
     private boolean printMessage = true;
     private boolean printLevel = true;
     
-    private final String head = "<head>\n<style type=\"text/css\">\nbody {\ncolor: black;\nbackground-color: white \n}" 
+    private static final String head = "<head>\n<style type=\"text/css\">\nbody {\ncolor: black;\nbackground-color: white \n}"
             + "\n.severe {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(204, 0, 0)\n}\n"
             + "\n.warning {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(255, 204, 0)\n}\n"
             + "\n.fine {\nfont-family: Courier New,Courier,monospace;\ncolor: rgb(0, 0, 204)\n}\n"

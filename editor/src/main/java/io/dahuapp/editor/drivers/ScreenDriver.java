@@ -69,7 +69,7 @@ public class ScreenDriver implements Driver {
     /**
      * Set of data for the screen shots.
      */
-    private final class ScreenData {
+    private static final class ScreenData {
         
         /**
          * Graphics device, represents the graphic device to capture.
