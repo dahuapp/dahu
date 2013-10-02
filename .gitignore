@@ -1,4 +1,5 @@
 .gradle
+.nb-gradle
 .nb-gradle-properties
 build
 debug.keyStore
