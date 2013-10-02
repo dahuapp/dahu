@@ -278,7 +278,7 @@
                             var sel = selector + ' .' + this.target;
                             this.initialAbs = $(sel).css('left');
                             this.initialOrd = $(sel).css('top');
-                            if (!this.duration) {
+                            if (this.duration == null) {
                                 var initialAbsPix = this.initialAbs.replace('px', '');
                                 var initialOrdPix = this.initialOrd.replace('px', '');
                                 var finalAbsPix = this.finalAbs.replace('px', '');
