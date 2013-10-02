@@ -445,7 +445,7 @@
              *
              * This method doesn't check any Json syntax or something like that.
              */
-            var checkJsonVersion = function() {
+            var upgradeJsonVersion = function() {
                 // Checks if unique IDs are in the project file
                 if (!json.metaData.nextUniqueId) {
                     var currentId = 0;
@@ -467,7 +467,7 @@
              */
             this.loadJson = function(stringJson) {
                 json = JSON.parse(stringJson);
-                checkJsonVersion();
+                upgradeJsonVersion();
             };
 
             /*
