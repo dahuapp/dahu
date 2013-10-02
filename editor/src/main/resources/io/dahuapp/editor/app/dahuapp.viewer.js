@@ -252,7 +252,6 @@ var dahuapp = (function(dahuapp, $) {
                 /*
                  * At the beginning, the visible image is the first one of the presentation
                  */
-
                 $(selector + " .object-list").children().hide();
 
                 $(selector + " ." + json.metaData.initialBackgroundId).show();
@@ -268,7 +267,6 @@ var dahuapp = (function(dahuapp, $) {
                  * If an anchor has been specified, we place the presentation
                  * in the right position.
                  */
-
                 var anchor = window.location.hash.substring(1);
                 var actionsBeforeAnchor = null;
                 if (anchor !== '') {
@@ -296,9 +294,10 @@ var dahuapp = (function(dahuapp, $) {
                     events.onPrevious.publish();
                 });
 
-		/*
-		 * Everything is ready, show the presentation (hidden with style="display: none").
-		 */
+                /*
+                 * Everything is ready, show the presentation
+                 * (hidden with style="display: none" from HTML).
+                 */
                 $("#loading").hide();
                 $(selector + " .object-list").show();
             };
