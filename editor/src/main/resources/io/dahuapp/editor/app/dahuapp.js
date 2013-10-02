@@ -429,7 +429,8 @@
              * But maybe that a UUID is a bit tiresome to put as an anchor...
              */
             var generateUniqueActionId = function() {
-                return json.metaData.nextUniqueId++;
+                json.metaData.nextUniqueId++;
+                return json.metaData.nextUniqueId.toString();
             };
 
             /*
@@ -450,7 +451,7 @@
                     var currentId = 0;
                     for (var i = 0; i < json.data.length; i++) {
                         for (var j = 0; j < json.data[i].action.length; j++) {
-                            json.data[i].action[j].id = currentId;
+                            json.data[i].action[j].id = currentId.toString();
                             currentId++;
                         }
                     }
