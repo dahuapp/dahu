@@ -55,6 +55,7 @@ dependencies {
     // TODO: Add dependencies here ...
     // You can read more about how to add dependency here:
     //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+    compile group: 'edu.stanford.ejalbert', name: 'BrowserLauncher2', version: '1.3'
     compile fileTree(dir: 'lib', includes: ['*.jar'])
     runtime fileTree(dir: 'lib', includes: ['*.jar'])
     testCompile group: 'junit', name: 'junit', version: '4.10'
