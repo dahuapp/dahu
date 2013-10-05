@@ -744,13 +744,14 @@ var dahuapp = (function(dahuapp, $) {
 
         /*
          * Handle events for the changing of the capture key.
-         * This callback handles key pressed events for keys between F1 and F12.
+         * This callback handles key pressed events for all keys except "escape".
          */
         self.handleChangeCaptureKey = function handleChangeCaptureKey(key, name) {
             switch (name.toLowerCase()) {
-                case "f1": case "f2": case "f3": case "f4":
-                case "f5": case "f6": case "f7": case "f8":
-                case "f9": case "f10": case "f11": case "f12":
+		case "escape":
+		    // nothing
+		    break;
+		default:
                     $('#set-capture-key-popup #new-capture-key').empty()
                             .append(name.toUpperCase());
                     break;
