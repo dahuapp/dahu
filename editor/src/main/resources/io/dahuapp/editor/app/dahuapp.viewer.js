@@ -64,6 +64,9 @@ var dahuapp = (function(dahuapp, $) {
             var currentAction = 0;    /* Action currently running */
             var nextAction = 0;       /* Action to execute on 'Next' click */
             var nbActionsRunning = 0;
+            var previousAnchor = -1;  /* Last entered anchor, only used in
+                                       * case the 'onhashchange' event is
+                                       * not supported by the web browser */
             
             /*
              * Functions to reinitialise running actions and subscribed
@@ -198,25 +201,64 @@ var dahuapp = (function(dahuapp, $) {
             };
 
             /*
-             * Returns an array containing the actions that are before the
-             * given anchor (the action which has this anchor is excluded).
+             * The two following methods each returns an array containing the
+             * actions to execute to reach the given anchor (respectively
+             * forward or backwards).
              *
              * If the given anchor matches none of the actions, then an empty
              * array is returned.
              */
-            var getActionsBeforeAnchor = function(anchor) {
-                var actionsBeforeAnchor = new Array();
-                for (var i = 0; i < json.action.length; i++) {
+            var getActionsToJumpForward = function(anchor) {
+                var actions = new Array();
+                for (var i = nextAction; i < json.action.length; i++) {
                     // '==' and not '===' because we compare indifferently a
                     // number or a string or anything else
                     if (json.action[i].id == anchor) {
-                        return actionsBeforeAnchor;
+                        return actions;
                     } else {
-                        actionsBeforeAnchor.push(json.action[i]);
+                        actions.push(json.action[i]);
                     }
                 }
                 // Here, the anchor has not been found during the action scan
                 return null;
+            };
+            var getActionsToJumpBackwards = function(anchor) {
+                var actions = new Array();
+                for (var i = nextAction - 1; i >= 0; i--) {
+                    // '==' and not '===' because we compare indifferently a
+                    // number or a string or anything else
+                    actions.push(json.action[i]);
+                    if (json.action[i].id == anchor) {
+                        return actions;
+                    }
+                }
+                // Here, the anchor has not been found during the action scan
+                return null;
+            };
+            
+            /*
+             * Updates the position of the presentation depending on the
+             * given anchor (next action wanted).
+             */
+            var jumpToAnchor = function(anchor) {
+                if (anchor !== '') {
+                    stopAllActions();
+                    if (anchor > nextAction) {
+                        // forward
+                        var actions = getActionsToJumpForward(anchor);
+                        for (var i = 0; i < actions.length; i++) {
+                            actions[i].executeImmediately(selector);
+                        }
+                        nextAction += actions.length;
+                    } else {
+                        // backwards
+                        var actions = getActionsToJumpBackwards(anchor);
+                        for (var i = 0; i < actions.length; i++) {
+                            actions[i].executeReverse(selector);
+                        }
+                        nextAction -= actions.length;
+                    }
+                }
             };
 
             /* Public API */
@@ -267,18 +309,26 @@ var dahuapp = (function(dahuapp, $) {
                  * If an anchor has been specified, we place the presentation
                  * in the right position.
                  */
-                var anchor = window.location.hash.substring(1);
-                var actionsBeforeAnchor = null;
-                if (anchor !== '') {
-                    actionsBeforeAnchor = getActionsBeforeAnchor(anchor);
+                jumpToAnchor(window.location.hash.substring(1));
+                
+                /*
+                 * If the anchor changes during the presentation, then the
+                 * presentation is updated
+                 */
+                if ("onhashchange" in window) {
+                    // event supported
+                    window.onhashchange = function () {
+                        jumpToAnchor(window.location.hash.substring(1));
+                    };
+                } else {
+                    // event not supported : periodical check
+                    window.setInterval(function () {
+                        if (window.location.hash.substring(1) !== previousAnchor) {
+                            previousAnchor = window.location.hash.substring(1);
+                            jumpToAnchor(window.location.hash.substring(1));
+                        }
+                    }, 100);
                 }
-
-                if (actionsBeforeAnchor !== null) {
-                    for (var i = 0; i < actionsBeforeAnchor.length; i++) {
-                        actionsBeforeAnchor[i].executeImmediately(selector);
-                    }
-                    nextAction = actionsBeforeAnchor.length;
-                };
 
                 /*
                  * A click on the "next" button publishes a nextSlide event
