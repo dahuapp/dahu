@@ -39,6 +39,8 @@
             var autoPlay = parseAutoOption('autoplay', 5000);
             /* Whether to wait for "next" event on page load */
             var autoStart = parseAutoOption('autostart', 5000);
+            /* Whether to loop back to start at the end of presentation */
+            var autoLoop = parseAutoOption('autoloop', 5000);
 
             var events = (function() {
                 var self = {};
@@ -218,6 +220,13 @@
                                 return;
                         }
                         currentAction++;
+
+                    }
+                    if (autoLoop && nbActionsRunning === 0) {
+                        setTimeout(function () {
+                            resetPresentation();
+                            startPresentationMaybe();
+                        }, autoLoop);
                     }
                 }
                 leaveAnimationMode();
@@ -317,6 +326,36 @@
                 }
             };
 
+            var resetPresentation = function() {
+                window.clearTimeout(playTimer);
+
+                currentAction = 0;
+                nextAction = 0;
+                nbActionsRunning = 0;
+
+                /*
+                 * At the beginning, the visible image is the first one of the presentation
+                 */
+                $(selector + " .object-list").children().hide();
+
+                $(selector + " ." + json.metaData.initialBackgroundId).show();
+
+                $(selector + " .mouse-cursor").css({
+                    'top': (json.metaData.initialMouseY * json.metaData.imageHeight) + "px",
+                    'left': (json.metaData.initialMouseX * json.metaData.imageWidth) + "px"
+                });
+
+                $(selector + " .mouse-cursor").show();
+            }
+
+            var startPresentationMaybe = function() {
+                if (autoStart) {
+                    playTimer = setTimeout(function () {
+                        events.onNext.publish();
+                    }, autoStart);
+                }
+            }
+
             /* Public API */
 
             this.load = function(url) {
@@ -347,19 +386,7 @@
                 events.onActionOver.subscribe(onActionOverEventHandler);
                 events.onActionStart.subscribe(onActionStartEventHandler);
 
-                /*
-                 * At the beginning, the visible image is the first one of the presentation
-                 */
-                $(selector + " .object-list").children().hide();
-
-                $(selector + " ." + json.metaData.initialBackgroundId).show();
-
-                $(selector + " .mouse-cursor").css({
-                    'top': (json.metaData.initialMouseY * json.metaData.imageHeight) + "px",
-                    'left': (json.metaData.initialMouseX * json.metaData.imageWidth) + "px"
-                });
-
-                $(selector + " .mouse-cursor").show();
+                resetPresentation();
 
                 /*
                  * If an anchor has been specified, we place the presentation
@@ -406,11 +433,7 @@
                  */
                 $("#loading").hide();
                 $(selector + " .object-list").show();
-                if (autoStart) {
-                    setTimeout(function () {
-                        events.onNext.publish();
-                    }, autoStart);
-                }
+                startPresentationMaybe();
             };
         };
 
