@@ -51,10 +51,13 @@
              */
             var generateHtmlHeader = function($generated) {
                 $('head', $generated)
+                        .append($(document.createElement('title'))
+                                .append("Dahu Presentation")) /* TODO: make this customizeable */
                         .append($(document.createElement('meta'))
                         .attr({'charset': 'utf-8'}))
                         .append($(document.createElement('script'))
-                        .attr({'src': 'http://code.jquery.com/jquery-1.9.1.min.js'}))
+                        .attr({'src': 'http://code.jquery.com/jquery-1.9.1.min.js'})
+                        .attr({'type': 'text/javascript'}))
                         .append($(document.createElement('link'))
                         .attr({'rel': 'stylesheet', 'href': 'dahuapp.viewer.css'}));
             };
@@ -81,7 +84,7 @@
              */
             var getBasicCallCode = function() {
                 var code = '(function($) {\n';
-                code += '    myPresentation = dahuapp.viewer.createDahuViewer("#my-dahu-presentation");\n';
+                code += '    var myPresentation = dahuapp.viewer.createDahuViewer("#my-dahu-presentation");\n';
                 code += '    myPresentation.load("presentation.json");\n';
                 code += '    myPresentation.start();\n';
                 code += '})(jQuery);\n';
@@ -96,10 +99,13 @@
                         .append($(document.createElement('section'))
                         .attr({'id': 'my-dahu-presentation'}))
                         .append($(document.createElement('script'))
-                        .attr({'src': 'dahuapp.js'}))
+                        .attr({'src': 'dahuapp.js'})
+                        .attr({'type': 'text/javascript'}))
                         .append($(document.createElement('script'))
-                        .attr({'src': 'dahuapp.viewer.js'}))
+                        .attr({'src': 'dahuapp.viewer.js'})
+                        .attr({'type': 'text/javascript'}))
                         .append($(document.createElement('script'))
+                        .attr({'type': 'text/javascript'})
                         .append(getBasicCallCode()));
                 $('#my-dahu-presentation', $generated)
                         .append($(document.createElement('div'))
