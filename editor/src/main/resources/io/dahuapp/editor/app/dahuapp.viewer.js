@@ -8,7 +8,7 @@
  * @returns dahuapp extended with viewer module.
  */
 
-var dahuapp = (function(dahuapp, $) {
+(function(dahuapp, $) {
     var viewer = (function() {
 
         var self = {};
@@ -361,7 +361,4 @@ var dahuapp = (function(dahuapp, $) {
     })();
 
     dahuapp.viewer = viewer;
-
-    return dahuapp;
-
 })(dahuapp || {}, jQuery);
