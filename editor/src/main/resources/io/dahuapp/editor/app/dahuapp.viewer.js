@@ -13,12 +13,32 @@
 
         var self = {};
 
-        var DahuViewerModel = function(select) {
+        var DahuViewerModel = function(select, getParams) {
 
             /* Private API */
 
             var json = null;
             var selector = select;
+            var parseAutoOption = function(name, defaultValue) {
+                var res = getParams[name];
+                if (res == null) {
+                    return false;
+                }
+                if (res.toLowerCase() === 'false') {
+                    return false;
+                }
+                res = parseInt(res);
+                if (isNaN(res)) {
+                    // e.g. ?autoplay or ?autoplay=true
+                    return defaultValue;
+                }
+                return res;
+            }
+
+            /* Whether to wait for "next" event between actions */
+            var autoPlay = parseAutoOption('autoplay', 5000);
+            /* Whether to wait for "next" event on page load */
+            var autoStart = parseAutoOption('autostart', 5000);
 
             var events = (function() {
                 var self = {};
@@ -85,9 +105,21 @@
             };
             
             /*
+             * Timer used to program onNext event in autoplay mode.
+             */
+            var playTimer = 0;
+
+            /*
              * Function used when an "onNextEvent" event is caught.
              */
             var onNextEventHandler = function() {
+                /*
+                 * If the user pressed "next" before an autoplay event
+                 * is triggered, it replaces the autoplay event, hence
+                 * cancels it:
+                 */
+                window.clearTimeout(playTimer);
+
                 enterAnimationMode();
                 stopAllActions();
                 var tmpAction = nextAction;
@@ -165,6 +197,11 @@
                         switch (json.action[currentAction].trigger) {
                             case 'onClick':
                                 leaveAnimationMode();
+                                if (autoPlay && nbActionsRunning === 0) {
+                                    playTimer = setTimeout(function () {
+                                        events.onNext.publish();
+                                    }, autoPlay);
+                                }
                                 return;
                             case 'withPrevious':
                                 var tmp = currentAction;
@@ -369,11 +406,16 @@
                  */
                 $("#loading").hide();
                 $(selector + " .object-list").show();
+                if (autoStart) {
+                    setTimeout(function () {
+                        events.onNext.publish();
+                    }, autoStart);
+                }
             };
         };
 
-        self.createDahuViewer = function(selector) {
-            return new DahuViewerModel(selector);
+        self.createDahuViewer = function(selector, getParams) {
+            return new DahuViewerModel(selector, getParams);
         };
 
         return self;

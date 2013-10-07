@@ -58,6 +58,9 @@
                         .append($(document.createElement('script'))
                         .attr({'src': 'http://code.jquery.com/jquery-1.9.1.min.js'})
                         .attr({'type': 'text/javascript'}))
+                        .append($(document.createElement('script'))
+                        .attr({'src': 'parse-search.js'})
+                        .attr({'type': 'text/javascript'}))
                         .append($(document.createElement('link'))
                         .attr({'rel': 'stylesheet', 'href': 'dahuapp.viewer.css'}));
             };
@@ -84,7 +87,7 @@
              */
             var getBasicCallCode = function() {
                 var code = '(function($) {\n';
-                code += '    var myPresentation = dahuapp.viewer.createDahuViewer("#my-dahu-presentation");\n';
+                code += '    var myPresentation = dahuapp.viewer.createDahuViewer("#my-dahu-presentation", window.getParams);\n';
                 code += '    myPresentation.load("presentation.json");\n';
                 code += '    myPresentation.start();\n';
                 code += '})(jQuery);\n';
