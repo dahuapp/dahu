@@ -96,7 +96,14 @@
              */
             var generateHtmlBody = function($generated, jsonModel) {
                 $('body', $generated)
-                        .append($(document.createElement('section'))
+                        /* We could use a <section> here too, but it does not work with MS IE 8.
+			   Alternatively, adding this in the header would work:
+
+                               <!--[if lt IE 9]>
+                               <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+                               <![endif]-->
+                        */
+                        .append($(document.createElement('div'))
                         .attr({'id': 'my-dahu-presentation'}))
                         .append($(document.createElement('script'))
                         .attr({'src': 'dahuapp.js'})
