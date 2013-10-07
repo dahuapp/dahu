@@ -150,8 +150,13 @@
                 
                 /* Adding the mouse cursor image */
                 $('.object-list', $generated)
+                        .append($(document.createElement('div'))
+                        .attr({'class':'mouse-cursor'})
                         .append($(document.createElement('img'))
-                        .attr({'src': 'img/cursor.png', 'alt':'img/cursor.png', 'class':'mouse-cursor'}));
+                        .attr({'src': 'img/cursor.png', 'alt':'img/cursor.png', 'class':'mouse-cursor-normal'}))
+                        .append($(document.createElement('img'))
+                        .attr({'src': 'img/cursor-pause.png', 'alt':'img/cursor-pause.png',
+                               'style': 'display: none', 'class':'mouse-cursor-pause'})));
             };
 
             /*

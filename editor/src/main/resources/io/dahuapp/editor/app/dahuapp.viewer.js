@@ -88,6 +88,7 @@
              * Function used when an "onNextEvent" event is caught.
              */
             var onNextEventHandler = function() {
+                enterAnimationMode();
                 stopAllActions();
                 var tmpAction = nextAction;
                 var onlyWithPrevious = true;
@@ -163,6 +164,7 @@
                     while (json.action[currentAction]) {
                         switch (json.action[currentAction].trigger) {
                             case 'onClick':
+                                leaveAnimationMode();
                                 return;
                             case 'withPrevious':
                                 var tmp = currentAction;
@@ -181,6 +183,7 @@
                         currentAction++;
                     }
                 }
+                leaveAnimationMode();
             };
 
             /*
@@ -188,6 +191,22 @@
              */
             var onActionStartEventHandler = function() {
                 nbActionsRunning++;
+            };
+
+            /*
+             * Enter and leave "animation" mode. The viewer is in
+             * animation mode when something is going on without human
+             * interaction (i.e. executing actions before the next
+             * "onClick").
+             */
+            var enterAnimationMode = function () {
+                $(selector + ' .mouse-cursor-pause').hide();
+                $(selector + ' .mouse-cursor-normal').show();
+            };
+
+            var leaveAnimationMode = function () {
+                $(selector + ' .mouse-cursor-pause').show();
+                $(selector + ' .mouse-cursor-normal').hide();
             };
 
             /*

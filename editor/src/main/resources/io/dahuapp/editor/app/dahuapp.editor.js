@@ -358,6 +358,7 @@ var dahuapp = (function(dahuapp, $) {
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.css"), completeBuildDir + sep + "dahuapp.viewer.css");
             fileSystem.copyFile(fileSystem.getResource("dahuapp.js"), completeBuildDir + sep + "dahuapp.js");
             fileSystem.copyFile(fileSystem.getResource("cursor.png"), completeBuildDir + sep + imgDir + sep + "cursor.png");
+            fileSystem.copyFile(fileSystem.getResource("cursor-pause.png"), completeBuildDir + sep + imgDir + sep + "cursor-pause.png");
         };
         var runPreview = function() {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
