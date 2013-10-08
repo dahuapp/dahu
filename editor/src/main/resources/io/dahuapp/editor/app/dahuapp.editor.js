@@ -871,13 +871,14 @@ var dahuapp = (function(dahuapp, $) {
                     if ($(this).hasClass('my-cursor')) {
                         return;
                     }
-                    cursorY = ((event.y - $(this).offset().top) / $('#image').height()) * 100;
-                    cursorX = ((event.x - $(this).offset().left) / $('#image').width()) * 100;
+                    cursorY = ((event.y - $(this).offset().top) / $('#image').height());
+                    cursorX = ((event.x - $(this).offset().left) / $('#image').width());
                     $('.my-cursor').css({
-                        'top': cursorY + "\%",
-                        'left': cursorX + "\%"
+                        'top': cursorY * 100 + "\%",
+                        'left': cursorX * 100 + "\%"
                     });
-                    setStateBarMessage("x : " + cursorX + "\%, y : " + cursorY + "\%");
+                    jsonModel.editMouse(selectedSlide, idAction, cursorX, cursorY);
+                    setStateBarMessage("x : " + cursorX * 100 + "\%, y : " + cursorY * 100 + "\%");
                 },
                 dragend: function() {
                     if ($(this).hasClass('my-cursor')) {
