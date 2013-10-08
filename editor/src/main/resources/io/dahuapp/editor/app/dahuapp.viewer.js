@@ -362,7 +362,7 @@
 
             /* Public API */
 
-            this.load = function(url) {
+            this.loadUrl = function(url) {
                 var dataJson;
                 $.ajax({
                     'async': false,
@@ -374,6 +374,10 @@
                     }
                 });
                 
+                load(dataJson);
+            };
+
+            this.load = function(dataJson) {
                 /* Transforms data JSON to executable functions for actions */
                 var execModel = dahuapp.createScreencastExecutableModel();
                 execModel.loadJson(dataJson);

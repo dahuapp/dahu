@@ -85,10 +85,10 @@
             /*
              * Returns the code used to call the viewer to the presentation.
              */
-            var getBasicCallCode = function() {
+            var getBasicCallCode = function(jsonModel) {
                 var code = '(function($) {\n';
                 code += '    var myPresentation = dahuapp.viewer.createDahuViewer("#my-dahu-presentation", window.getParams);\n';
-                code += '    myPresentation.load("presentation.json");\n';
+                code += '    myPresentation.load(' + jsonModel + ');\n';
                 code += '    myPresentation.start();\n';
                 code += '})(jQuery);\n';
                 return code;
@@ -97,7 +97,7 @@
             /*
              * Generates the html body.
              */
-            var generateHtmlBody = function($generated, jsonModel) {
+            var generateHtmlBody = function($generated, jsonModel, jsonGen) {
                 $('body', $generated)
                         /* We could use a <section> here too, but it does not work with MS IE 8.
 			   Alternatively, adding this in the header would work:
@@ -116,7 +116,7 @@
                         .attr({'type': 'text/javascript'}))
                         .append($(document.createElement('script'))
                         .attr({'type': 'text/javascript'})
-                        .append(getBasicCallCode()));
+                        .append(getBasicCallCode(jsonGen)));
                 $('#my-dahu-presentation', $generated)
                         .append($(document.createElement('div'))
                         .attr({'id': 'loading'}).append("Loading presentation..."))
@@ -165,7 +165,7 @@
             /*
              * Generates the html String with the Json model.
              */
-            this.generateHtmlString = function(jsonModel) {
+            this.generateHtmlString = function(jsonModel, jsonGen) {
                 /* Initialising the compilation area */
                 var $generated = $(document.createElement('div'));
 
@@ -177,7 +177,7 @@
                         .append($(document.createElement('body')));
 
                 generateHtmlHeader($generated);
-                generateHtmlBody($generated, jsonModel);
+                generateHtmlBody($generated, jsonModel, jsonGen);
 
                 var result = htmlFormat($generated.html());
 

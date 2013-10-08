@@ -348,11 +348,16 @@ var dahuapp = (function(dahuapp, $) {
             var imgDim = fileSystem.copyAndResizeImages(projectDir + sep + imgDir, absImgDir,
                     jsonModel.getImageWidth(), jsonModel.getImageHeight());
             // generates the json and html
-            var htmlGen = generator.generateHtmlString(jsonModel);
             var jsonGen = generator.generateJsonString(jsonModel, imgDim);
+            var htmlGen = generator.generateHtmlString(jsonModel, jsonGen);
             // write the generated json and html
             fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
-            fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
+
+            // Writing the JSON file is not needed as we hardcode the
+            // value in the HTML file. Uncommenting the following line
+            // will get the file back if ever needed:
+            //fileSystem.writeFile(completeBuildDir + sep + generatedJsonName, jsonGen);
+
             // copies the script files into the build directory
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.js"), completeBuildDir + sep + "dahuapp.viewer.js");
             fileSystem.copyFile(fileSystem.getResource("dahuapp.viewer.css"), completeBuildDir + sep + "dahuapp.viewer.css");
