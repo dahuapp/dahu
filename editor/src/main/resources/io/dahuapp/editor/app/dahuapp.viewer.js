@@ -22,7 +22,11 @@
             var parseAutoOption = function(name, defaultValue) {
                 var res = getParams[name];
                 if (res == null) {
-                    return false;
+                    if (name == 'auto') {
+                        return false;
+                    } else {
+                        return parseAutoOption('auto', defaultValue);
+                    }
                 }
                 if (res.toLowerCase() === 'false') {
                     return false;
