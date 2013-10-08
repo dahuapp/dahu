@@ -37,9 +37,9 @@ public class ScreenDriver implements Driver {
      * @param projectDir The project directory (absolute path).
      * @return The name of the image created (or null if fail).
      */
-    public String takeScreen(String projectDir) {
+    public String takeScreen(String projectDir, String id) {
         final BufferedImage capture = screenData.getCapture();
-        final String imageName = UUID.randomUUID().toString() + ".png";
+        final String imageName = id + ".png";
         final File imageFile = new File(projectDir + fileSep + imageName);
         try {
             if (ImageIO.write(capture, "png", imageFile)) {

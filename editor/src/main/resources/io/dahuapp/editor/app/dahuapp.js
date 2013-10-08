@@ -513,22 +513,23 @@
 
             /*
              * Add a new slide in the presentation variable of the JSON file.
-             * @param int ID wanted for the slide.
+             * @param int index wanted for the slide.
+             * @param String idSlide Unique identifier for the slide.
              * @param String img Related to pathname of the image.
              * @param double mouseX Abscissa mouse position in %.
              * @param double mouseY Ordinate mouse position in %.
              * @return Index of the newly added slide.
              */
-            this.addSlide = function(idSlide, img, mouseX, mouseY, speed) {
+            this.addSlide = function(indexSlide, idSlide, img, mouseX, mouseY, speed) {
                 var slide = {
                     "object": new Array(),
                     "action": new Array()
                 };
-                json.data.splice(idSlide, 0, slide);
-                this.addObject(idSlide, "background", img);
-                this.addObject(idSlide, "mouse");
-                this.addAction(idSlide, "move", json.data[idSlide].object[1].id, "onClick", mouseX, mouseY, speed);
-                this.addAction(idSlide, "appear", json.data[idSlide].object[0].id, "afterPrevious");
+                json.data.splice(indexSlide, 0, slide);
+                this.addObject(indexSlide, "background", idSlide, img);
+                this.addObject(indexSlide, "mouse");
+                this.addAction(indexSlide, "move", json.data[indexSlide].object[1].id, "onClick", mouseX, mouseY, speed);
+                this.addAction(indexSlide, "appear", json.data[indexSlide].object[0].id, "afterPrevious");
             };
 
             /*
@@ -544,8 +545,8 @@
                 };
                 switch (type.toLowerCase()) {
                     case "background":
-                        object.id = "s" + json.data.length + "-o" + json.data[idSlide].object.length;
-                        object.img = arguments[2] || "";
+                        object.id = arguments[2] + json.data[idSlide].object.length;
+                        object.img = arguments[3] || "";
                         break;
                     case "mouse":
                         object.id = "mouse-cursor";

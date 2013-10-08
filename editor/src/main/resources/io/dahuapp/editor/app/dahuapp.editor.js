@@ -694,6 +694,18 @@ var dahuapp = (function(dahuapp, $) {
                 newChanges = true;
             }
         };
+
+        /* UUID generation */
+        function s4() {
+            return Math.floor((1 + Math.random()) * 0x10000)
+                .toString(16)
+                .substring(1);
+        };
+
+        function guid() {
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                s4() + '-' + s4() + s4() + s4();
+        }
         
         /* public API */
 
@@ -727,12 +739,13 @@ var dahuapp = (function(dahuapp, $) {
                             return;
                         }
                     }
-                    var img = dahuapp.drivers.screen.takeScreen(imgDirAbsolute);
+                    var slideId = guid();
+                    var img = dahuapp.drivers.screen.takeScreen(imgDirAbsolute, slideId);
                     var imgRelative = imgDir + sep + img;
                     var mouse = dahuapp.drivers.mouse;
                     // the new screen shot is inserted just after the current slide
                     selectedSlide++;
-                    jsonModel.addSlide(selectedSlide, imgRelative, mouse.getMouseX(), mouse.getMouseY(),
+                    jsonModel.addSlide(selectedSlide, slideId, imgRelative, mouse.getMouseX(), mouse.getMouseY(),
                                         applicationSettings.getDefaultSpeed());
                     events.onNewImageTaken.publish(selectedSlide);
                     events.onSelectedImageChanged.publish(selectedSlide);
