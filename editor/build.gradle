@@ -1,60 +1,63 @@
-/***************************************
- * Use JavaFX Gradle plugin
- * 
+version = '0.1-SNAPSHOT'
+group = 'io.github.dahuapp'
+encoding = 'UTF-8'
+
+description = """\
+Dahu is an awesome screencasting software.
+
+------------------------------------------
+Project version: ${version}
+Gradle version: ${gradle.gradleVersion}
+------------------------------------------
+"""
+
+/***********************************************************************************************************************
+ /* Apply IDE plugin
+ **********************************************************************************************************************/
+
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+
+/***********************************************************************************************************************
+ * Apply JavaFX plugin
+ *
  * See: http://speling.shemnon.com/blog/2013/05/18/javafx-gradle-plugin-0-dot-3-0-released/
- ***************************************/
+ **********************************************************************************************************************/
 
-apply from: 'https://repository-javafx-gradle-plugin.forge.cloudbees.com/release/javafx.plugin'
+apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.3.0/javafx.plugin'
 
-/***************************************
- * Set Maven coordinates and build vars
- ***************************************/
+/***********************************************************************************************************************
+ * Apply custom tasks
+ **********************************************************************************************************************/
 
-group                   = 'io.dahuapp'
-archivesBaseName        = 'dahuapp'
-version                 = '0.1-SNAPSHOT'
-
-sourceCompatibility = '1.7'
-[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
-
-/***************************************
- * Check environment
- ***************************************/
-
-if(! System.env['JAVAFX_HOME'] ) {
-    println """Please set environment variable JAVAFX_HOME
-to the directory that contains /rt/lib/jfxrt.jar"""
-    System.exit 1
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.8'
 }
 
-// environment is ok
-
-// allow command-line arguments with gradle run -Pargs="..."
-// http://gradle.1045684.n5.nabble.com/Command-line-arguments-to-application-td3999977.html
-run {
-   if ( project.hasProperty('args') ) {
-       args project.args.split('\\s+')
-   }
-   if ( project.hasProperty('workingDir') ) {
-       workingDir project.workingDir
-   }
+run.doFirst {
+    if (project.hasProperty('args')) {
+        args project.args.split('\\s+')
+    }
+    if (project.hasProperty('workingDir')) {
+        workingDir project.workingDir
+    }
 }
 
-/***************************************
- * The build script proper
- ***************************************/
+/***********************************************************************************************************************
+ * Apply project properties
+ **********************************************************************************************************************/
+
+compileJava {
+    sourceCompatibility = 7
+    targetCompatibility = 7
+}
 
 repositories {
+    mavenLocal()
     mavenCentral()
-    // You may define additional repositories, or even remove "mavenCentral()".
-    // Read more about repositories here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
 }
 
 dependencies {
-    // TODO: Add dependencies here ...
-    // You can read more about how to add dependency here:
-    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
     compile group: 'edu.stanford.ejalbert', name: 'BrowserLauncher2', version: '1.3'
     compile fileTree(dir: 'lib', includes: ['*.jar'])
     runtime fileTree(dir: 'lib', includes: ['*.jar'])
@@ -62,6 +65,74 @@ dependencies {
 }
 
 javafx {
+    appID = 'DahuEditor'
+    appName = 'Dahu Editor'
     mainClass = 'io.dahuapp.editor.app.DahuApp'
-}
 
+    jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
+    systemProperties = ['prism.disableRegionCaching': 'true']
+    arguments = ['-l', '--fast']
+
+    embedLauncher = false
+
+    /* deploy/info attributes */
+
+    category = 'Screencast'
+    copyright = 'Copyright (c) 2013 Dahu Team'
+    description = '{description}'
+    licenseType = 'LGPL v2.1 or later'
+    installSystemWide = true
+    menu = true
+    shortcut = true
+
+    /* app icons attributes */
+
+    icons {
+        shortcut = [
+                'dahu-icon-16.png', 'dahu-icon-32.png', 'dahu-icon-64.png',
+                'dahu-icon-128.png', 'dahu-icon-256.png', 'dahu-icon-512.png']
+        volume = 'javafx-icon.png'
+        setup = 'javafx-icon.png'
+    }
+
+    /* applet and webstart attributes */
+
+    /*
+    debugKey {
+        alias = 'debugKey'
+        //keyPass = 'password' // provide via command line
+        //keyStore = file('~/keys/debug.jks')
+        //storePass = 'password'  // provide via command line
+    }
+
+    releaseKey {
+        alias = 'production'
+        //keyPass = 'password' // provide via command line
+        //keyStore = file('/Volumes/ProdThumbDrive/production.jks')
+        //storePass = 'password'  // provide via command line
+    }
+
+    signingMode 'release'
+    */
+
+    width = 800
+    height = 600
+    embedJNLP = false
+
+    /* arbitrary jnlp icons attributes */
+
+    icon {
+        href = 'dahu-icon-128.png'
+        kind = 'splash'
+        width = 128
+        height = 128
+    }
+
+    icon {
+        href = 'dahu-32@2x.png'
+        kind = 'selected'
+        width = 16
+        height = 16
+        scale = 1
+    }
+}
