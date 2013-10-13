@@ -136,3 +136,11 @@ javafx {
         scale = 1
     }
 }
+
+/* "gradle uberjar" makes a jar with all dependencies in */
+task uberjar(type: Jar) {
+   dependsOn configurations.runtime
+   manifest.attributes('Main-Class': 'io.dahuapp.editor.app.DahuApp')
+   from sourceSets.main.output
+   from { configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) } }
+}
