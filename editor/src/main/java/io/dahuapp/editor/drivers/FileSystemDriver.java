@@ -139,6 +139,7 @@ public class FileSystemDriver implements Driver {
             }
             LoggerProxy.info(getClass().getName(), "readFile",
                     "file " + fileName + " read");
+            br.close();
             return stringFile;
         } catch (IOException e) {
             LoggerProxy.severe(getClass().getName(), "readFile", "Unable to read file: " + fileName, e.getCause());
