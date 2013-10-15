@@ -73,7 +73,7 @@ javafx {
     systemProperties = ['prism.disableRegionCaching': 'true']
     arguments = ['-l', '--fast']
 
-    embedLauncher = false
+    embedLauncher = true
 
     /* deploy/info attributes */
 
