@@ -101,7 +101,7 @@ public class DahuApp extends Application {
      * @return The path to the resource (as it can be put in a file and opened).
      */
     public static String getResource(String name) {
-        return DahuApp.class.getResource(name).getFile();
+        return DahuApp.class.getResource(name).toExternalForm();
     }
 
     /**
