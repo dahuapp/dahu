@@ -437,13 +437,13 @@ var dahuapp = (function(dahuapp, $) {
             }
         };
         var addMouseOnPreview = function(mouseXp, mouseYp, idAction) {
-            var ressourceImgDir = dahuapp.drivers.fileSystem.getResource("cursor.png");
+            var resourceCursor = dahuapp.drivers.fileSystem.getResource("cursor.png");
             $("#preview-image").append($(document.createElement('li'))
                     .attr({ 'class': "my-cursor",
                             'id': idAction
                         })
                     .append($(document.createElement('img'))
-                    .attr({'src': ressourceImgDir, 'alt': ressourceImgDir})));
+                    .attr({'src': resourceCursor, 'alt': resourceCursor})));
             $('.my-cursor').css({
                 'left': mouseXp * 100 + "\%",
                 'top': mouseYp * 100 + "\%",
