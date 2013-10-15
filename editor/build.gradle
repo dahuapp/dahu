@@ -71,7 +71,10 @@ javafx {
 
     jvmArgs = ['-XX:+AggressiveOpts', '-XX:CompileThreshold=1']
     systemProperties = ['prism.disableRegionCaching': 'true']
+    /* TODO: we can hardcode arguments like this, but isn't there a
+    way to get the actual runtime parameters?
     arguments = ['-l', '--fast']
+     */
 
     embedLauncher = true
 
