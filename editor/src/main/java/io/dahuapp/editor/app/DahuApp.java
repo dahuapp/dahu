@@ -2,6 +2,7 @@ package io.dahuapp.editor.app;
 
 import io.dahuapp.editor.proxy.DahuAppProxy;
 import io.dahuapp.editor.utils.Dialogs;
+import java.io.BufferedReader;
 import javafx.application.Application;
 import static javafx.application.Application.launch;
 import javafx.application.Platform;
@@ -21,6 +22,10 @@ import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import java.util.List;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 
 /**
  * Main class of the application. Runs the GUI to allow the user to take
@@ -110,7 +115,29 @@ public class DahuApp extends Application {
         webview.setContextMenuEnabled(false);
 
         // load main app
-        webview.getEngine().load(getClass().getResource("dahuapp.html").toExternalForm());
+        final URL location = getClass().getResource("dahuapp.html");
+        String content = null;
+        try {
+            InputStream in = location.openStream();
+            InputStreamReader is = new InputStreamReader(in);
+            StringBuilder sb = new StringBuilder();
+            BufferedReader br = new BufferedReader(is);
+            String read = br.readLine();
+            while (read != null) {
+                sb.append(read).append("\n");
+                read = br.readLine();
+            }
+            content = sb.toString();
+        } catch (IOException e) {
+            System.err.println(e);
+        }
+	content = content.replace("\"localresource:",
+                                  "\"" + location.toExternalForm().replace("dahuapp.html", ""));
+        // It's tempting to use load(location.toExternalForm())
+        // directly, but it would load a jar: URL when the application
+        // is run from a package. As a result, the WebView would
+        // prevent us from loading file:// URLs.
+        webview.getEngine().loadContent(content);
 
         // extend the webview js context
         webview.getEngine().getLoadWorker().stateProperty().addListener(new ChangeListener<Worker.State>() {

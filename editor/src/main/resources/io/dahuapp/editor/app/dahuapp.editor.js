@@ -424,7 +424,7 @@ var dahuapp = (function(dahuapp, $) {
             
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
-                    .attr({'src': abs, 'alt': abs, 'id': "image"})));
+                    .attr({'src': 'file:' + abs, 'alt': abs, 'id': "image"})));
             updateActions(idSlide);
         };
         var updateActions = function(idSlide) {
@@ -575,7 +575,7 @@ var dahuapp = (function(dahuapp, $) {
             }
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var abs = projectDir + dahuapp.drivers.fileSystem.getSeparator() + img;
-            var $newImage = $(document.createElement('img')).attr({'src': abs, 'alt': abs});
+            var $newImage = $(document.createElement('img')).attr({'src': 'file:' + abs, 'alt': abs});
             var $newListElement = $(document.createElement('li'))
                     .attr({'class': 'span2 offset'})
                     .append($(document.createElement('a'))
