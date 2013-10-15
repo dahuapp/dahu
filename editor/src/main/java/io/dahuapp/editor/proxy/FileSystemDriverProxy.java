@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -196,7 +199,11 @@ public class FileSystemDriverProxy implements Proxy {
         File[] list = source.listFiles();
         if (list != null) {
             for (File f : list) {
-                driver.copy(f, new File(dest + getSeparator() + f.getName()));
+                try {
+                    driver.copy(new URL(f.getAbsolutePath()), new File(dest + getSeparator() + f.getName()));
+                } catch (MalformedURLException ex) {
+                    LoggerProxy.severe("Malformed URL", ex);
+                }
             }
         }
     }
@@ -266,9 +273,13 @@ public class FileSystemDriverProxy implements Proxy {
      * @param dest Name of the file where to put the copy.
      */
     public void copyFile(String src, String dest) {
-        File source = new File(src);
-        File destination = new File(dest);
-        driver.copy(source, destination);
+        try {
+            URL source = new URL(src);
+            File destination = new File(dest);
+            driver.copy(source, destination);
+        } catch (MalformedURLException ex) {
+            LoggerProxy.severe("Malformed URL", ex);
+        }
     }
     
     /**

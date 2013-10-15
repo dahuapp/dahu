@@ -3,12 +3,13 @@ package io.dahuapp.editor.drivers;
 import io.dahuapp.editor.proxy.LoggerProxy;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.DirectoryChooser;
@@ -166,13 +167,16 @@ public class FileSystemDriver implements Driver {
      * @param dest Destination file.
      * @return True only if the copy succeed.
      */
-    public boolean copy(File src, File dest) {
-        FileInputStream in;
+    public boolean copy(URL src, File dest) {
+        InputStream in;
         FileOutputStream out;
         try {
-            in = new FileInputStream(src);
+            in = src.openStream();
             out = new FileOutputStream(dest);
         } catch (FileNotFoundException e) {
+            LoggerProxy.severe(getClass().getName(), "copy", e.getMessage(), e);
+            return false;
+        } catch (IOException e) {
             LoggerProxy.severe(getClass().getName(), "copy", e.getMessage(), e);
             return false;
         }
