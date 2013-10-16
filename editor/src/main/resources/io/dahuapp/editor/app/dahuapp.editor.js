@@ -349,7 +349,8 @@ var dahuapp = (function(dahuapp, $) {
                     jsonModel.getImageWidth(), jsonModel.getImageHeight());
             // generates the json and html
             var jsonGen = generator.generateJsonString(jsonModel, imgDim);
-            var htmlGen = generator.generateHtmlString(jsonModel, jsonGen);
+            var cssGen = generator.generateCssString(jsonModel); // @warning in the future css must not be embedded in the html !
+            var htmlGen = generator.generateHtmlString(jsonModel, jsonGen, cssGen);
             // write the generated json and html
             fileSystem.writeFile(completeBuildDir + sep + generatedHtmlName, htmlGen);
 
