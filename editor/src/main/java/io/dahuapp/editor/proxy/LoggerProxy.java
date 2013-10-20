@@ -186,7 +186,7 @@ public class LoggerProxy implements Proxy {
         logger.logp(Level.ALL, sourceClass, sourceMethod, message);
     }
     
-        /**
+    /**
      * Log the message with an INFO level (color : cyan).
      * @param message The message to log.
      */
