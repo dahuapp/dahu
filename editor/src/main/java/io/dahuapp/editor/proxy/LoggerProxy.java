@@ -190,7 +190,7 @@ public class LoggerProxy implements Proxy {
      * Log the message with an INFO level (color : cyan).
      * @param message The message to log.
      */
-    public void JSinfo(String message) {
+    public void JSinfo1(String message) {
         logger.log(Level.INFO, message);
     }
 
@@ -208,7 +208,7 @@ public class LoggerProxy implements Proxy {
      * Log the message with a SEVERE level (color : red).
      * @param message The message to log
      */
-    public void JSsevere(String message) {
+    public void JSsevere1(String message) {
         logger.log(Level.SEVERE, message);
     }
 
@@ -283,7 +283,7 @@ public class LoggerProxy implements Proxy {
      * Log the message with a CONFIG level (color : green).
      * @param message The message to log.
      */
-    public void JSconfig(String message) {
+    public void JSconfig1(String message) {
         logger.log(Level.CONFIG, message);
     }
 
