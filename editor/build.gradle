@@ -20,18 +20,16 @@ apply plugin: 'eclipse'
 
 /***********************************************************************************************************************
  * Apply JavaFX plugin
- *
- * See: http://speling.shemnon.com/blog/2013/05/18/javafx-gradle-plugin-0-dot-3-0-released/
  **********************************************************************************************************************/
 
-apply from: 'http://dl.bintray.com/shemnon/javafx-gradle/0.3.0/javafx.plugin'
+apply from: 'javafx.plugin'
 
 /***********************************************************************************************************************
  * Apply custom tasks
  **********************************************************************************************************************/
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
+    gradleVersion = '1.9'
 }
 
 run.doFirst {
@@ -90,13 +88,14 @@ javafx {
 
     /* app icons attributes */
 
+    /*
     icons {
         shortcut = [
                 'dahu-icon-16.png', 'dahu-icon-32.png', 'dahu-icon-64.png',
                 'dahu-icon-128.png', 'dahu-icon-256.png', 'dahu-icon-512.png']
         volume = 'javafx-icon.png'
         setup = 'javafx-icon.png'
-    }
+    }*/
 
     /* applet and webstart attributes */
 
@@ -124,6 +123,7 @@ javafx {
 
     /* arbitrary jnlp icons attributes */
 
+    /*
     icon {
         href = 'dahu-icon-128.png'
         kind = 'splash'
@@ -137,7 +137,12 @@ javafx {
         width = 16
         height = 16
         scale = 1
-    }
+    }*/
+}
+
+generateDebugKey {
+    dname='ou=them'
+    validity=1
 }
 
 /* "gradle uberjar" makes a jar with all dependencies in */
