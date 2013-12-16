@@ -55,6 +55,19 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+            srcDir 'build/generated'
+        }
+        resources {
+            srcDir 'src/main/resources'
+            srcDir 'build/generated'
+        }
+    }
+}
+
 dependencies {
     compile group: 'edu.stanford.ejalbert', name: 'BrowserLauncher2', version: '1.3'
     compile fileTree(dir: 'lib', includes: ['*.jar'])
@@ -88,14 +101,13 @@ javafx {
 
     /* app icons attributes */
 
-    /*
     icons {
         shortcut = [
                 'dahu-icon-16.png', 'dahu-icon-32.png', 'dahu-icon-64.png',
                 'dahu-icon-128.png', 'dahu-icon-256.png', 'dahu-icon-512.png']
         volume = 'javafx-icon.png'
         setup = 'javafx-icon.png'
-    }*/
+    }
 
     /* applet and webstart attributes */
 
@@ -123,7 +135,6 @@ javafx {
 
     /* arbitrary jnlp icons attributes */
 
-    /*
     icon {
         href = 'dahu-icon-128.png'
         kind = 'splash'
@@ -132,12 +143,12 @@ javafx {
     }
 
     icon {
-        href = 'dahu-32@2x.png'
+        href = 'dahu-icon-32@2x.png'
         kind = 'selected'
         width = 16
         height = 16
         scale = 1
-    }*/
+    }
 }
 
 generateDebugKey {
