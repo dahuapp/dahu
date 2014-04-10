@@ -978,6 +978,8 @@ var dahuapp = (function(dahuapp, $) {
                 if (!captureMode && initProject) {
                     if (newChanges) {
                         alert('Please save your project before generating it.');
+                    } else if (jsonModel.getNbSlide() == 0) {
+                        alert('Impossible to build a project without any screenshot.');
                     } else {
                         cleanProjectDirectory();
                         generateProject();
