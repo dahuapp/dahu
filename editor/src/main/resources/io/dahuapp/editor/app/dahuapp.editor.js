@@ -888,7 +888,7 @@ var dahuapp = (function(dahuapp, $) {
                 },
                 dragend: function() {
                     if ($(this).hasClass('my-cursor')) {
-                        jsonModel.editMouse(selectedSlide, idAction, cursorX / 100, cursorY / 100);
+                        jsonModel.editMouse(selectedSlide, idAction, cursorX, cursorY);
                         dahuapp.drivers.logger.JSconfig("dahuapp.editor.js",
                                 "dragend",
                                 "[idSlide : " + selectedSlide +
