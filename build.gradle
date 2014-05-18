@@ -1,0 +1,19 @@
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.12'
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+  
+allprojects {
+    project.sourceCompatibility = JavaVersion.VERSION_1_8
+    project.targetCompatibility = JavaVersion.VERSION_1_8
+
+    repositories {  
+        mavenLocal()
+        mavenCentral()
+    }
+}
