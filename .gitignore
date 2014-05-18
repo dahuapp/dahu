@@ -3,9 +3,13 @@
 *.iml
 
 # Gradle wrapper
+.gradle
 gradlew
 gradlew.bat
 gradle
 
 # Build
 build
+
+# MacOS
+*.DS_Store
