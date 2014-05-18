@@ -1,2 +1,9 @@
+# IntelliJ
 *.idea
 *.iml
+
+# Gradle wrapper
+gradlew
+gradlew.bat
+gradle
+
