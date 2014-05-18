@@ -1,0 +1,19 @@
+apply plugin: 'java'
+apply plugin:'application'
+
+
+// Application
+mainClassName = "io.dahuapp.editor.DahuApp"
+applicationName = "DahuEditor"
+
+// Dependencies
+dependencies {
+    // common-io for easy IO
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+    // dahu modules
+    runtime project(':dahu:core')
+    compile project(':dahu:driver')
+    compile project(':dahu:common')
+}
+
