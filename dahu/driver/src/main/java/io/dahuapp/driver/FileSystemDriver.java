@@ -110,11 +110,10 @@ public class FileSystemDriver {
      */
     static public boolean writeToFile(String filename, String content) {
         try {
-            FileWriter fw = new FileWriter(filename, false);
-            fw.write(content);
+            FileUtils.writeStringToFile(new File(filename), content);
             return true;
         } catch (IOException ex) {
-            //@todo log error
+            LoggerDriver.error("Unable to write content to {}.", filename);
             return false;
         }
     }
