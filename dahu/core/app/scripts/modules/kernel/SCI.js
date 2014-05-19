@@ -40,22 +40,6 @@ define([
         }
     }
 
-    /*
-    function setup() {
-        // start history
-        Backbone.history.start();
-
-        // override global sync method
-        Backbone.sync = function (method, model, options) {
-            if (model instanceof ScreencastModel) {
-                console.log("sync screencast with " + method)
-                console.log(model.toJSON())
-            } else {
-                console.log("ignore sync")
-            }
-        };
-    }*/
-
     self.start = function() {
         if(typeof(kernel) != "undefined") {
             // start the kernel
@@ -72,7 +56,7 @@ define([
 
         // console is mandatory
         expose('console', Console, true);
-    }
+    };
 
     /**
      * Kernel module accessor.
@@ -91,7 +75,7 @@ define([
 
         // @todo shall we throw an exception?
         return null;
-    }
+    };
 
     /**
      * Stop the kernel
@@ -101,7 +85,7 @@ define([
             // start the kernel
             kernel.stop();
         }
-    }
+    };
 
     return self;
 });
