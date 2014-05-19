@@ -11,6 +11,7 @@ buildscript {
 allprojects {
     project.sourceCompatibility = JavaVersion.VERSION_1_8
     project.targetCompatibility = JavaVersion.VERSION_1_8
+    project.version = '0.0.4'
 
     repositories {  
         mavenLocal()
