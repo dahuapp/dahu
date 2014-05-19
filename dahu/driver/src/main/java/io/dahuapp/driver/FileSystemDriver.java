@@ -133,4 +133,20 @@ public class FileSystemDriver {
             return null;
         }
     }
+
+    /**
+     *  Copies a file to a new location.
+     *
+     * @param source an existing filename to copy, must not be {@code null}
+     * @param destination the new filename, must not be {@code null}
+     * @return {@code true} if the copy was successful; {@code false} otherwise.
+     */
+    static public boolean copyFile(String source, String destination) {
+        try {
+            FileUtils.copyFile(new File(source), new File(destination));
+            return true;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
 }
