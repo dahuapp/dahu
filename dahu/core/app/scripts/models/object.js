@@ -9,7 +9,7 @@ define([
      */
     var ObjectModel = Backbone.Model.extend({
         defaults: {
-            id: UUID.create(4)
+            id: UUID.v4()
         }
     });
 
