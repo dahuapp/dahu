@@ -55,6 +55,10 @@ public class FileSystem implements Module {
         return FileSystemDriver.readFromFile(filename);
     }
 
+    public boolean copyFile(String source, String target) {
+        return FileSystemDriver.copyFile(source, target);
+    }
+
     /**
      * Ask user to select a file according to some file filters.
      *
