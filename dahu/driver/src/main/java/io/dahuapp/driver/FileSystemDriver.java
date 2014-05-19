@@ -129,6 +129,7 @@ public class FileSystemDriver {
         try {
             return FileUtils.readFileToString(new File(filename));
         } catch (IOException ex) {
+            LoggerDriver.error("Unable to read content from {}.", filename);
             return null;
         }
     }
