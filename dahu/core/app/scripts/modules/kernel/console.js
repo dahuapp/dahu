@@ -47,7 +47,9 @@ define(['underscore'], function(_) {
                         return function() {
                             var msg = format.apply(this, arguments);
                             kernel.console[name](msg); // external log
-                            window.console[name](msg); // debug log
+                            if( typeof window !== "undefined" ) {
+                                window.console[name](msg); // debug log
+                            }
                         }
                     }(name))]
                 }));
