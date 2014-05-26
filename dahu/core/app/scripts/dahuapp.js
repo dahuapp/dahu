@@ -36,6 +36,7 @@ require.config({
         }
     },
     paths: {
+        text: '../components/requirejs-text/text',
         jquery: '../components/jquery/dist/jquery',
         backbone: '../components/backbone/backbone',
         'backbone.marionette' : '../components/backbone.marionette/lib/core/amd/backbone.marionette',
@@ -56,11 +57,39 @@ define('dahuapp', [
     'backbone.marionette',
     'modules/kernel/SCI',
     'modules/events',
-    'models/screencast'
-], function($, _, Backbone, Marionette, Kernel, events, ScreencastModel) {
+    'models/screencast',
+    'layouts/dahuapp',
+    'views/filmstrip/screens'
+], function($, _, Backbone, Marionette, Kernel, events, ScreencastModel, DahuLayout, FilmstripScreensView) {
 
     var projectFilename;
     var projectScreencast;
+
+    //
+    // Application
+    //
+
+    var app = new Backbone.Marionette.Application();
+
+    app.addRegions({
+        'frame': '#frame'
+    });
+
+    /**
+     * Start the application.
+     */
+    app.on("initialize:before", function(options){
+        Kernel.start();
+        initBackbone();
+        initEvent();
+    });
+
+    /**
+     * Stop the application.
+     */
+    app.on("finalizers:after", function(option) {
+        Kernel.stop();
+    });
 
     //
     // Initializers
@@ -141,33 +170,19 @@ define('dahuapp', [
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
 
-        //@todo
-        // 5. display it
+        //// begin - work in progress
+        //// @todo display the list of screens
+
+        // create a layout
+        var layout = new DahuLayout();
+        layout.render();
+        app.frame.show(layout);
+
+        // show screens in filmstrip region
+        layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
+
+        //// end - work in progress
     }
-
-    //
-    // Application
-    //
-
-    // define application
-
-    var app = new Backbone.Marionette.Application();
-
-    /**
-     * Start the application.
-     */
-    app.on("initialize:before", function(options){
-        Kernel.start();
-        initBackbone();
-        initEvent();
-    });
-
-    /**
-     * Stop the application.
-     */
-    app.on("finalizers:after", function(option) {
-        Kernel.stop();
-    });
 
     /**
      * Return the exported API.
