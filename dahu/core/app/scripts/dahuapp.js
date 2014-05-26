@@ -43,7 +43,7 @@ require.config({
         'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
         underscore: '../components/underscore/underscore',
         bootstrap: '../components/sass-bootstrap/dist/js/bootstrap',
-        handlebars: '../components/handlebars/handlebars',
+        handlebars: '../components/handlebars/handlebars.amd',
         uuid: '../components/node-uuid/uuid'
     }
 });
