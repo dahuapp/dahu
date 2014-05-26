@@ -40,9 +40,8 @@ define(['underscore'], function(_) {
 
     function instance() {
         if(typeof(self) === 'undefined') {
-
             // load the delegated console
-            if(typeof(kernel) != "undefined" && kernel.filesystem) {
+            if(typeof(kernel) != "undefined" && kernel.console) {
                 self = _.object(_.map(methods, function(name) {
                     return [name, (function(name) {
                         return function() {
