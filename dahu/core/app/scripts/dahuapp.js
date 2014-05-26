@@ -10,8 +10,20 @@ require.config({
             exports: '_'
         },
         backbone: {
-            deps: ['jquery','underscore'],
+            deps: ['jquery', 'underscore'],
             exports: 'Backbone'
+        },
+        'backbone.marionette' : {
+            deps : [ 'backbone', 'underscore' ],
+            exports : 'Marionette'
+        },
+        'backbone.wreqr': {
+            deps : [ 'backbone', 'underscore' ],
+            exports : 'Wreqr'
+        },
+        'backbone.babysitter': {
+            deps : [ 'backbone', 'underscore' ],
+            exports : 'Babysitter'
         },
         bootstrap: {
             deps: ['jquery']
@@ -26,6 +38,9 @@ require.config({
     paths: {
         jquery: '../components/jquery/dist/jquery',
         backbone: '../components/backbone/backbone',
+        'backbone.marionette' : '../components/backbone.marionette/lib/core/amd/backbone.marionette',
+        'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
+        'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
         underscore: '../components/underscore/underscore',
         bootstrap: '../components/sass-bootstrap/dist/js/bootstrap',
         handlebars: '../components/handlebars/handlebars',
@@ -38,25 +53,23 @@ define('dahuapp', [
     'jquery',
     'underscore',
     'backbone',
+    'backbone.marionette',
     'modules/kernel/SCI',
     'modules/events',
     'models/screencast'
-], function($, _, Backbone, Kernel, events, ScreencastModel) {
+], function($, _, Backbone, Marionette, Kernel, events, ScreencastModel) {
 
     var projectFilename;
     var projectScreencast;
 
-    /**
-     * Start the application.
-     */
-    function start() {
-        Kernel.start();
-        initBackbone();
-        initEvent();
-    }
+    //
+    // Initializers
+    //
 
     /**
      * Bind events to Dahu application functions.
+     * Events are used to communicate between modules
+     * but also as interface between Java and JavaScript.
      */
     function initEvent() {
         events.on('app:onFileOpen', function() {
@@ -85,6 +98,10 @@ define('dahuapp', [
             }
         };
     }
+
+    //
+    // Private API
+    //
 
     /**
      * Open a Dahu project file.
@@ -128,12 +145,29 @@ define('dahuapp', [
         // 5. display it
     }
 
+    //
+    // Application
+    //
+
+    // define application
+
+    var app = new Backbone.Marionette.Application();
+
     /**
-     * Stop the application
+     * Start the application.
      */
-    function stop() {
+    app.on("initialize:before", function(options){
+        Kernel.start();
+        initBackbone();
+        initEvent();
+    });
+
+    /**
+     * Stop the application.
+     */
+    app.on("finalizers:after", function(option) {
         Kernel.stop();
-    }
+    });
 
     /**
      * Return the exported API.
@@ -141,8 +175,16 @@ define('dahuapp', [
      * accessible from the browser and Java side.
      */
     return {
-        start: start,
+        // public start function
+        start: function() { app.start(); },
+
+        // we don't use app.vent but our global events module
         events: events,
-        stop: stop
+
+        // public stop function
+        stop: function() { app.trigger("finalizers:after"); },
+
+        // @warning for debug only
+        app: app
     }
 });
