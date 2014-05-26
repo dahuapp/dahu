@@ -71,6 +71,8 @@ define([
         /**
          * Convert Dahu project from v1 to v2.
          *
+         * @todo fix bug: we end up with only one screen...
+         *
          * @param jsonData
          * @return {ScreencastModel} converted project data.
          */
