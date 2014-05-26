@@ -1,0 +1,28 @@
+apply plugin: 'java'
+apply plugin:'application'
+
+// Extra repositories
+repositories {
+    maven {
+        url "http://clojars.org/repo"
+    }
+}
+
+// Application
+mainClassName = "io.dahuapp.cli.CLI"
+applicationName = "DahuCLI"
+
+// Dependencies
+dependencies {
+    // docopt for CLI parser generator
+    compile group: 'docopt', name: 'docopt', version: '0.6.1'
+
+    // common-io for easy IO
+    compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+    // dahu-core
+    compile project(':dahu:core')
+    compile project(':dahu:driver')
+    compile project(':dahu:common')
+}
+
