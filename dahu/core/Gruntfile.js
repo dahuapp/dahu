@@ -163,7 +163,7 @@ module.exports = function (grunt) {
                     include: 'dahuapp',
                     insertRequire: ['dahuapp'],
                     out: '<%= yeoman.dist %>/scripts/dahuapp.js',
-                    mainConfigFile: '<%= yeoman.app %>/scripts/dahuapp.js',
+                    mainConfigFile: '<%= yeoman.app %>/scripts/dahuapp.js'
                 }
             },
             bridge: {
@@ -177,8 +177,7 @@ module.exports = function (grunt) {
                     include: 'dahubridge',
                     insertRequire: ['dahubridge'],
                     out: '<%= yeoman.dist %>/scripts/dahubridge.js',
-                    mainConfigFile: '<%= yeoman.app %>/scripts/dahubridge.js',
-                    optimize: 'none',
+                    mainConfigFile: '<%= yeoman.app %>/scripts/dahubridge.js'
                 }
             },
             options: {
