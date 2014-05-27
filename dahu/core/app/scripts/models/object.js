@@ -9,7 +9,11 @@ define([
      */
     var ObjectModel = Backbone.Model.extend({
         defaults: {
-            id: UUID.v4()
+            id: null
+        },
+
+        initialize: function () {
+            this.set('id', this.get('id') || UUID.v4());
         }
     });
 

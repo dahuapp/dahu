@@ -10,8 +10,13 @@ define([
      */
     var ScreenModel = Backbone.Model.extend({
         defaults: {
-            id: UUID.v4(),
-            objects: new ObjectCollection()
+            id: null,
+            objects: null
+        },
+
+        initialize: function () {
+            this.set('id', this.get('id') || UUID.v4());
+            this.set('objects', this.get('objects') || new ObjectCollection());
         }
     });
 
