@@ -58,9 +58,22 @@ public class KeyboardDriver implements Driver {
         try {
             GlobalScreen.registerNativeHook();
         } catch (NativeHookException ex) {
-            LoggerProxy.severe(getClass().getName(), "onLoad", 
-                    "There was a problem registering the native hook. " 
-                    + ex.getMessage(), ex);
+            if ( System.getProperty("os.name").toLowerCase().startsWith("mac os x") ) {
+                // output it for the user
+                System.err.println("There was a problem registering the native hook. " +
+                        "Please enable access for assistive devices and applications to Dahu Editor.");
+                // log it (users might not see the logs)
+                LoggerProxy.severe(getClass().getName(),"onLoad",
+                        "There was a problem registering the native hook. " +
+                        "Please enable access for assistive devices and applications to Dahu Editor.",
+                        ex);
+            } else {
+                LoggerProxy.severe(getClass().getName(), "onLoad",
+                        "There was a problem registering the native hook. " + ex.getMessage()
+                        ,ex);
+            }
+
+            // exit
             System.exit(1);
         }
         
