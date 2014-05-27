@@ -2,11 +2,8 @@
 *.idea
 *.iml
 
-# Gradle wrapper
+# Gradle cache
 .gradle
-gradlew
-gradlew.bat
-gradle
 
 # Build
 build
