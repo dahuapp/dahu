@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 
 /**
  * Proxy used when a web browser needs to be opened.
@@ -50,10 +53,15 @@ public class BrowserProxy implements Proxy {
      * @param url Page to display on the browser.
      */
     public void openURL(final String url) {
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+
+        // We launch a new task using an executor service
+
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+        executorService.submit(new Task<Void>() {
+            @Override protected Void call() throws Exception {
                 openWebBrowser(url);
+                return null;
             }
         });
     }

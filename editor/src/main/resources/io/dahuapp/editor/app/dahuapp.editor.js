@@ -59,32 +59,32 @@ var dahuapp = (function(dahuapp, $) {
          *                  |--------- screen2.png
          *                  |--------- index.html
          *                  |--------- presentation.css
-         *      
+         *
          * The default value must be discussed.
          * @type String
          */
         var projectDir = ".";
-        
+
         /*
          * Selected slide (displayed in the view).
          * -1 means nothing is selected.
          * @type int
          */
         var selectedSlide = -1;
-        
+
         /*
          * Selected object on the current slide.
          * -1 means nothing is selected.
          * @type int
          */
         var selectedObjectOnSlide = -1;
-        
+
         /*
          * Private events for the editor.
          */
         var events = (function() {
             var self = {};
-            
+
             /*
              * Creates a generic event.
              */
@@ -97,39 +97,39 @@ var dahuapp = (function(dahuapp, $) {
                     unsubscribeAll: callbacks.empty
                 };
             };
-            
+
             /*
              * Called when an image on the list has been selected and
              * is different from the previous one.
              */
             self.onSelectedImageChanged = createEvent();
-            
+
             /*
              * Called when an image is added to the list.
              */
             self.onNewImageTaken = createEvent();
-            
+
             /*
              * Called when a new projet is created.
              */
             self.onNewProjectCreated = createEvent();
-            
+
             /*
              * Called when an object is selected.
              */
             self.onSelectedObjectChanged = createEvent();
-            
+
             /*
              * Called when a popup is confirmed.
              */
             self.onPopupConfirmed = createEvent();
-            
+
             /*
              * Called when a popup is closed (confirmed, cancelled, or
              * anything else).
              */
             self.onPopupClosed = createEvent();
-            
+
             return self;
         })();
 
@@ -137,12 +137,12 @@ var dahuapp = (function(dahuapp, $) {
          * Instanciates the DahuScreencastModel class.
          */
         var jsonModel;
-        
+
         /*
          * Instanciates the DahuScreencastGenerator class.
          */
         var generator;
-        
+
         /*
          * Settings for the application.
          *
@@ -150,19 +150,19 @@ var dahuapp = (function(dahuapp, $) {
          */
         var ApplicationSettingsModel = function() {
             var settings = {};
-            
+
             var saveSettings = function() {
                 var stringJson = JSON.stringify(settings, null, '    ');
                 dahuapp.drivers.fileSystem.writeConfigurationFile(stringJson);
             };
-            
+
             var setDefaultSettings = function() {
                 settings.captureKey = "f7";
                 settings.defaultWidth = 800;
                 settings.defaultHeight = 600;
                 settings.defaultSpeed = 0.8;
             };
-            
+
             this.loadSettings = function() {
                 var stringJson = dahuapp.drivers.fileSystem.loadConfigurationFile();
                 if (stringJson !== null) {
@@ -171,11 +171,11 @@ var dahuapp = (function(dahuapp, $) {
                     setDefaultSettings();
                 }
             };
-            
+
             this.getCaptureKey = function() {
                 return settings.captureKey;
             };
-            
+
             this.setCaptureKey = function(key) {
                 settings.captureKey = key;
                 saveSettings();
@@ -219,7 +219,7 @@ var dahuapp = (function(dahuapp, $) {
             alert("Please open or create a project\n" +
                 "before doing that.");
         };
-        
+
         /*
          * Functions associated with buttons.
          * The function 'enableProjectButtons' enables all the buttons
@@ -495,11 +495,11 @@ var dahuapp = (function(dahuapp, $) {
          * @param {String} popupSelector Id of the popup to show.
          */
         var showPopup = function(popupSelector) {
-            $('#popup-manager ' + popupSelector).show();
+            $('#popup-manager' + popupSelector).show();
             $('#popup-manager').show();
         };
         var closePopup = function(popupSelector) {
-            $('#popup-manager ' + popupSelector).hide();
+            $('#popup-manager' + popupSelector).hide();
             $('#popup-manager').hide();
         };
         
