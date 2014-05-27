@@ -2,29 +2,26 @@
 
 - NodeJS with NPM
 - Bower (npm install -g bower)
+- Grunt-CLI (npm install -g grunt-cli)
 
-# Setup
+Note: npm global install might require sudo access.
 
-    $ npm install --save-dev
-    $ npm install grunt-cli
-    $ bower install
+# Build
 
-# Build/Clean
+Grunt task automation is integrated to Gradle.
+To build the project just run:
 
-    $ grunt build
-    $ grunt clean
+    $ ./gradlew :dahu:core:build
 
-# Architecture
+During the first build this task will install all the Grunt and Bower dependencies.
+Installing those dependencies might take some time...
 
-Some links / thoughts...
+# Update
 
-# Backbone + Handlebars
+Updating Node/Grunt dependencies is done as follow:
 
-- http://www.remwebdevelopment.com/blog/javascript/using-handlebars-with-backbone-and-requirejs-182.html
+    $ ./gradlew :dahu:core:npm
 
-# Backbone
+Updating Bower dependencies is done as follow:
 
-## Advanced models
-
-- https://bitbucket.org/atlassian/backbone-brace
-- http://blogs.atlassian.com/2013/02/nested-backbonejs-models-with-brace/
+    $ ./gradlew :dahu:core:bower
