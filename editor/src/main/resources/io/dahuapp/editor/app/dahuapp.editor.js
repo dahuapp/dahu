@@ -435,10 +435,22 @@ var dahuapp = (function(dahuapp, $) {
 				var tooltipHtml = jsonModel.getSlide(idSlide).object[i].text;
 				var tooltipColor = jsonModel.getSlide(idSlide).object[i].color;
 				var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
+				var left = 0.0;
+				var top = 0.0;
+				for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
+					if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
+						left = jsonModel.getSlide(idSlide).action[j].abs;
+						top = jsonModel.getSlide(idSlide).action[j].top;
+					}
+				}
+				//left = left * jsonModel.metaData.imageWidth;
+				//top = top * jsonModel.metaData.imageHeight;
+				//var string = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+left+'px ; top: '+top+'px';
+				//alert(string);
 				// TODO à vérifier
                 $('#tooltips-container').html($(document.createElement('div'))
                     .attr({ 'class':'tooltip',
-                            'style': 'background-color: rgb(255, 255, 221); width: 400px; display: block; left: 320px; top: 432px;'})
+                            'style': 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: 320px; top: 432px;'})
                     .html(tooltipHtml));
 			}
 			updateActions(idSlide);
