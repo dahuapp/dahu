@@ -430,6 +430,7 @@ var dahuapp = (function(dahuapp, $) {
 			
 			// Display tooltips
             // We start at index 1 because 0 is always the background image
+            // and we stop at length - 2 because the last one is always the cursor
 			for ( var i = 1; i < jsonModel.getSlide(idSlide).object.length - 1; i++ ){
 				var tooltipId = jsonModel.getSlide(idSlide).object[i].id;
 				var tooltipHtml = jsonModel.getSlide(idSlide).object[i].text;
@@ -440,11 +441,25 @@ var dahuapp = (function(dahuapp, $) {
                     .attr({ 'class':'tooltip', 'id':tooltipId,
                             'style': 'background-color: rgb(255, 255, 221); width: 400px; display: block; left: 320px; top: 432px;'})
                     .html(tooltipHtml));
+                $('#'+tooltipId).draggable({
+                    stop: function( event, ui ) {
+                        var tooltip = $('#'+tooltipId);
+                        // Update jsonModel
+                        jsonModel.getActionList(idSlide).filter(function(action){
+                            action.target = tooltipId;
+                        }).map(function(action){
+                            action.abs = ui.position.left;
+                            action.ord = ui.position.top;
+                        });
+                    }
+                });
                 $('#'+tooltipId).dblclick(function(){
                     var tooltip = $('#'+tooltipId);
-                    var tooltipValue = prompt("Set the content of the tooltip", tooltip.html());
-                    tooltip.empty();
-                    tooltip.text(tooltipValue || "");
+                    var userInput = prompt("Set the content of the tooltip", tooltip.html());
+                    if (userInput) {
+                        tooltip.empty();
+                        tooltip.text(userInput);
+                    }
                 });
             }
 			updateActions(idSlide);
@@ -852,7 +867,7 @@ var dahuapp = (function(dahuapp, $) {
             events.onSelectedObjectChanged.subscribe(setSelectedObjectOnSlide);
             events.onSelectedObjectChanged.subscribe(actualiseObjectButtonsState);
             events.onPopupClosed.subscribe(closePopup);
-            
+
             /*
              * Private variable for the drag and drop
              */

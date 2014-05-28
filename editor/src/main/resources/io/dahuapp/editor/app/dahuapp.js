@@ -642,6 +642,11 @@
                 json.data[idSlide].action[idAction].finalOrd = mouseY;
             };
 
+            this.editTooltipPosition = function (idSlide, idAction, X, Y) {
+                json.data[idSlide].action[idAction].abs = X;
+                json.data[idSlide].action[idAction].ord = Y;
+            };
+
             /*
              * Sets a title for the presentation.
              * @param String title Title to set.
