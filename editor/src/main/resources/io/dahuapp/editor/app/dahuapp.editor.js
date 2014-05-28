@@ -430,16 +430,17 @@ var dahuapp = (function(dahuapp, $) {
 			
 			// Display tooltips
             // We start at index 1 because 0 is always the background image
-			/*for ( var i = 1; i < jsonModel.getSlide(idSlide).object.length - 1; i++ ){
+			for ( var i = 1; i < jsonModel.getSlide(idSlide).object.length - 1; i++ ){
 				var tooltipId = jsonModel.getSlide(idSlide).object[i].id;
-				var tooltipText = jsonModel.getSlide(idSlide).object[i].text;
+				var tooltipHtml = jsonModel.getSlide(idSlide).object[i].text;
 				var tooltipColor = jsonModel.getSlide(idSlide).object[i].color;
 				var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
 				// TODO à vérifier
-				$('#tooltips-container').append($(document.createElement('div'))
-						.attr({'class':'tooltip', 'style': 'background-color: rgb(255, 255, 221); width: 400px; display: block; left: 320px; top: 432px;'})).text(tooltipText);
-			
-			}*/
+                $('#tooltips-container').html($(document.createElement('div'))
+                    .attr({ 'class':'tooltip',
+                            'style': 'background-color: rgb(255, 255, 221); width: 400px; display: block; left: 320px; top: 432px;'})
+                    .html(tooltipHtml));
+			}
 			updateActions(idSlide);
         };
         var updateActions = function(idSlide) {

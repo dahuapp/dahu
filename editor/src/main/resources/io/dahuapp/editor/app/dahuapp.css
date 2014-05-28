@@ -10,6 +10,7 @@
     padding: 4px;
     margin: 2px;
     border: 2px black solid;
+    opacity: 1;
 }
 
 #app-container{
