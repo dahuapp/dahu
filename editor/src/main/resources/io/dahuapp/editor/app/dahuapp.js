@@ -52,7 +52,7 @@
             var generateHtmlHeader = function ($generated, cssGen) {
                 $('head', $generated)
                     .append($(document.createElement('title'))
-                        .append("Dahu Presentation"))/* TODO: make this customizeable */
+                        .append("Dahu Presentation"))/* TODO: make this customizable */
                     .append($(document.createElement('meta'))
                         .attr({'charset': 'utf-8'}))
                     .append($(document.createElement('script'))
