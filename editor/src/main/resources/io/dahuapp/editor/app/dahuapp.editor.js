@@ -422,11 +422,25 @@ var dahuapp = (function(dahuapp, $) {
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
-            
+            var tooltips = {};
+			
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
                     .attr({'src': 'file:' + abs, 'alt': abs, 'id': "image"})));
-            updateActions(idSlide);
+			
+			// Display tooltips
+            // We start at index 1 because 0 is always the background image
+			/*for ( var i = 1; i < jsonModel.getSlide(idSlide).object.length - 1; i++ ){
+				var tooltipId = jsonModel.getSlide(idSlide).object[i].id;
+				var tooltipText = jsonModel.getSlide(idSlide).object[i].text;
+				var tooltipColor = jsonModel.getSlide(idSlide).object[i].color;
+				var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
+				// TODO à vérifier
+				$('#tooltips-container').append($(document.createElement('div'))
+						.attr({'class':'tooltip', 'style': 'background-color: rgb(255, 255, 221); width: 400px; display: block; left: 320px; top: 432px;'})).text(tooltipText);
+			
+			}*/
+			updateActions(idSlide);
         };
         var updateActions = function(idSlide) {
             var actionList = jsonModel.getActionList(idSlide);
@@ -650,6 +664,7 @@ var dahuapp = (function(dahuapp, $) {
         };
         var cleanPreview = function() {
             $('#preview-image').empty();
+			$('#tooltips-container').empty();
         };
         
         /*
