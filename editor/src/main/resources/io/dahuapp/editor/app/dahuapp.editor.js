@@ -440,17 +440,19 @@ var dahuapp = (function(dahuapp, $) {
 				for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
 					if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
 						left = jsonModel.getSlide(idSlide).action[j].abs;
-						top = jsonModel.getSlide(idSlide).action[j].top;
+						top = jsonModel.getSlide(idSlide).action[j].ord;
 					}
 				}
-				//left = left * jsonModel.metaData.imageWidth;
-				//top = top * jsonModel.metaData.imageHeight;
-				//var string = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+left+'px ; top: '+top+'px';
-				//alert(string);
+				//alert(left+"  "+top);
+				var imageWidth = jsonModel.getImageHeight();
+				var imageHeight = jsonModel.getImageWidth();
+				var X = left * imageWidth;
+				var Y = top * imageHeight;
+				var style = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+X+'px ; top: '+Y+'px;';
 				// TODO à vérifier
                 $('#tooltips-container').html($(document.createElement('div'))
                     .attr({ 'class':'tooltip',
-                            'style': 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: 320px; top: 432px;'})
+                            'style': style})
                     .html(tooltipHtml));
 			}
 			updateActions(idSlide);
