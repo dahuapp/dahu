@@ -104,7 +104,7 @@ public class FileSystemDriver implements Driver {
     /**
      * Create a file and write a text in it.
      *
-     * @param filename The name of the file (and absolute path).
+     * @param fileName The name of the file (and absolute path).
      * @param text The text to write in the file.
      * @return True if the file was created.
      */

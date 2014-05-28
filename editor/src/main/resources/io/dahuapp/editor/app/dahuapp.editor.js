@@ -285,7 +285,7 @@ var dahuapp = (function(dahuapp, $) {
         var openProject = function() {
             var choice = prompt("Enter the absolute path to the dahu project directory :",
                     "Dahu project directory.");
-            //choice = dahuapp.drivers.fileSystem.askForProjectDir();
+            // choice = dahuapp.drivers.fileSystem.askForProjectDir();
             if (choice !== null) {
                 var fileSystem = dahuapp.drivers.fileSystem;
                 var absolutePath = choice + fileSystem.getSeparator() + jsonFileName;
