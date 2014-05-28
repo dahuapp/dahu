@@ -437,10 +437,16 @@ var dahuapp = (function(dahuapp, $) {
 				var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
 				// TODO à vérifier
                 $('#tooltips-container').html($(document.createElement('div'))
-                    .attr({ 'class':'tooltip',
+                    .attr({ 'class':'tooltip', 'id':tooltipId,
                             'style': 'background-color: rgb(255, 255, 221); width: 400px; display: block; left: 320px; top: 432px;'})
                     .html(tooltipHtml));
-			}
+                $('#'+tooltipId).dblclick(function(){
+                    var tooltip = $('#'+tooltipId);
+                    var tooltipValue = prompt("Set the content of the tooltip", tooltip.html());
+                    tooltip.empty();
+                    tooltip.text(tooltipValue || "");
+                });
+            }
 			updateActions(idSlide);
         };
         var updateActions = function(idSlide) {
