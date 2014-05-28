@@ -119,8 +119,10 @@ define('dahuapp', [
             if (model instanceof ScreencastModel) {
                 Kernel.console.debug("Sync screencast model for method {}", method);
                 if( method === 'create' ) {
-                    Kernel.console.log(model.toJSON());
-                    Kernel.module('filesystem').writeToFile(projectFilename, model.toJSON());
+                    // define the indentation value to write the updated dahu file
+                    var indentation = 4;
+                    Kernel.console.log(model.toJSON(indentation));
+                    Kernel.module('filesystem').writeToFile(projectFilename, model.toJSON(indentation));
                 }
                 //@todo handle other methods
             } else {

@@ -28,8 +28,10 @@ define([
             }
         },
 
-        toJSON: function() {
-            return JSON.stringify(this.attributes)
+        toJSON: function(indentation) {
+            // indentation allows the proper indentation of the returned string.
+            indentation = indentation || undefined;
+            return JSON.stringify(this.attributes, undefined, indentation)
         }
     }, { // class properties (static)
 
