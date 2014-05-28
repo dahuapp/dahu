@@ -454,7 +454,13 @@ var dahuapp = (function(dahuapp, $) {
                     .attr({ 'class':'tooltip',
                             'style': style})
                     .html(tooltipHtml));
-			}
+                $('#'+tooltipId).dblclick(function(){
+                    var tooltip = $('#'+tooltipId);
+                    var tooltipValue = prompt("Set the content of the tooltip", tooltip.html());
+                    tooltip.empty();
+                    tooltip.text(tooltipValue || "");
+                });
+            }
 			updateActions(idSlide);
         };
         var updateActions = function(idSlide) {
