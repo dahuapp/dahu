@@ -5,7 +5,7 @@
 }
 
 .tooltip {
-    position: absolute;
+    position: relative;
     width: 100px;
     padding: 4px;
     margin: 2px;
