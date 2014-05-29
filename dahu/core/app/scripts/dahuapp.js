@@ -123,7 +123,7 @@ define('dahuapp', [
                 }
                 //@todo handle other methods
             } else {
-                Kernel.console.log("ignore sync for method {} on model {}", method, model)
+                Kernel.console.debug("ignore sync for method {} on model {}", method, model)
             }
         };
     }
