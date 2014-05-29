@@ -423,11 +423,11 @@ var dahuapp = (function(dahuapp, $) {
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
             var tooltips = {};
-			
+
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
                     .attr({'src': 'file:' + abs, 'alt': abs, 'id': "image"})));
-			
+
 			// Display tooltips
             // We start at index 1 because 0 is always the background image
             // and we stop at length - 2 because the last one is always the cursor
@@ -436,6 +436,7 @@ var dahuapp = (function(dahuapp, $) {
 				var tooltipHtml = jsonModel.getSlide(idSlide).object[i].text;
 				var tooltipColor = jsonModel.getSlide(idSlide).object[i].color;
 				var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
+                // Getting the coordinates of the tooltip
 				var left = 0.0;
 				var top = 0.0;
 				for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
@@ -444,27 +445,25 @@ var dahuapp = (function(dahuapp, $) {
 						top = jsonModel.getSlide(idSlide).action[j].ord;
 					}
 				}
-				//alert(left+"  "+top);
 				var imageWidth = jsonModel.getImageHeight();
 				var imageHeight = jsonModel.getImageWidth();
 				var X = left * imageWidth;
 				var Y = top * imageHeight;
 				var style = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+X+'px ; top: '+Y+'px;';
-				// TODO à vérifier
                 $('#tooltips-container').html($(document.createElement('div'))
-                    .attr({ 'class':'tooltip',
+                    .attr({ 'class':'tooltip', 'id':tooltipId,
                             'style': style})
                     .html(tooltipHtml));
                 $('#'+tooltipId).draggable({
                     stop: function( event, ui ) {
                         var tooltip = $('#'+tooltipId);
                         // Update jsonModel
-                        jsonModel.getActionList(idSlide).filter(function(action){
-                            action.target = tooltipId;
-                        }).map(function(action){
-                            action.abs = ui.position.left;
-                            action.ord = ui.position.top;
-                        });
+                        for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
+                            if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
+                                jsonModel.getSlide(idSlide).action[j].abs = ui.position.left/imageWidth;
+                                jsonModel.getSlide(idSlide).action[j].ord = ui.position.top/imageHeight;
+                            }
+                        }
                     }
                 });
                 $('#'+tooltipId).dblclick(function(){
