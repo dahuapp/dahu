@@ -11,11 +11,13 @@ define([
      * Base object model.
      */
     var MetadataModel = Backbone.Model.extend({
-        defaults: {
-            title: _.template('Dahu Screencast - <%= date %>', date=Date.now()),
-            author: undefined,
-            created_at: Date.now(),
-            modified_at: Date.now()
+        defaults: function() {
+            return {
+                title: _.template('Dahu Screencast - <%= date %>', date=Date.now()),
+                author: undefined,
+                created_at: Date.now(),
+                modified_at: Date.now()
+            }
         }
     });
 
