@@ -9,9 +9,11 @@ define([
      * Base Screen model.
      */
     var ScreenModel = Backbone.Model.extend({
-        defaults: {
-            id: null,
-            objects: null
+        defaults: function() {
+            return {
+                id: UUID.v4(),
+                objects: new ObjectCollection()
+            }
         },
 
         initialize: function () {
