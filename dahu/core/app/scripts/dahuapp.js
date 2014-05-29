@@ -172,15 +172,16 @@ define('dahuapp', [
 
         //// begin - work in progress
         //// @todo display the list of screens
+        try {
+            var layout = new DahuLayout();
+            layout.render();
+            app.frame.show(layout);
 
-        // create a layout
-        var layout = new DahuLayout();
-        layout.render();
-        app.frame.show(layout);
-
-        // show screens in filmstrip region
-        layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
-
+            // show screens in filmstrip region
+            layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
+        } catch(e) {
+            Kernel.console.error(e.stack);
+        }
         //// end - work in progress
     }
 
