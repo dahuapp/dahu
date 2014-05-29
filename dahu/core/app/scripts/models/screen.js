@@ -17,8 +17,10 @@ define([
         },
 
         initialize: function () {
-            this.set('id', this.get('id') || UUID.v4());
-            this.set('objects', this.get('objects') || new ObjectCollection());
+            // wrap up objects around ObjectCollection unless it already is
+            if ( ! (this.get('objects') instanceof ObjectCollection) ) {
+                this.set('objects', new ObjectCollection(this.get('objects')));
+            }
         }
     });
 
