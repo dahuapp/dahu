@@ -12,11 +12,20 @@ define([
      * Base Screencast model.
      */
     var ScreencastModel = Backbone.Model.extend({
-        defaults: {
-            metadata: new Metadata(),
-            settings: new Settings(),
-            screens: new ScreenCollection(),
-            version: VERSION
+        defaults: function() {
+            return {
+                metadata: new Metadata(),
+                settings: new Settings(),
+                screens: new ScreenCollection(),
+                version: VERSION
+            }
+        },
+
+        initialize: function () {
+            // wrap up screens around ScreenCollection unless it already is
+            if ( ! (this.get('screens') instanceof ScreenCollection) ) {
+                this.set('screens', new ScreenCollection(this.get('screens')));
+            }
         },
 
         toJSON: function() {
