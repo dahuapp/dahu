@@ -73,7 +73,7 @@ define([
             if(_.has(jsonData, 'metaData') && _.has(jsonData, 'data')) {
                 return 1;
             } else {
-                return jsonData.version;
+                return parseInt(jsonData.version);
             }
         },
 
