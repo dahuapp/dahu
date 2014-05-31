@@ -179,7 +179,6 @@ define('dahuapp', [
             var layout = new DahuLayout();
             layout.render();
             app.frame.show(layout);
-
             // show screens in filmstrip region
             layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
         } catch(e) {
