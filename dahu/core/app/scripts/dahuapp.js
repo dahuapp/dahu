@@ -126,7 +126,7 @@ define('dahuapp', [
                 }
                 //@todo handle other methods
             } else {
-                Kernel.console.debug("ignore sync for method {} on model {}", method, model)
+                Kernel.console.debug("ignore sync for method {} on model {}", method, JSON.stringify(model));
             }
         };
     }
