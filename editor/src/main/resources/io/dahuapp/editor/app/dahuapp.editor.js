@@ -428,57 +428,89 @@ var dahuapp = (function(dahuapp, $) {
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
                     .attr({'src': 'file:' + abs, 'alt': abs, 'id': "image"})));
-			// Display tooltips
-            // We start at index 1 because 0 is always the background image
-            // and we stop at length - 2 because the last one is always the cursor
-			for ( var i = 1; i < jsonModel.getSlide(idSlide).object.length - 1; i++ ){
-				var tooltipId = jsonModel.getSlide(idSlide).object[i].id;
-				var tooltipHtml = jsonModel.getSlide(idSlide).object[i].text;
-				var tooltipColor = jsonModel.getSlide(idSlide).object[i].color;
-				var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
-                // Getting the coordinates of the tooltip
-				var left = 0.0;
-				var top = 0.0;
-				for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
-					if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
-						left = jsonModel.getSlide(idSlide).action[j].abs;
-						top = jsonModel.getSlide(idSlide).action[j].ord;
-					}
-				}
-				var imageWidth = jsonModel.getImageHeight();
-				var imageHeight = jsonModel.getImageWidth();
-				var X = left * imageWidth;
-				var Y = top * imageHeight;
-				var style = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+X+'px ; top: '+Y+'px;';
-                $('#tooltips-container').append($(document.createElement('div'))
-                    .attr({ 'class':'tooltip', 'id':tooltipId,
-                            'style': style})
-                    .html(tooltipHtml));
-                // Make the tooltip draggable
-                $('#'+tooltipId).draggable({
-                    stop: function( event, ui ) {
-                        var tooltip = $('#'+tooltipId);
-                        // Update jsonModel
-                        for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
-                            if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
-                                jsonModel.getSlide(idSlide).action[j].abs = ui.position.left/imageWidth;
-                                jsonModel.getSlide(idSlide).action[j].ord = ui.position.top/imageHeight;
-                            }
-                        }
-                    }
-                });
-                // Make the tooltip editable
-                $('#'+tooltipId).dblclick(function(){
-                    var tooltip = $('#'+tooltipId);
-                    var userInput = prompt("Set the content of the tooltip", tooltip.html());
-                    if (userInput) {
-                        tooltip.empty();
-                        tooltip.text(userInput);
-                    }
-                });
-            }
+            updateTooltipsPreview(idSlide);
 			updateActions(idSlide);
         };
+
+        /*
+         * Updates the tooltips on the preview screen
+         */
+
+        var updateTooltipsPreview = function(idSlide){
+            // Display tooltips
+            for ( var i = 0; i < jsonModel.getSlide(idSlide).object.length; i++ ){
+                if (jsonModel.getSlide(idSlide).object[i].type != "tooltip") continue;
+                var tooltipId = jsonModel.getSlide(idSlide).object[i].id;
+                var tooltipHtml = jsonModel.getSlide(idSlide).object[i].text;
+                var tooltipColor = jsonModel.getSlide(idSlide).object[i].color;
+                var tooltipWidth = jsonModel.getSlide(idSlide).object[i].width;
+                // Getting the coordinates of the tooltip
+                var left = 0.0;
+                var top = 0.0;
+                for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
+                    if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
+                        left = jsonModel.getSlide(idSlide).action[j].abs;
+                        top = jsonModel.getSlide(idSlide).action[j].ord;
+                    }
+                }
+                var imageWidth = jsonModel.getImageHeight();
+                var imageHeight = jsonModel.getImageWidth();
+                var X = left * imageWidth;
+                var Y = top * imageHeight;
+                var style = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+X+'px ; top: '+Y+'px;';
+                $('#tooltips-container').append($(document.createElement('div'))
+                    .attr({ 'class':'tooltip', 'id':tooltipId,
+                        'style': style})
+                    .html(tooltipHtml));
+                // Make the tooltip draggable
+                makeTooltipDraggable(idSlide, tooltipId);
+                // Make the tooltip editable
+                makeTooltipEditable(idSlide, tooltipId);
+            }
+        };
+
+        /*
+         * Makes the tooltip draggable
+         * and update jsonModel on a move
+         */
+        var makeTooltipDraggable = function(idSlide, tooltipId){
+            var imageWidth = jsonModel.getImageHeight();
+            var imageHeight = jsonModel.getImageWidth();
+            $('#'+tooltipId).draggable({
+                stop: function( event, ui ) {
+                    // Update jsonModel
+                    for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
+                        // We have to get the action matching the dragged tooltip
+                        if (jsonModel.getSlide(idSlide).action[j].target == tooltipId){
+                            jsonModel.getSlide(idSlide).action[j].abs = ui.position.left/imageWidth;
+                            jsonModel.getSlide(idSlide).action[j].ord = ui.position.top/imageHeight;
+                        }
+                    }
+                }
+            });
+        };
+
+        /*
+         * Makes the tooltip editable on a double click
+         */
+        var makeTooltipEditable = function(idSlide, tooltipId){
+            $('#'+tooltipId).dblclick(function(){
+                var tooltip = $('#'+tooltipId);
+                var userInput = prompt("Set the content of the tooltip", tooltip.html());
+                if (userInput) {
+                    tooltip.empty();
+                    tooltip.text(userInput);
+                    // Update jsonModel
+                    for ( var k= 0; k < jsonModel.getSlide(idSlide).object.length; k++) {
+                        // Retrieve the tooltip in the jsonModel
+                        if (jsonModel.getSlide(idSlide).object[k].id == tooltipId){
+                            jsonModel.getSlide(idSlide).object[k].text = userInput;
+                        }
+                    }
+                }
+            });
+        };
+
         var updateActions = function(idSlide) {
             var actionList = jsonModel.getActionList(idSlide);
             for (var i = 0; i < actionList.length; i++) {
@@ -1056,8 +1088,8 @@ var dahuapp = (function(dahuapp, $) {
 					var text = prompt("Set the content of the tooltip"," ");
 					jsonModel.addObject(selectedSlide,"tooltip",text,"#FFFFDD","240px");
 					jsonModel.addAction(selectedSlide,"appear",
-					jsonModel.getSlide(selectedSlide).object[objectLength].id,
-					"onClick",0.0,0.0,400);
+					    jsonModel.getSlide(selectedSlide).object[objectLength-1].id,
+					    "onClick",0.0,0.0,400);
 					updatePreview(selectedSlide);
 				}
 			});
