@@ -234,6 +234,7 @@ var dahuapp = (function(dahuapp, $) {
             setElementDisabled('#visual-mode', false);
             setElementDisabled('#set-output-image-size', false);
             setElementDisabled('#capture-mode', false);
+			setElementDisabled('#add-tooltip', false);
             if (selectedSlide !== -1) {
                 setElementDisabled('#this-slide-up', false);
                 setElementDisabled('#this-slide-down', false);
@@ -400,6 +401,7 @@ var dahuapp = (function(dahuapp, $) {
             setElementDisabled('#reload-project', captureMode);
             setElementDisabled('#clean-project', captureMode);
             setElementDisabled('#generate', captureMode);
+			setElementDisabled('#add-tooltip', captureMode);
             setElementDisabled('#visual-mode', captureMode);
             setElementDisabled('#set-capture-key', captureMode);
             setElementDisabled('#set-output-image-size', captureMode);
@@ -415,19 +417,17 @@ var dahuapp = (function(dahuapp, $) {
          * Functions to update the preview on the middle.
          */
         var updatePreview = function(idSlide) {
-            cleanPreview();
+			cleanPreview();
             if (idSlide === -1) {
                 return;
             }
             var img = jsonModel.getSlide(idSlide).object[0].img;
             var sep = dahuapp.drivers.fileSystem.getSeparator();
             var abs = projectDir + sep + img;
-            var tooltips = {};
 
             $('#preview-image').append($(document.createElement('li'))
                     .append($(document.createElement('img'))
                     .attr({'src': 'file:' + abs, 'alt': abs, 'id': "image"})));
-
 			// Display tooltips
             // We start at index 1 because 0 is always the background image
             // and we stop at length - 2 because the last one is always the cursor
@@ -450,7 +450,7 @@ var dahuapp = (function(dahuapp, $) {
 				var X = left * imageWidth;
 				var Y = top * imageHeight;
 				var style = 'background-color:'+tooltipColor+'; width: '+tooltipWidth+' ; display: block; left: '+X+'px ; top: '+Y+'px;';
-                $('#tooltips-container').html($(document.createElement('div'))
+                $('#tooltips-container').append($(document.createElement('div'))
                     .attr({ 'class':'tooltip', 'id':tooltipId,
                             'style': style})
                     .html(tooltipHtml));
@@ -1050,6 +1050,17 @@ var dahuapp = (function(dahuapp, $) {
                     }
                 }
             });
+			$('#add-tooltip').click(function(){
+				if(!captureMode && initProject){
+					var objectLength = jsonModel.getSlide(selectedSlide).object.length;
+					var text = prompt(" entrer le texte à mettre dans le tooltip"," ");
+					jsonModel.addObject(selectedSlide,"tooltip",text,"#FFFFDD","240px");
+					jsonModel.addAction(selectedSlide,"appear",
+					jsonModel.getSlide(selectedSlide).object[objectLength].id,
+					"onClick",0.0,0.0,400);
+					updatePreview(selectedSlide);
+				}
+			});
             $('#throw-this-slide').click(removeSelectedSlide);
             $('#this-slide-up').click(moveSelectedSlideUp);
             $('#this-slide-down').click(moveSelectedSlideDown);

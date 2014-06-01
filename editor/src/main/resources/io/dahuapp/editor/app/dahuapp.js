@@ -578,7 +578,7 @@
              * Other params can be specified depending on the object's type.
              */
             this.addObject = function (idSlide, type) {
-                var object = {
+				var object = {
                     "type": type
                 };
                 switch (type.toLowerCase()) {
@@ -597,9 +597,18 @@
                         object.id = "s" + json.data.length + "-o" + json.data[idSlide].object.length;
                         object.text = arguments[2] || "";
                         object.color = arguments[3] || null;
+						object.width = arguments[4] || "";
+						json.data[idSlide].object.push(object);
+						var objectLength = json.data[idSlide].object.length;
+						var last = json.data[idSlide].object[objectLength-1];
+						json.data[idSlide].object[objectLength-1] = 
+								json.data[idSlide].object[objectLength-2];
+						json.data[idSlide].object[objectLength-2] = last;
                         break;
                 }
-                json.data[idSlide].object.push(object);
+				if(type.toLowerCase() != "tooltip"){
+					json.data[idSlide].object.push(object);
+				}
             };
 
             /*
