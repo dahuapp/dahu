@@ -1053,7 +1053,7 @@ var dahuapp = (function(dahuapp, $) {
 			$('#add-tooltip').click(function(){
 				if(!captureMode && initProject){
 					var objectLength = jsonModel.getSlide(selectedSlide).object.length;
-					var text = prompt(" entrer le texte à mettre dans le tooltip"," ");
+					var text = prompt("Set the content of the tooltip"," ");
 					jsonModel.addObject(selectedSlide,"tooltip",text,"#FFFFDD","240px");
 					jsonModel.addAction(selectedSlide,"appear",
 					jsonModel.getSlide(selectedSlide).object[objectLength].id,
