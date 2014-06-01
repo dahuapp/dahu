@@ -454,6 +454,7 @@ var dahuapp = (function(dahuapp, $) {
                     .attr({ 'class':'tooltip', 'id':tooltipId,
                             'style': style})
                     .html(tooltipHtml));
+                // Make the tooltip draggable
                 $('#'+tooltipId).draggable({
                     stop: function( event, ui ) {
                         var tooltip = $('#'+tooltipId);
@@ -466,6 +467,7 @@ var dahuapp = (function(dahuapp, $) {
                         }
                     }
                 });
+                // Make the tooltip editable
                 $('#'+tooltipId).dblclick(function(){
                     var tooltip = $('#'+tooltipId);
                     var userInput = prompt("Set the content of the tooltip", tooltip.html());
