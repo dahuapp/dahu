@@ -295,34 +295,22 @@
         <div class="popup-title">
             Edit tooltip
         </div>
-        <!-- Single button -->
         <div id="tooltip-id-container" hidden>
         </div>
         <div class="popup-content scroll"   >
-            <a class="btn btn-danger btn-outline" id="edit-tooltip-delete-button">Delete tooltip</a>
-            <form class="form-horizontal">
-                <fieldset>
-                    <!-- Form Name -->
-                    <legend>Form Name</legend>
-                    <!-- Textarea -->
-                    <div class="control-group">
-                        <label class="control-label" for="edit-tooltip-input">Tooltip content</label>
-                        <div class="controls">
-                            <textarea id="edit-tooltip-input" name="edit-tooltip-input"></textarea>
-                        </div>
-                    </div>
-
-                    <!-- Button (Double) -->
-                    <div class="control-group">
-                        <label class="control-label" for="edit-tooltip-ok"></label>
-                        <div class="controls">
-                            <button id="edit-tooltip-ok" name="edit-tooltip-ok" class="btn btn-primary">OK</button>
-                            <button id="edit-tooltip-cancel" name="edit-tooltip-cancel" class="btn btn-danger">Cancel</button>
-                        </div>
-                    </div>
-
-                </fieldset>
-            </form>
+            <!-- Textarea -->
+            <div class="control-group">
+                <div class="controls">
+                    <textarea class="edit-tooltip-text-area" id="edit-tooltip-input" name="edit-tooltip-input"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="ok-cancel-popups-control">
+            <div style="text-align:left">
+                <button id="edit-tooltip-ok" name="edit-tooltip-ok" class="btn btn-primary" style="text-align: left">OK</button>
+                <button id="edit-tooltip-cancel" name="edit-tooltip-cancel" class="btn btn-danger" style="text-align: left">Cancel</button>
+            </div>
+            <button id="edit-tooltip-delete-button" name="edit-tooltip-delete-button" class="btn btn-danger">Delete tooltip</button>
         </div>
     </div>
 </div>
