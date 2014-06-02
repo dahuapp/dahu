@@ -7,7 +7,7 @@ define([
     'backbone.marionette',
     'text!templates/views/filmstrip/screen.html',
     'models/objects/background',
-    'views/filmstrip/background',
+    'views/objects/background',
     'views/filmstrip/objectDummy'
 ], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView){
 
