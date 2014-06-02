@@ -1084,11 +1084,13 @@ var dahuapp = (function(dahuapp, $) {
 			$('#add-tooltip').click(function(){
 				if(!captureMode && initProject){
 					var objectLength = jsonModel.getSlide(selectedSlide).object.length;
-					var text = prompt("Set the content of the tooltip"," ");
-					jsonModel.addObject(selectedSlide,"tooltip",text,"#FFFFDD","240px");
-					jsonModel.addAction(selectedSlide,"appear",
-					    jsonModel.getSlide(selectedSlide).object[objectLength-1].id,
-					    "onClick",0.0,0.0,400);
+					jsonModel.addObject(selectedSlide,"tooltip","","#FFFFDD","240px");
+                    var tooltipId = jsonModel.getSlide(selectedSlide).object[objectLength-1].id;
+                    jsonModel.addAction(selectedSlide,"appear",tooltipId, "onClick",0.0,0.0,400);
+                    var tooltip = $('#'+tooltipId);
+                    $('#edit-tooltip-input').html(tooltip.html());
+                    $('#tooltip-id-container').text(tooltipId);
+                    showPopup("#edit-tooltip-popup");
 					updatePreview(selectedSlide);
 				}
 			});
@@ -1129,7 +1131,7 @@ var dahuapp = (function(dahuapp, $) {
             $(window).resize(function() {
                 centerPopups();
             });
-            $('#edit-tooltip-ok').click(function(){
+            var editTooltip = function(){
                 var tooltipId = $("#tooltip-id-container").text();
                 var idSlide = selectedSlide;
                 var userInput =  $('#edit-tooltip-input').val();
@@ -1141,10 +1143,13 @@ var dahuapp = (function(dahuapp, $) {
                     }
                 }
                 updatePreview(selectedSlide);
-                closePopup("edit-tooltip-popup");
-            });
+                closePopup('#edit-tooltip-popup');
+                $('#edit-tooltip-input').val('');
+            };
+            $('#edit-tooltip-ok').click(editTooltip);
             $('#edit-tooltip-cancel').click(function(){
-                closePopup("edit-tooltip-popup");
+                closePopup('#edit-tooltip-popup');
+                $('#edit-tooltip-input').val('');
             });
             $('#edit-tooltip-delete-button').click(function(){
                 if(!captureMode && initProject){
@@ -1161,8 +1166,9 @@ var dahuapp = (function(dahuapp, $) {
 							break;
 						}
 					}
-					closePopup("edit-tooltip-popup");
+					closePopup("#edit-tooltip-popup");
                     updatePreview(selectedSlide);
+                    $('#edit-tooltip-input').val('');
                 }
             })
 
