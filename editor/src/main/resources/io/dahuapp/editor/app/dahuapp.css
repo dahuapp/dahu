@@ -236,9 +236,15 @@
 
 #edit-tooltip-popup {
     position: relative;
+    z-index: 10;
     width: 500px;
     height: 420px;
     background: white;
     margin: 4px;
     border: 4px inset lightgray;
+}
+
+.edit-tooltip-text-area {
+    width: 460px;
+    height: 300px;
 }

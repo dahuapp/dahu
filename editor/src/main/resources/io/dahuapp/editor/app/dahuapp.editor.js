@@ -1131,11 +1131,8 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#edit-tooltip-ok').click(function(){
                 var tooltipId = $("#tooltip-id-container").text();
-                var tooltip = $('#'+tooltipId);
                 var idSlide = selectedSlide;
-                var userInput =  $('#edit-tooltip-input').html();
-                tooltip.empty();
-                tooltip.html(userInput);
+                var userInput =  $('#edit-tooltip-input').val();
                 // Update jsonModel
                 for ( var k= 0; k < jsonModel.getSlide(idSlide).object.length; k++) {
                     // Retrieve the tooltip in the jsonModel
