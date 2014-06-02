@@ -1131,7 +1131,6 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#edit-tooltip-ok').click(function(){
                 var tooltipId = $("#tooltip-id-container").text();
-                var tooltip = $('#'+tooltipId);
                 var idSlide = selectedSlide;
                 var userInput =  $('#edit-tooltip-input').html();
                 tooltip.empty();
@@ -1151,12 +1150,20 @@ var dahuapp = (function(dahuapp, $) {
             });
             $('#edit-tooltip-delete-button').click(function(){
                 if(!captureMode && initProject){
-                    var objectLength = jsonModel.getSlide(selectedSlide).object.length;
-                    var text = prompt("Set the content of the tooltip"," ");
-                    jsonModel.addObject(selectedSlide,"tooltip",text,"#FFFFDD","240px");
-                    jsonModel.addAction(selectedSlide,"appear",
-                        jsonModel.getSlide(selectedSlide).object[objectLength-1].id,
-                        "onClick",0.0,0.0,400);
+                    var tooltipId = $("#tooltip-id-container").text();
+					for ( var k= 0; k < jsonModel.getSlide(selectedSlide).object.length; k++){
+						if(jsonModel.getSlide(selectedSlide).object[k].id == tooltipId){
+							jsonModel.getSlide(selectedSlide).object.splice(k,k);
+							break;
+						}
+					}
+					for(var j =0; j < jsonModel.getActionList(selectedSlide).length; j++){
+						if(jsonModel.getActionList(selectedSlide)[j].target ==tooltipId){
+							jsonModel.getActionList(selectedSlide).splice(j,j);
+							break;
+						}
+					}
+					closePopup("edit-tooltip-popup");
                     updatePreview(selectedSlide);
                 }
             })
