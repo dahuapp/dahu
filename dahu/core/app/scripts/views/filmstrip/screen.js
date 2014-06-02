@@ -8,8 +8,9 @@ define([
     'text!templates/views/filmstrip/screen.html',
     'models/objects/background',
     'views/objects/background',
-    'views/filmstrip/objectDummy'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView){
+    'views/filmstrip/objectDummy',
+    'modules/events'
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView, events){
 
     /**
      * Filmstrip screen view
@@ -32,6 +33,15 @@ define([
             // Specify that the collection we want to iterate, for the itemView, is
             // given by the attribute objects.
             this.collection = this.model.get('objects');
+        },
+
+        // Detect a click on the screen div
+        events: {
+            "click .screen": "display"
+        },
+
+        display: function(event){
+            events.trigger('app:onPictureSelect', this.model);
         }
     });
 
