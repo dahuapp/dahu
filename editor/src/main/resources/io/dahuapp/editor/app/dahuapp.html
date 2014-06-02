@@ -1,301 +1,340 @@
 <!DOCTYPE html>
 
 <html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>DahuApp</title>
-        <link rel="stylesheet" href="localresource:bootstrap/css/bootstrap.min.css">
-        <link rel="stylesheet" href="localresource:dahuapp.css">
-        <script src="localresource:jquery-1.9.1.min.js"></script>
-        <!-- bootstrap's javascript uses jQuery and jQuery UI -->
-        <script src="localresource:bootstrap/js/bootstrap.min.js"></script>
-        <script src="localresource:bootstrap/js/jquery-ui-1.10.4.custom.min.js"></script>
-	<!-- To use <a rel="tooltip"> for hover-tooltips -->
-        <script>
-    jQuery(function ($) {
-        $("a").tooltip()
-    });
+<head>
+    <meta charset="utf-8">
+    <title>DahuApp</title>
+    <link rel="stylesheet" href="localresource:bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="localresource:dahuapp.css">
+    <script src="localresource:jquery-1.9.1.min.js"></script>
+    <!-- bootstrap's javascript uses jQuery and jQuery UI -->
+    <script src="localresource:bootstrap/js/bootstrap.min.js"></script>
+    <script src="localresource:bootstrap/js/jquery-ui-1.10.4.custom.min.js"></script>
+    <!-- To use <a rel="tooltip"> for hover-tooltips -->
+    <script>
+        jQuery(function ($) {
+            $("a").tooltip()
+        });
     </script>
-    </head>
+</head>
 
-    <body>
-        <!-- Application -->
-        <div class="container" id="app-container">
+<body>
+<!-- Application -->
+<div class="container" id="app-container">
 
-            <!-- Block for the navigation bar -->
-            <div id="navbar-container">
+<!-- Block for the navigation bar -->
+<div id="navbar-container">
 
-                <div class="navbar">
-                    <div class="navbar-inner">
-                        <!-- Title of the navigation bar -->
-                        <a class="brand" href="#">
-                            DahuApp
-                        </a>
-                        <!-- List of the navbar buttons -->
-                        <ul class="nav" role="navigation">
-                            <li class="dropdown">
-                                <!-- link of the dropdown menu -->
-                                <a id="drop1" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
-                                    File
-                                    <b class="caret"></b>
-                                </a>
-                                <!-- List of the dropdown menu links -->
-                                <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="new-project">
-                                            New project...
-                                        </a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="open-project">
-                                            Open project...
-                                        </a>
-                                    </li>
-                                    <li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="save-project">
-                                            Save project
-                                        </a>
-                                    </li>
-                                    <li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="reload-project">
-                                            Reload project
-                                        </a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="exit">
-                                            Exit
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <!-- link of the dropdown menu -->
-                                <a id="drop2" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
-                                    Generation
-                                    <b class="caret"></b>
-                                </a>
-                                <!-- List of the dropdown menu links -->
-                                <ul class="dropdown-menu" aria-labelledby="drop2" role="menu">
-                                    <li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="clean-project">
-                                            Clean build directory
-                                        </a>
-                                    </li>
-                                    <li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="generate">
-                                            Clean and generate
-                                        </a>
-                                    </li>
-                                    <li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="visual-mode">
-                                            Preview
-                                        </a>
-                                    </li>
-									<li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="add-tooltip">
-                                            Add tooltip
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <!-- link of the dropdown menu -->
-                                <a id="drop3" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
-                                    Settings
-                                    <b class="caret"></b>
-                                </a>
-                                <!-- List of the dropdown menu links -->
-                                <ul class="dropdown-menu" aria-labelledby="drop3" role="menu">
-                                    <!-- Project settings -->
-                                    <li role="presentation" class="disabled">
-                                        <a tabindex="-1" role="menuitem" id="set-output-image-size">
-                                            Output image size...
-                                        </a>
-                                    </li>
-                                    <li class="divider"></li>
-                                    <!-- Application settings submenu -->
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="set-capture-key">
-                                            Change capture key...
-                                        </a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="set-user-prefs">
-                                            Preferences...
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                            <li class="dropdown">
-                                <!-- link of the dropdown menu -->
-                                <a id="drop4" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
-                                    Help
-                                    <b class="caret"></b>
-                                </a>
-                                <!-- List of the dropdown menu links -->
-                                <ul class="dropdown-menu" aria-labelledby="drop4" role="menu">
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="online-help">
-                                            Online help (wiki)
-                                        </a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a tabindex="-1" role="menuitem" id="about-us">
-                                            About us
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                        <!-- Buttons on the right part of navbar -->
-                        <ul class="nav pull-right">
-                            <li hidden>
-                                <button class="btn btn-primary" id="capture-mode">
-                                    Capture mode
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Toolbar container -->
-            <div id="toolbar-container">
-                <div class="navbar">
-                    <div class="navbar-inner">
-                        <ul class="nav">
-                            <li><button class="btn" id="this-slide-up" disabled><i class="icon-arrow-up"></i></button></li>
-                            <li><button class="btn" id="this-slide-down" disabled><i class="icon-arrow-down"></i></button></li>
-                            <li class="divider-vertical"></li>
-                            <li><button class="btn btn-danger" id="throw-this-slide" disabled><i class="icon-trash"></i></button></li>
-                            <li class="divider-vertical"></li>
-                            <li><button class="btn" id="edit-action" disabled><i class="icon-wrench"></i></button></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Main block -->
-            <div id="main-container">
-                <div class="scroll" id="image-bar-container">
-                    <!-- List of the image bar items -->
-                    <ul class="thumbnails" id="image-list">
-
+    <div class="navbar">
+        <div class="navbar-inner">
+            <!-- Title of the navigation bar -->
+            <a class="brand" href="#">
+                DahuApp
+            </a>
+            <!-- List of the navbar buttons -->
+            <ul class="nav" role="navigation">
+                <li class="dropdown">
+                    <!-- link of the dropdown menu -->
+                    <a id="drop1" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                        File
+                        <b class="caret"></b>
+                    </a>
+                    <!-- List of the dropdown menu links -->
+                    <ul class="dropdown-menu" aria-labelledby="drop1" role="menu">
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="new-project">
+                                New project...
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="open-project">
+                                Open project...
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="save-project">
+                                Save project
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="reload-project">
+                                Reload project
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="exit">
+                                Exit
+                            </a>
+                        </li>
                     </ul>
-                </div> 
-                <div class="scroll extended-image-container" id="current-image-container">
-                    <ul id="preview-image"> 
-
+                </li>
+                <li class="dropdown">
+                    <!-- link of the dropdown menu -->
+                    <a id="drop2" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                        Generation
+                        <b class="caret"></b>
+                    </a>
+                    <!-- List of the dropdown menu links -->
+                    <ul class="dropdown-menu" aria-labelledby="drop2" role="menu">
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="clean-project">
+                                Clean build directory
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="generate">
+                                Clean and generate
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="visual-mode">
+                                Preview
+                            </a>
+                        </li>
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="add-tooltip">
+                                Add tooltip
+                            </a>
+                        </li>
                     </ul>
-                    <div id="tooltips-container">
+                </li>
+                <li class="dropdown">
+                    <!-- link of the dropdown menu -->
+                    <a id="drop3" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                        Settings
+                        <b class="caret"></b>
+                    </a>
+                    <!-- List of the dropdown menu links -->
+                    <ul class="dropdown-menu" aria-labelledby="drop3" role="menu">
+                        <!-- Project settings -->
+                        <li role="presentation" class="disabled">
+                            <a tabindex="-1" role="menuitem" id="set-output-image-size">
+                                Output image size...
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <!-- Application settings submenu -->
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="set-capture-key">
+                                Change capture key...
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="set-user-prefs">
+                                Preferences...
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <!-- link of the dropdown menu -->
+                    <a id="drop4" class="dropdown-toggle" data-toggle="dropdown" role="button" href="#">
+                        Help
+                        <b class="caret"></b>
+                    </a>
+                    <!-- List of the dropdown menu links -->
+                    <ul class="dropdown-menu" aria-labelledby="drop4" role="menu">
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="online-help">
+                                Online help (wiki)
+                            </a>
+                        </li>
+                        <li role="presentation">
+                            <a tabindex="-1" role="menuitem" id="about-us">
+                                About us
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Buttons on the right part of navbar -->
+            <ul class="nav pull-right">
+                <li hidden>
+                    <button class="btn btn-primary" id="capture-mode">
+                        Capture mode
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
 
+<!-- Toolbar container -->
+<div id="toolbar-container">
+    <div class="navbar">
+        <div class="navbar-inner">
+            <ul class="nav">
+                <li><button class="btn" id="this-slide-up" disabled><i class="icon-arrow-up"></i></button></li>
+                <li><button class="btn" id="this-slide-down" disabled><i class="icon-arrow-down"></i></button></li>
+                <li class="divider-vertical"></li>
+                <li><button class="btn btn-danger" id="throw-this-slide" disabled><i class="icon-trash"></i></button></li>
+                <li class="divider-vertical"></li>
+                <li><button class="btn" id="edit-action" disabled><i class="icon-wrench"></i></button></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Main block -->
+<div id="main-container">
+    <div class="scroll" id="image-bar-container">
+        <!-- List of the image bar items -->
+        <ul class="thumbnails" id="image-list">
+
+        </ul>
+    </div>
+    <div class="scroll extended-image-container" id="current-image-container">
+        <ul id="preview-image">
+
+        </ul>
+        <div id="tooltips-container">
+
+        </div>
+    </div>
+    <div id="action-editor-container" hidden>
+        <span id="action-editor-title" class="label label-inverse">Action editor:</span>
+        <div id="action-editor-mouse" class="scroll action-editor">
+            <p><button class="btn btn-primary" id="add-mouse-position">Add a mouse position</button></p>
+            <p>Mouse X: <input id="edit-mouse-x" type="number"> %</p>
+            <p>Mouse Y: <input id="edit-mouse-y" type="number"> %</p>
+        </div>
+    </div>
+</div>
+
+<!-- State bar -->
+<div id="state-bar-container">
+</div>
+
+<!-- Block to manage popups
+     To add a new popup, just put it in the popup-manager and
+     add the property 'hidden' to the main div of the popup. -->
+<div id="popup-manager" hidden>
+    <div id="modal-popups"></div>
+    <!-- Popup to change output images dimensions -->
+    <div id="output-settings-popup" hidden>
+        <div class="popup-title">
+            Output settings
+        </div>
+        <div class="popup-content">
+            <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
+            Required width: <input type="number" id="required-width"><br>
+            Required height: <input type="number" id="required-height">
+        </div>
+        <!-- Controls must be direct children of the main popup div -->
+        <div class="ok-cancel-popups-control">
+            <button class="popup-confirm btn btn-success">OK</button>
+            <button class="popup-cancel btn btn-danger">Cancel</button>
+        </div>
+    </div>
+    <!-- Popup to set the capture mode key -->
+    <div id="set-capture-key-popup" hidden>
+        <div class="popup-title">
+            Change capture key
+        </div>
+        <div class="popup-content">
+            <p>Press the key you want to set as capture mode key (i.e. this key will take a screenshot when pressed while capture mode is on).</p>
+            <p>Current key: <span id="new-capture-key"></span></p>
+        </div>
+        <!-- Controls must be direct children of the main popup div -->
+        <div class="ok-cancel-popups-control">
+            <button class="popup-confirm btn btn-success">OK</button>
+            <button class="popup-cancel btn btn-danger">Cancel</button>
+        </div>
+    </div>
+    <!-- Miscellaneous user-wide settings -->
+    <div id="user-prefs-popup" hidden>
+        <div class="popup-title">
+            User Preferences
+        </div>
+        <div class="popup-content">
+            <p>Preferences are saved in <tt>~/.config/dahu/config.json</tt>.</p>
+            <a rel="tooltip" href="#"
+               title="Image width, in pixels, for new projects (See 'output image size' in 'settings' menu to set it for individual projects)."
+                    >Default width</a>:
+            <input type="number" id="default-width"><br>
+            <a rel="tooltip" href="#"
+               title="Image height, in pixels, for new projects (See 'output image size' in 'settings' menu to set it for individual projects)."
+                    >Default height</a>:
+            <input type="number" id="default-height"><br>
+            <a rel="tooltip" href="#"
+               title="Speed, in pixel per milisecond, for mouse animations. Reasonable values are around 1.0."
+                    >Default mouse speed</a>:
+            <input type="number" id="default-speed">
+        </div>
+        <!-- Controls must be direct children of the main popup div -->
+        <div class="ok-cancel-popups-control">
+            <button class="popup-confirm btn btn-success">OK</button>
+            <button class="popup-cancel btn btn-danger">Cancel</button>
+        </div>
+    </div>
+    <!-- Popup which displays information about the developpers and the project -->
+    <div id="about-us-popup" hidden>
+        <div class="popup-title">
+            About us
+        </div>
+        <div class="popup-content scroll">
+            <p>This piece of software was created during a school project by five students of the Ensimag (Grenoble Institute of Technology, France) with the precious help of our two supervisors, from whom came the idea and the project.</p>
+            <p>Changing a single line of code in DahuApp allows you to put your name below (adding your name doesn't count as changing a line of code):</p>
+            <ul>
+                <li>Rémi Barraquand</li>
+                <li>Denis Becker</li>
+                <li>Clément Collignon</li>
+                <li>Mathieu Gaudron</li>
+                <li>Matthieu Moy</li>
+                <li>Jérémy Rasser</li>
+                <li>Jean-Baptiste Viller</li>
+            </ul>
+        </div>
+        <!-- Controls must be direct children of the main popup div -->
+        <div class="ok-cancel-popups-control">
+            <button class="popup-confirm btn btn-success">OK</button>
+        </div>
+    </div>
+    <div id="edit-tooltip-popup" hidden>
+        <div class="popup-title">
+            Edit tooltip
+        </div>
+        <div class="popup-content scroll">
+            <form class="form-horizontal">
+                <fieldset>
+                    <!-- Form Name -->
+                    <legend>Form Name</legend>
+                    <!-- Textarea -->
+                    <div class="control-group">
+                        <label class="control-label" for="edit-tooltip-input">Tooltip content</label>
+                        <div class="controls">
+                            <textarea id="edit-tooltip-input" name="edit-tooltip-input"></textarea>
+                        </div>
                     </div>
-                </div>
-                <div id="action-editor-container" hidden>
-                    <span id="action-editor-title" class="label label-inverse">Action editor:</span>
-                    <div id="action-editor-mouse" class="scroll action-editor">
-                        <p><button class="btn btn-primary" id="add-mouse-position">Add a mouse position</button></p>
-                        <p>Mouse X: <input id="edit-mouse-x" type="number"> %</p>
-                        <p>Mouse Y: <input id="edit-mouse-y" type="number"> %</p>
+
+                    <!-- Button (Double) -->
+                    <div class="control-group">
+                        <label class="control-label" for="edit-tooltip-ok"></label>
+                        <div class="controls">
+                            <button id="edit-tooltip-ok" name="edit-tooltip-ok" class="btn btn-primary">OK</button>
+                            <button id="edit-tooltip-cancel" name="edit-tooltip-cancel" class="btn btn-danger">Cancel</button>
+                        </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- State bar -->
-            <div id="state-bar-container">
-            </div>
-            
-            <!-- Block to manage popups
-                 To add a new popup, just put it in the popup-manager and
-                 add the property 'hidden' to the main div of the popup. -->
-            <div id="popup-manager" hidden>
-                <div id="modal-popups"></div>
-                <!-- Popup to change output images dimensions -->
-                <div id="output-settings-popup" hidden>
-                    <div class="popup-title">
-                        Output settings
-                    </div>
-                    <div class="popup-content">
-                        <p>If a field is empty or zero, the associated dimension will be automatically evaluated.</p>
-                        Required width: <input type="number" id="required-width"><br>
-                        Required height: <input type="number" id="required-height">
-                    </div>
-                    <!-- Controls must be direct children of the main popup div -->
-                    <div class="ok-cancel-popups-control">
-                        <button class="popup-confirm btn btn-success">OK</button>
-                        <button class="popup-cancel btn btn-danger">Cancel</button>
-                    </div>
-                </div>
-                <!-- Popup to set the capture mode key -->
-                <div id="set-capture-key-popup" hidden>
-                    <div class="popup-title">
-                        Change capture key
-                    </div>
-                    <div class="popup-content">
-                        <p>Press the key you want to set as capture mode key (i.e. this key will take a screenshot when pressed while capture mode is on).</p>
-                        <p>Current key: <span id="new-capture-key"></span></p>
-                    </div>
-                    <!-- Controls must be direct children of the main popup div -->
-                    <div class="ok-cancel-popups-control">
-                        <button class="popup-confirm btn btn-success">OK</button>
-                        <button class="popup-cancel btn btn-danger">Cancel</button>
-                    </div>
-                </div>
-		<!-- Miscellaneous user-wide settings -->
-		<div id="user-prefs-popup" hidden>
-                    <div class="popup-title">
-                        User Preferences
-                    </div>
-                    <div class="popup-content">
-                        <p>Preferences are saved in <tt>~/.config/dahu/config.json</tt>.</p>
-                        <a rel="tooltip" href="#"
-                           title="Image width, in pixels, for new projects (See 'output image size' in 'settings' menu to set it for individual projects)."
-                           >Default width</a>:
-                           <input type="number" id="default-width"><br>
-			<a rel="tooltip" href="#"
-                           title="Image height, in pixels, for new projects (See 'output image size' in 'settings' menu to set it for individual projects)."
-                           >Default height</a>:
-                           <input type="number" id="default-height"><br>
-                        <a rel="tooltip" href="#"
-                           title="Speed, in pixel per milisecond, for mouse animations. Reasonable values are around 1.0."
-                           >Default mouse speed</a>:
-                           <input type="number" id="default-speed">
-                    </div>
-                    <!-- Controls must be direct children of the main popup div -->
-                    <div class="ok-cancel-popups-control">
-                        <button class="popup-confirm btn btn-success">OK</button>
-                        <button class="popup-cancel btn btn-danger">Cancel</button>
-                    </div>
-                </div>
-                <!-- Popup which displays information about the developpers and the project -->
-                <div id="about-us-popup" hidden>
-                    <div class="popup-title">
-                        About us
-                    </div>
-                    <div class="popup-content scroll">
-                        <p>This piece of software was created during a school project by five students of the Ensimag (Grenoble Institute of Technology, France) with the precious help of our two supervisors, from whom came the idea and the project.</p>
-                        <p>Changing a single line of code in DahuApp allows you to put your name below (adding your name doesn't count as changing a line of code):</p>
-                        <ul>
-                            <li>Rémi Barraquand</li>
-                            <li>Denis Becker</li>
-                            <li>Clément Collignon</li>
-                            <li>Mathieu Gaudron</li>
-                            <li>Matthieu Moy</li>
-                            <li>Jérémy Rasser</li>
-                            <li>Jean-Baptiste Viller</li>
-                        </ul>
-                    </div>
-                    <!-- Controls must be direct children of the main popup div -->
-                    <div class="ok-cancel-popups-control">
-                        <button class="popup-confirm btn btn-success">OK</button>
-                    </div>
-                </div>
+
+                </fieldset>
+            </form>
+            <!-- Single button -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                    Action <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="#">Delete tooltip</a></li>
+                </ul>
             </div>
         </div>
+    </div>
+</div>
+</div>
 
-        <!-- Including dahuapp -->
-        <script src="localresource:dahuapp.js"></script>
-        <script src="localresource:dahuapp.editor.js"></script>
-    </body>
+<!-- Including dahuapp -->
+<script src="localresource:dahuapp.js"></script>
+<script src="localresource:dahuapp.editor.js"></script>
+</body>
 </html>

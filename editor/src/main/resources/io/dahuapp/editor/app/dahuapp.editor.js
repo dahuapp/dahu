@@ -477,7 +477,15 @@ var dahuapp = (function(dahuapp, $) {
             var imageWidth = jsonModel.getImageHeight();
             var imageHeight = jsonModel.getImageWidth();
             $('#'+tooltipId).draggable({
-                stop: function( event, ui ) {
+                drag: function(event, ui) {
+                    var tooltip = $("#"+tooltipId);
+                    if (ui.position.left > imageWidth ||
+                        ui.position.top > imageHeight ||
+                        ui.position.left < 0 ||
+                        ui.position.top < 0 )
+                            this.stop(event,ui);
+                },
+                stop: function(event, ui) {
                     // Update jsonModel
                     for ( var j= 0; j< jsonModel.getSlide(idSlide).action.length; j++){
                         // We have to get the action matching the dragged tooltip
@@ -496,8 +504,9 @@ var dahuapp = (function(dahuapp, $) {
         var makeTooltipEditable = function(idSlide, tooltipId){
             $('#'+tooltipId).dblclick(function(){
                 var tooltip = $('#'+tooltipId);
-                var userInput = prompt("Set the content of the tooltip", tooltip.html());
-                if (userInput) {
+                $('#'+edit-tooltip-input).html(tooltip.html());
+                showPopup("edit-tooltip-popup");
+/*                if (userInput) {
                     tooltip.empty();
                     tooltip.text(userInput);
                     // Update jsonModel
@@ -507,7 +516,7 @@ var dahuapp = (function(dahuapp, $) {
                             jsonModel.getSlide(idSlide).object[k].text = userInput;
                         }
                     }
-                }
+                }*/
             });
         };
 
@@ -574,7 +583,7 @@ var dahuapp = (function(dahuapp, $) {
         };
 
         /*
-         * Methods to show/hide a specifid popup.
+         * Methods to show/hide a specified popup.
          * @param {String} popupSelector Id of the popup to show.
          */
         var showPopup = function(popupSelector) {
@@ -1129,6 +1138,12 @@ var dahuapp = (function(dahuapp, $) {
             });
             $(window).resize(function() {
                 centerPopups();
+            });
+            $('#edit-tooltip-ok').click(function(){
+                closePopup("edit-tooltip-popup");
+            });
+            $('#edit-tooltip-cancel').click(function(){
+                closePopup("edit-tooltip-popup");
             });
         };
 

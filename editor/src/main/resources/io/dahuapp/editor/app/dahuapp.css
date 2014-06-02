@@ -232,3 +232,12 @@
 #about-us-popup .popup-content {
     height: 336px;
 }
+
+#edit-tooltip-popup {
+    position: relative;
+    width: 400px;
+    height: 420px;
+    background: white;
+    margin: 4px;
+    border: 4px inset lightgray;
+}
