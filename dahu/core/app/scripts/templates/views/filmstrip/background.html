@@ -1,3 +1,5 @@
 <div class="background">
-    <img width="132" height="132" src="{{imgFullPath}}"/></img>
+    <img width="132" height="132" src="localresource:{{imgFullPath}}"
+            onclick="dahuapp.events.trigger('app:onPictureSelect', '{{id}}');"
+            />
 </div>

@@ -106,6 +106,9 @@ define('dahuapp', [
         events.on('app:onFileOpen', function() {
             onFileOpen();
         })
+        events.on('app:onPictureSelect', function(idPicture) {
+            onPictureSelect(idPicture);
+        })
         //@todo add other events
     }
 
@@ -200,6 +203,15 @@ define('dahuapp', [
             Kernel.console.error(e.stack);
         }
         //// end - work in progress
+    }
+
+
+    /**
+     * Show the selected filmstrip picture in the main region.
+     */
+    function onPictureSelect(idPicture) {
+        Kernel.console.debug('Picture selected : ' + idPicture);
+        //@todo
     }
 
     // Debug only
