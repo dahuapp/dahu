@@ -11,6 +11,7 @@
     margin: 2px;
     border: 2px black solid;
     opacity: 1;
+	z-index : 1;
 }
 
 #app-container{
@@ -25,7 +26,7 @@
 }
 
 #navbar-container{
-    position: absolute;
+    position: relative;
     top: 0px;
     height:40px;
     margin:0px;
