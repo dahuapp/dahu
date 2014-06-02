@@ -10,7 +10,7 @@ define([
     /**
      * Join one or more path components intelligently.
      */
-    function joinPaths(paths) {
+    function join(paths) {
         var fullPath = "";
         // concatenate the single path to the full path iteratively
         _.each(paths, function(path) {
@@ -39,11 +39,11 @@ define([
      */
     function getImgFullPath(img) {
         var dir = ReqResponse.request("app:projectDirectory");
-        return joinPaths([dir, img]);
+        return join([dir, img]);
     }
 
     return {
-        joinPaths: joinPaths,
+        join: join,
         getImgFullPath: getImgFullPath
     };
 });
