@@ -39,7 +39,7 @@ define([
      */
     function getImgFullPath(img) {
         var dir = ReqResponse.request("app:projectDirectory");
-        return join([dir, img]);
+        return join(['dahufile:', dir, img]);
     }
 
     return {
