@@ -127,6 +127,9 @@ define('dahuapp', [
             return projectFilename.substring(0, indexOfLastSlash+1);
         })
         //@todo add other events
+        events.on('app:onActionCapture', function() {
+            onActionCapture();
+        })
     }
 
     /**
@@ -222,6 +225,10 @@ define('dahuapp', [
         }
     }
 
+    function onActionCapture() {
+
+
+    }
     /**
      * Return the exported API.
      * All functions returned here will be
