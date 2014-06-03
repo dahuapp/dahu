@@ -214,11 +214,14 @@ define('dahuapp', [
 
 
     /**
-     * Show the selected filmstrip picture in the main region.
+     * Show the selected filmstrip screen in the main region.
      */
-    function onPictureSelect(idPicture) {
-        Kernel.console.debug('Picture selected : ' + idPicture);
-        //@todo
+    function onPictureSelect(screen) {
+        // Change the model of the workspace screen if the
+        // selected screen is different than the actual one.
+        if (workSpaceScreen.model != screen) {
+            workSpaceScreen.setModel(screen);
+        }
     }
 
     // Debug only
