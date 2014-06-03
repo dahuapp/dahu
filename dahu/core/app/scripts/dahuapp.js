@@ -104,6 +104,7 @@ define('dahuapp', [
         events.on('app:onFileOpen', function() {
             onFileOpen();
         })
+        //@todo add other events
     }
 
     /**
@@ -185,6 +186,12 @@ define('dahuapp', [
         //// end - work in progress
     }
 
+    // Debug only
+
+    function getModel() {
+        return projectScreencast;
+    }
+
     /**
      * Return the exported API.
      * All functions returned here will be
@@ -201,6 +208,7 @@ define('dahuapp', [
         stop: function() { app.trigger("finalizers:after"); },
 
         // @warning for debug only
-        app: app
+        app: app,
+        model: getModel
     }
 });
