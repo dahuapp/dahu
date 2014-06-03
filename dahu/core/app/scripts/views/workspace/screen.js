@@ -35,17 +35,17 @@ define([
             this.collection = this.model.get('objects');
             // Tell the view to render itself when the
             // model/collection is changed.
-            this.model.on('change', this.render, this);
-            this.collection.on('change', this.render, this);
+            this.model.on('change', this.onChanged(), this);
+            this.collection.on('change', this.onChanged(), this);
         },
 
         setModel: function(newModel){
             this.model = newModel;
             this.collection = newModel.get('objects');
-            this.Changed();
+            this.onChanged();
         },
 
-        Changed: function(){
+        onChanged: function(){
             this.render();
         }
     });
