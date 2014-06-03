@@ -194,8 +194,6 @@ define('dahuapp', [
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
 
-        //// begin - work in progress
-        //// @todo display the list of screens
         try {
             var layout = new DahuLayout();
             layout.render();
@@ -209,7 +207,6 @@ define('dahuapp', [
         } catch(e) {
             Kernel.console.error(e.stack);
         }
-        //// end - work in progress
     }
 
 
@@ -224,12 +221,6 @@ define('dahuapp', [
         }
     }
 
-    // Debug only
-
-    function getModel() {
-        return projectScreencast;
-    }
-
     /**
      * Return the exported API.
      * All functions returned here will be
@@ -239,14 +230,11 @@ define('dahuapp', [
         // public start function
         start: function() { app.start(); },
 
-        // we don't use app.vent but our global events module
+        // we don't use app.event but our global events module
         events: events,
 
         // public stop function
         stop: function() { app.trigger("finalizers:after"); },
 
-        // @warning for debug only
-        app: app,
-        model: getModel
     }
 });

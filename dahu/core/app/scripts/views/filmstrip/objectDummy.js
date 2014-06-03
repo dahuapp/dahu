@@ -5,9 +5,8 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/filmstrip/objectDummy.html',
-    'modules/kernel/SCI'
-], function(Handlebars, Marionette, Filmstrip_objectDummy_tpl, Kernel){
+    'text!templates/views/filmstrip/objectDummy.html'
+], function(Handlebars, Marionette, Filmstrip_objectDummy_tpl){
 
     /**
      * Screen background view
