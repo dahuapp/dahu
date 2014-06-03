@@ -41,7 +41,7 @@ define([
         },
 
         display: function(event){
-            events.trigger('app:onPictureSelect', this.model);
+            events.trigger('app:filmstrip:onScreenSelected', this.model);
         }
     });
 

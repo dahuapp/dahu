@@ -109,8 +109,8 @@ define('dahuapp', [
         events.on('app:onFileOpen', function() {
             onFileOpen();
         })
-        events.on('app:onPictureSelect', function(idPicture) {
-            onPictureSelect(idPicture);
+        events.on('app:filmstrip:onScreenSelected', function(screen) {
+            onScreenSelect(screen);
         })
         //@todo add other events
     }
@@ -213,7 +213,7 @@ define('dahuapp', [
     /**
      * Show the selected filmstrip screen in the main region.
      */
-    function onPictureSelect(screen) {
+    function onScreenSelect(screen) {
         // Change the model of the workspace screen if the
         // selected screen is different than the actual one.
         if (workSpaceScreen.model != screen) {
