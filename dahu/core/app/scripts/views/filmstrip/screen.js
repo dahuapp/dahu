@@ -17,17 +17,23 @@ define([
      */
     var ScreenView = Marionette.CompositeView.extend({
         template: Handlebars.default.compile(Filmstrip_screen_tpl),
-        // We select the ItemView depending on the object type.
+        itemViewContainer: '#objects',
+
+        // Select the ItemView depending on the object type.
         getItemView: function(item){
             if(item instanceof BackgroundModel) {
                 return  BackgroundView;
-            }
-            //@todo handle other types of objects
-            else {
+            } else {
                 return ObjectDummyView;
             }
         },
-        itemViewContainer: '#objects',
+
+        // Only show object of type 'background'
+        addItemView: function(item, ItemView, index){
+            if ( item instanceof BackgroundModel ) {
+                Backbone.Marionette.CollectionView.prototype.addItemView.apply(this, arguments);
+            }
+        },
 
         initialize : function () {
             // Specify that the collection we want to iterate, for the itemView, is
