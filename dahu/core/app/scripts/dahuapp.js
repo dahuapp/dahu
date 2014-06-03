@@ -60,11 +60,14 @@ define('dahuapp', [
     'modules/requestResponse',
     'models/screencast',
     'layouts/dahuapp',
-    'views/filmstrip/screens'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse, ScreencastModel, DahuLayout, FilmstripScreensView) {
+    'views/filmstrip/screens',
+    'views/workspace/screen'
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse,
+            ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
 
     var projectFilename;
     var projectScreencast;
+    var workSpaceScreen;
 
     //
     // Application
@@ -199,6 +202,10 @@ define('dahuapp', [
             app.frame.show(layout);
             // show screens in filmstrip region
             layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
+            // Initialize the workspace with the first screen
+            workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+            // Show workspace screen
+            layout.workspace.show(workSpaceScreen);
         } catch(e) {
             Kernel.console.error(e.stack);
         }
