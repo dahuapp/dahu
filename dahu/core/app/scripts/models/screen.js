@@ -2,8 +2,9 @@ define([
     'underscore',
     'backbone',
     'uuid',
-    'collections/objects'
-], function(_, Backbone, UUID, ObjectCollection){
+    'collections/objects',
+    'collections/actions'
+], function(_, Backbone, UUID, ObjectCollection, ActionsCollection){
 
     /**
      * Base Screen model.
@@ -12,7 +13,8 @@ define([
         defaults: function() {
             return {
                 id: UUID.v4(),
-                objects: new ObjectCollection()
+                objects: new ObjectCollection(),
+                actions : new ActionsCollection()
             }
         },
 
@@ -20,6 +22,10 @@ define([
             // wrap up objects around ObjectCollection unless it already is
             if ( ! (this.get('objects') instanceof ObjectCollection) ) {
                 this.set('objects', new ObjectCollection(this.get('objects')));
+            }
+            // wrap up actions around ActionsCollection unless it already is
+            if ( ! (this.get('actions') instanceof ActionsCollection) ) {
+                this.set('actions', new ActionsCollection(this.get('actions')));
             }
         }
     });

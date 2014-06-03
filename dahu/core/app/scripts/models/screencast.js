@@ -104,7 +104,12 @@ define([
                     _.each(oldScreen.object, function(oldObject) {
                         screenObjects.add(oldObject);
                     });
+                    var screenActions = screen.get('actions');
+                    _.each(oldScreen.action, function(oldAction) {
+                        screenActions.add(oldAction);
+                    });
                 });
+
             }
 
             return screencast;
