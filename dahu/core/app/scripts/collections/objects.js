@@ -6,8 +6,9 @@ define([
     'underscore',
     'backbone',
     'models/object',
-    'models/objects/background'
-], function(_, Backbone, ObjectModel, BackgroundModel){
+    'models/objects/background',
+    'models/objects/mouse'
+], function(_, Backbone, ObjectModel, BackgroundModel, MouseModel){
 
     /**
      * Base *Object* collection.
@@ -19,6 +20,8 @@ define([
             switch(attrs.type) {
                 case "background":
                     return new BackgroundModel(attrs, options);
+                case "mouse":
+                    return new MouseModel(attrs, options);
                 default:
                     return new ObjectModel(attrs, options);
             }
