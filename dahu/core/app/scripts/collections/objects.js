@@ -7,8 +7,9 @@ define([
     'backbone',
     'models/object',
     'models/objects/background',
-    'models/objects/mouse'
-], function(_, Backbone, ObjectModel, BackgroundModel, MouseModel){
+    'models/objects/mouse',
+    'models/objects/tooltip'
+], function(_, Backbone, ObjectModel, BackgroundModel, MouseModel, TooltipModel){
 
     /**
      * Base *Object* collection.
@@ -22,6 +23,8 @@ define([
                     return new BackgroundModel(attrs, options);
                 case "mouse":
                     return new MouseModel(attrs, options);
+                case "tooltip":
+                    return new TooltipModel(attrs, options);
                 default:
                     return new ObjectModel(attrs, options);
             }
