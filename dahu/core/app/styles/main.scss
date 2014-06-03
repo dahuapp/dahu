@@ -2,4 +2,67 @@ $icon-font-path: "/bower_components/sass-bootstrap/fonts/";
 
 @import 'sass-bootstrap/lib/bootstrap';
 
+// Reset
+@import 'compass/reset';
 
+// Definition
+@import 'colors';
+
+html, body {
+  height: 100%;
+}
+
+// Application layout
+
+%panel {
+  background-color: $dahu-panel-background-color;
+}
+
+#toolbar {
+  position: absolute;
+  top: 0px;
+  height: 35px;
+  width: 100%;
+  background-color: $dahu-toolbar-background-color;
+  background-image: $dahu-toolbar-background-image;
+  border-color: $dahu-toolbar-border-color;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: inset 0 1px 0 0 #fff;
+  padding: 0 44px 0 44px;
+}
+
+#filmstrip {
+  @extend %panel;
+  position: absolute;
+  top: 35px;
+  left: 0px;
+  bottom: 0px;
+  width: 220px;
+  overflow-x: visible;
+  overflow-y: scroll;
+}
+
+#workspace {
+  @extend %panel;
+  position: absolute;
+  top: 35px;
+  left: 220px;
+  right: 0px;
+  bottom: 220px;
+}
+
+#note {
+  @extend %panel;
+  position: absolute;
+  height: 220px;
+  left: 220px;
+  right: 0px;
+  bottom: 0px;
+}
+
+// Filmstrip
+
+#filmstrip .screen {
+  margin: 20px;
+}
