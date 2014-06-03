@@ -57,10 +57,11 @@ define('dahuapp', [
     'backbone.marionette',
     'modules/kernel/SCI',
     'modules/events',
+    'modules/requestResponse',
     'models/screencast',
     'layouts/dahuapp',
     'views/filmstrip/screens'
-], function($, _, Backbone, Marionette, Kernel, events, ScreencastModel, DahuLayout, FilmstripScreensView) {
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, ScreencastModel, DahuLayout, FilmstripScreensView) {
 
     var projectFilename;
     var projectScreencast;
@@ -82,6 +83,7 @@ define('dahuapp', [
         Kernel.start();
         initBackbone();
         initEvent();
+        initRequestResponse();
     });
 
     /**
@@ -105,6 +107,19 @@ define('dahuapp', [
             onFileOpen();
         })
         //@todo add other events
+    }
+
+    /**
+     * Bind Requests to Specified functions.
+     * Requests are used to answer some common
+     * questions that modules can need.
+     */
+    function initRequestResponse() {
+        // Prepare a response that gives the project directory.
+        reqResponse.setHandler("app:projectDirectory", function(){
+            var indexOfLastSlash = projectFilename.lastIndexOf('/');
+            return projectFilename.substring(0, indexOfLastSlash+1);
+        })
     }
 
     /**
