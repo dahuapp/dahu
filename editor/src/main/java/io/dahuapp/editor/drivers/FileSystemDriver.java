@@ -153,13 +153,11 @@ public class FileSystemDriver implements Driver {
      * @return The absolute path of the chosen directory.
      */
     public String askForProjectDir(Window parent) {
-        // TO DO : check why it cause a pthread_mutex error
-        //System.out.println(Platform.isFxApplicationThread()); // prints 'true'
-        //File file = directoryChooser.showDialog(parent);
-        //if (file == null) {
+        File file = directoryChooser.showDialog(parent);
+        if (file == null) {
             return null;
-        //}
-        //return file.getAbsolutePath();
+        }
+        return file.getAbsolutePath();
     }
     
     /**

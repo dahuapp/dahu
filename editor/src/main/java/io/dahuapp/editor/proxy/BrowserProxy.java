@@ -39,10 +39,13 @@ public class BrowserProxy implements Proxy {
          * of them by '/' otherwise a malformed URI exception is thrown.
          */
         final String urlString = "file://" + htmlFile.replaceAll("\\\\", "/");
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
+
+        ExecutorService executorService = Executors.newFixedThreadPool(1);
+
+        executorService.submit(new Task<Void>() {
+            @Override protected Void call() throws Exception {
                 openWebBrowser(urlString);
+                return null;
             }
         });
     }
