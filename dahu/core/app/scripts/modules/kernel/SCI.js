@@ -16,8 +16,9 @@ define([
     // kernel modules
     // @todo we might do some optimization (check with @barraq)
     'modules/kernel/console',
-    'modules/kernel/filesystem'
-], function(_, Backbone, Console, Filesystem) {
+    'modules/kernel/filesystem',
+    'modules/kernel/media'
+], function(_, Backbone, Console, Filesystem, Media) {
 
     var self = {};
 
@@ -56,6 +57,9 @@ define([
 
         // console is mandatory
         expose('console', Console, true);
+
+        // expose media
+        expose('media', Media);
     };
 
     /**

@@ -132,10 +132,6 @@ define('dahuapp', [
             var indexOfLastSlash = projectFilename.lastIndexOf('/');
             return projectFilename.substring(0, indexOfLastSlash+1);
         })
-        //@todo add other events
-        events.on('app:onActionCapture', function() {
-            onActionCapture();
-        })
     }
 
     /**
