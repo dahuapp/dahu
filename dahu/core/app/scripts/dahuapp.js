@@ -235,7 +235,7 @@ define('dahuapp', [
         events: events,
 
         // public stop function
-        stop: function() { app.trigger("finalizers:after"); },
+        stop: function() { app.trigger("finalizers:after"); }
 
     }
 });
