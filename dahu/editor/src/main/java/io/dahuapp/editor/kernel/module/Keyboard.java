@@ -95,6 +95,24 @@ public class Keyboard implements Module {
         }
     }
 
+    /**
+     * Removes a listener from the keyboard driver
+     * @param listener Listener to remove
+     */
+    public void removeKeyListener(String listener) throws JSException {
+        switch (listener) {
+            case "undefined":
+                throw new JSException("Listener cannot be anonymous.");
+            case "":
+                throw new JSException("Listener cannot be anonymous.");
+            default:
+                if (listeners.containsKey(listener)) {
+                    KeyboardListener kl = listeners.remove(listener);
+                    KeyboardDriver.removeKeyListener(kl);
+                }
+        }
+    }
+
     @Override
     public void load() {
        KeyboardDriver.onLoad();

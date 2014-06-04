@@ -40,6 +40,15 @@ public class KeyboardDriver {
         listeners.add(listener);
     }
 
+    /**
+     * Remove a listener from this driver.
+     *
+     * @param listener Listener to remove
+     */
+    public static void removeKeyListener(KeyboardListener listener) {
+        listeners.remove(listener);
+    }
+
     public static void onLoad() {
         // register the native hook.
         try {
