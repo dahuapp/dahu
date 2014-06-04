@@ -1,5 +1,13 @@
 apply plugin: 'java'
 
+
+// Repositories
+repositories {
+    maven {
+        url "http://clojars.org/repo/"
+    }
+}
+
 // Dependencies
 dependencies {
     // common-io for easy IO
@@ -7,4 +15,7 @@ dependencies {
 
     // LogBack for better logging (successor of log4j)
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
+
+    // JNativeHook
+    compile "org.clojars.pepijndevos:jnativehook:1.1.4"
 }

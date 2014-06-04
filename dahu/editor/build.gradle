@@ -6,6 +6,18 @@ apply plugin:'application'
 mainClassName = "io.dahuapp.editor.DahuApp"
 applicationName = "DahuEditor"
 
+// Repositories
+repositories {
+    /**
+     * This repository is used for the driver
+     * Even though we don't use it directly here, the
+     * build fails when we delete this repository
+     */
+    maven {
+        url "http://clojars.org/repo/"
+    }
+}
+
 // Dependencies
 dependencies {
     // common-io for easy IO
