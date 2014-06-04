@@ -203,19 +203,26 @@ public class DahuApp extends Application {
 
         menuHelp.getItems().addAll(menuHelpTips, new SeparatorMenuItem(), menuHelpFeedback);
 
-        // Action
-        Menu menuAction = new Menu("Action");
+        // Capture
+        Menu menuCapture = new Menu("Capture");
 
-        // Action > Capture ScreenShot
-        MenuItem menuActionCapture = new MenuItem("Capture ScreenShot");
-        menuActionCapture.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onActionCapture');");
+        // Capture > Start
+        MenuItem menuCaptureStart = new MenuItem("Start");
+        menuCaptureStart.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onCaptureStart');");
         });
 
-        menuAction.getItems().addAll(menuActionCapture);
+        // Capture > Stop
+        MenuItem menuCaptureStop = new MenuItem("Stop");
+        menuCaptureStop.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onCaptureStop');");
+        });
+        
+
+        menuCapture.getItems().addAll(menuCaptureStart,new SeparatorMenuItem(),menuCaptureStop);
         // Create the main menu bar
         menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menuFile, menuHelp, menuAction);
+        menuBar.getMenus().addAll(menuFile, menuHelp, menuCapture);
     }
 
     private void initDahuLayout(Stage primaryStage) {

@@ -112,6 +112,12 @@ define('dahuapp', [
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
         })
+        events.on('app.onCaptureStart', function(){
+            onCaptureStart();
+        })
+        events.on('app.onCaptureStop', function(){
+            onCaptureStop();
+        })
         //@todo add other events
     }
 
@@ -224,11 +230,22 @@ define('dahuapp', [
             workSpaceScreen.setModel(screen);
         }
     }
+    /*
+     * Start capture mode
+     */
+    function onCaptureStart() {
+        //Start to listen to
+    }
 
-    function onActionCapture() {
-
+    /*
+     *Stop capture mode
+     * use for debug to take a screenshot while keyboard not implemented
+     */
+    function onCaptureStop() {
 
     }
+
+
     /**
      * Return the exported API.
      * All functions returned here will be
