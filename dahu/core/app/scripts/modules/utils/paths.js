@@ -42,8 +42,18 @@ define([
         return join(['dahufile:', dir, img]);
     }
 
+    /**
+     * Gets the name of the presentation to create relating to
+     * a directory.
+     * @param directory of the project
+     */
+    function getDahuFileFromDirectory(directory) {
+        return join([directory, 'presentation.dahu']);
+    }
+
     return {
         join: join,
-        getImgFullPath: getImgFullPath
+        getImgFullPath: getImgFullPath,
+        getDahuFileFromDirectory: getDahuFileFromDirectory
     };
 });
