@@ -9,5 +9,11 @@ dependencies {
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.1.2'
 
     // JNativeHook
-    compile "org.clojars.pepijndevos:jnativehook:1.1.4"
+    // Due to a bug in JNativeHook (see https://code.google.com/p/jnativehook/issues/detail?id=80)
+    // we are using JNativeHook v1.2. This version is currently in
+    // beta and not yet available on maven repositories.
+    // We are therefore adding JNativeHook as a local dependencies
+    // until the v1.2 is officially released and stable.
+    // (previously we used compile "org.clojars.pepijndevos:jnativehook:1.1.4")
+    compile files('libs/JNativeHook-v1.2.0-Beta2.jar')
 }
