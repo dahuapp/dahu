@@ -123,8 +123,15 @@ public class FileSystem implements Module {
     /**
      * Delete a directory
      * @param dahuProjectDirPathName Path of the directory to delete
+     * @return  {@code true} if and only if the file or directory is
+     *          successfully deleted; {@code false} otherwise.
      */
-    public void removeDir(String dahuProjectDirPathName){
-        FileSystemDriver.rmdir(dahuProjectDirPathName, true);
+    public boolean removeDir(String dahuProjectDirPathName){
+        boolean deleted = FileSystemDriver.rmdir(dahuProjectDirPathName, true);
+        if (!deleted) {
+            Path dahuProjectFilePath = Paths.get(dahuProjectDirPathName);
+            LoggerDriver.error("Deletion of directory {} failed", dahuProjectFilePath.toAbsolutePath());
+        }
+        return deleted;
     }
 }
