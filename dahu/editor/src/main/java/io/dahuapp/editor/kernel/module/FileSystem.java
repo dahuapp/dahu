@@ -118,4 +118,13 @@ public class FileSystem implements Module {
         LoggerDriver.info("Revoking access to directory {}", dahuProjectDirPath.toAbsolutePath());
         dahuFileAccessManager.removeAllowedDirectory(dahuProjectDirPath);
     }
+
+
+    /**
+     * Delete a directory
+     * @param dahuProjectDirPathName Path of the directory to delete
+     */
+    public void removeDir(String dahuProjectDirPathName){
+        FileSystemDriver.rmdir(dahuProjectDirPathName, true);
+    }
 }
