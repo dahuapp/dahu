@@ -186,6 +186,29 @@ public class DahuApp extends Application {
 
         menuFile.getItems().addAll(menuFileOpen);
 
+        // Generation
+        Menu menuGeneration = new Menu("Generation");
+
+        // Generation > Clean
+        MenuItem menuGenerationClean = new MenuItem("Clean");
+        menuGenerationClean.setOnAction((event) ->{
+            webEngineRuntime.executeScript("app.events.trigger('app:onClean');");
+        });
+
+        // Generation > Generate
+        MenuItem menuGenerationGenerate = new MenuItem("Generate");
+        menuGenerationGenerate.setOnAction((event) ->{
+            webEngineRuntime.executeScript("app.events.trigger('app:onGenerate');");
+        });
+
+        // Generation > Preview
+        MenuItem menuGenerationPreview = new MenuItem("Preview");
+        menuGenerationPreview.setOnAction((event) ->{
+            webEngineRuntime.executeScript("app.events.trigger('app:onPreview');");
+        });
+
+        menuGeneration.getItems().addAll(menuGenerationClean, menuGenerationGenerate, menuGenerationPreview);
+
         // Help
         Menu menuHelp = new Menu("Help");
 
@@ -205,7 +228,7 @@ public class DahuApp extends Application {
 
         // Create the main menu bar
         menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menuFile, menuHelp);
+        menuBar.getMenus().addAll(menuFile, menuGeneration, menuHelp);
     }
 
     private void initDahuLayout(Stage primaryStage) {

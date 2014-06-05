@@ -223,6 +223,27 @@ define('dahuapp', [
     }
 
     /**
+     * Clean the build directory
+     */
+    function onClean(){
+        //TODO
+    }
+
+    /**
+     * Generate the presentation in the build directory
+     */
+    function onGenerate(){
+        //TODO
+    }
+
+    /**
+     * Launch the browser to preview the presentation
+     */
+    function onPreview(){
+        //TODO
+    }
+
+    /**
      * Return the exported API.
      * All functions returned here will be
      * accessible from the browser and Java side.
