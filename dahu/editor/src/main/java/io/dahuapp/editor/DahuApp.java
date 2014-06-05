@@ -192,13 +192,13 @@ public class DahuApp extends Application {
         // Help > Tip of the Day
         MenuItem menuHelpTips = new MenuItem("Tip of the Day");
         menuHelpTips.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onHelpTips');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onHelpTips');");
         });
 
         // Help > Submit Feedback
         MenuItem menuHelpFeedback = new MenuItem("Submit Feedback");
         menuHelpFeedback.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onHelpFeedback');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onHelpFeedback');");
         });
 
         menuHelp.getItems().addAll(menuHelpTips, new SeparatorMenuItem(), menuHelpFeedback);
@@ -209,13 +209,13 @@ public class DahuApp extends Application {
         // Capture > Start
         MenuItem menuCaptureStart = new MenuItem("Start");
         menuCaptureStart.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onCaptureStart');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStart');");
         });
 
         // Capture > Stop
         MenuItem menuCaptureStop = new MenuItem("Stop");
         menuCaptureStop.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onCaptureStop');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStop');");
         });
         
 

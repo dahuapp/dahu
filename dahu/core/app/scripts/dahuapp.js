@@ -112,10 +112,10 @@ define('dahuapp', [
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
         })
-        events.on('app.onCaptureStart', function(){
+        events.on('app:onCaptureStart', function(){
             onCaptureStart();
         })
-        events.on('app.onCaptureStop', function(){
+        events.on('app:onCaptureStop', function(){
             onCaptureStop();
         })
         //@todo add other events
