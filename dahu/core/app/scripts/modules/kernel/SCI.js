@@ -16,8 +16,9 @@ define([
     // kernel modules
     // @todo we might do some optimization (check with @barraq)
     'modules/kernel/console',
-    'modules/kernel/filesystem'
-], function(_, Backbone, Console, Filesystem) {
+    'modules/kernel/filesystem',
+    'modules/kernel/mouse'
+], function(_, Backbone, Console, Filesystem, Mouse) {
 
     var self = {};
 
@@ -45,6 +46,7 @@ define([
             // start the kernel
             kernel.start();
             expose('filesystem', Filesystem);
+            expose('mouse', Mouse);
         } else {
             // we do not have an existing kernel
             // this case happen when we are running
@@ -52,6 +54,7 @@ define([
             // modules loaded here or just for debugging purpose
             // you can load what you want!
             expose('filesystem', Filesystem); // fallback Filesystem
+            expose('mouse', Mouse); // fallback Mouse
         }
 
         // console is mandatory
