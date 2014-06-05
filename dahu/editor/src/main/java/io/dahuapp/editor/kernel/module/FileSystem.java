@@ -119,17 +119,16 @@ public class FileSystem implements Module {
         dahuFileAccessManager.removeAllowedDirectory(dahuProjectDirPath);
     }
 
-
     /**
      * Delete a directory
-     * @param dahuProjectDirPathName Path of the directory to delete
+     * @param dirName Path of the directory to delete
      * @return  {@code true} if and only if the file or directory is
      *          successfully deleted; {@code false} otherwise.
      */
-    public boolean removeDir(String dahuProjectDirPathName){
-        boolean deleted = FileSystemDriver.rmdir(dahuProjectDirPathName, true);
+    public boolean removeDir(String dirName){
+        boolean deleted = FileSystemDriver.rmdir(dirName, true);
         if (!deleted) {
-            Path dahuProjectFilePath = Paths.get(dahuProjectDirPathName);
+            Path dahuProjectFilePath = Paths.get(dirName);
             LoggerDriver.error("Deletion of directory {} failed", dahuProjectFilePath.toAbsolutePath());
         }
         return deleted;
