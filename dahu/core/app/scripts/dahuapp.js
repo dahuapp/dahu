@@ -112,6 +112,9 @@ define('dahuapp', [
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
         })
+        events.on('app:onProjectSave', function() {
+            onProjectSave();
+        })
         //@todo add other events
     }
 
@@ -210,6 +213,14 @@ define('dahuapp', [
         }
     }
 
+    /*
+    * Save the current project
+     */
+    function onProjectSave(){
+        if(projectScreencast){
+            projectScreencast.save();
+        }
+    }
 
     /**
      * Show the selected filmstrip screen in the main region.
