@@ -192,19 +192,19 @@ public class DahuApp extends Application {
         // Generation > Clean
         MenuItem menuGenerationClean = new MenuItem("Clean");
         menuGenerationClean.setOnAction((event) ->{
-            webEngineRuntime.executeScript("app.events.trigger('app:onClean');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onClean');");
         });
 
         // Generation > Generate
         MenuItem menuGenerationGenerate = new MenuItem("Clean and generate");
         menuGenerationGenerate.setOnAction((event) ->{
-            webEngineRuntime.executeScript("app.events.trigger('app:onGenerate');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onGenerate');");
         });
 
         // Generation > Preview
         MenuItem menuGenerationPreview = new MenuItem("Preview");
         menuGenerationPreview.setOnAction((event) ->{
-            webEngineRuntime.executeScript("app.events.trigger('app:onPreview');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onPreview');");
         });
 
         menuGeneration.getItems().addAll(menuGenerationClean, menuGenerationGenerate, menuGenerationPreview);

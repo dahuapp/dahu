@@ -112,6 +112,15 @@ define('dahuapp', [
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
         })
+        events.on('app:onClean', function(){
+            onClean();
+        })
+        events.on('app:onGenerate', function(){
+            onGenerate();
+        })
+        events.on('app:onPreview', function(){
+            onPreview();
+        })
         //@todo add other events
     }
 
@@ -226,7 +235,8 @@ define('dahuapp', [
      * Clean the build directory
      */
     function onClean(){
-        //TODO
+        var dirToRemove = Paths.join([reqResponse.request("app:projectDirectory"), 'build']);
+        Kernel.module('filesystem').removeDir(dirToRemove);
     }
 
     /**
