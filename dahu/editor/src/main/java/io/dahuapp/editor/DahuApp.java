@@ -1,6 +1,6 @@
 package io.dahuapp.editor;
 
-
+import io.dahuapp.editor.kernel.module.Mouse;
 import io.dahuapp.common.javascript.WebEngineRuntime;
 import io.dahuapp.common.net.DahuFileAccessManager;
 import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
