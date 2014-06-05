@@ -5,12 +5,11 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/filmstrip/screen.html',
+    'text!templates/views/screen.html',
     'models/objects/background',
-    'views/objects/background',
-    'views/filmstrip/objectDummy',
+    'views/filmstrip/background',
     'modules/events'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView, events){
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, events){
 
     /**
      * Filmstrip screen view
@@ -20,14 +19,11 @@ define([
         itemViewContainer: '#objects',
 
         // Select the ItemView depending on the object type.
-        getItemView: function(item){
-            if(item instanceof BackgroundModel) {
+        getItemView: function(item) {
+            if (item instanceof BackgroundModel) {
                 return  BackgroundView;
-            } else {
-                return ObjectDummyView;
             }
         },
-
         // Only show object of type 'background'
         addItemView: function(item, ItemView, index){
             if ( item instanceof BackgroundModel ) {

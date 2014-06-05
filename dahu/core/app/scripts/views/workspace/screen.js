@@ -5,11 +5,13 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/filmstrip/screen.html',
+    'text!templates/views/screen.html',
     'models/objects/background',
-    'views/objects/background',
-    'views/filmstrip/objectDummy'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView){
+    'models/objects/mouse',
+    'views/workspace/background',
+    'views/objects/mouse',
+    'views/objects/tooltip'
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, MouseModel, BackgroundView, MouseView, TooltipView){
 
     /**
      * Filmstrip screen view
@@ -21,9 +23,11 @@ define([
             if(item instanceof BackgroundModel) {
                 return  BackgroundView;
             }
-            //@todo handle other types of objects
-            else {
-                return ObjectDummyView;
+            else if(item instanceof MouseModel){
+                return MouseView;
+            }
+            else{
+                return TooltipView;
             }
         },
         itemViewContainer: '#objects',
