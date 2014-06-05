@@ -47,8 +47,8 @@ public class DahuAppKernel implements Kernel {
         console.info("Dahuapp kernel stopped!");
         // unload
         filesystem.unload();
-        console.unload();
         media.unload();
+        console.unload();
         // exit app
         Platform.exit();
     }

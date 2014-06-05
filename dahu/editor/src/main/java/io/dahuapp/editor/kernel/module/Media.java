@@ -20,7 +20,7 @@ public class Media implements Module {
 
     public String takeScreen(String projectDir, String id) {
         if (MediaDriver.hasChanged(captureContext)){
-            MediaDriver.loadCaptureContext();
+            captureContext = MediaDriver.loadCaptureContext();
         }
         return MediaDriver.takeScreen(captureContext, projectDir, id);
     }

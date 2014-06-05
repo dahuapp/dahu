@@ -46,6 +46,7 @@ define([
             // start the kernel
             kernel.start();
             expose('filesystem', Filesystem);
+            expose('media', Media);
         } else {
             // we do not have an existing kernel
             // this case happen when we are running
@@ -53,13 +54,12 @@ define([
             // modules loaded here or just for debugging purpose
             // you can load what you want!
             expose('filesystem', Filesystem); // fallback Filesystem
+            expose('media', Media);
         }
 
         // console is mandatory
         expose('console', Console, true);
 
-        // expose media
-        expose('media', Media);
     };
 
     /**
