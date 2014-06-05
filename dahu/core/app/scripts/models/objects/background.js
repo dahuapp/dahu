@@ -5,17 +5,21 @@
 define([
     'underscore',
     'backbone',
-    'models/object'
-], function(_, Backbone, ObjectModel){
+    'models/object',
+    'uuid'
+], function(_, Backbone, ObjectModel, UUID){
 
     /**
      *  Model of background object
      */
     var BackgroundModel = ObjectModel.extend({
-        defaults: {
-            type: 'background',
-            img: null
-        },
+        defaults: function() {
+            return {
+                id: UUID.v4(),
+                type: 'background',
+                img: null
+            }
+        }
 
     });
 
