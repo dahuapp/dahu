@@ -17,7 +17,7 @@ define([
     // @todo we might do some optimization (check with @barraq)
     'modules/kernel/console',
     'modules/kernel/filesystem',
-    'modules/kernel/Keyboard'
+    'modules/kernel/keyboard'
 ], function(_, Backbone, Console, Filesystem, Keyboard) {
 
     var self = {};
