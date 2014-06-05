@@ -196,7 +196,7 @@ public class DahuApp extends Application {
         });
 
         // Generation > Generate
-        MenuItem menuGenerationGenerate = new MenuItem("Generate");
+        MenuItem menuGenerationGenerate = new MenuItem("Clean and generate");
         menuGenerationGenerate.setOnAction((event) ->{
             webEngineRuntime.executeScript("app.events.trigger('app:onGenerate');");
         });
