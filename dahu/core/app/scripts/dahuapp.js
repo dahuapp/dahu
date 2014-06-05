@@ -108,13 +108,19 @@ define('dahuapp', [
     function initEvent() {
         events.on('app:onFileOpen', function() {
             onFileOpen();
-        })
+        });
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
-        })
+        });
+        events.on('app:onCaptureStart', function(){
+            onCaptureStart();
+        });
+        events.on('app:onCaptureStop', function() {
+            onCaptureStop();
+        });
         events.on('kernel:keyboard:onKeyRelease', function(keyCode, keyName) {
             onKeyRelease(keyCode, keyName);
-        })
+        });
         //@todo add other events
     }
 
@@ -129,7 +135,6 @@ define('dahuapp', [
             var indexOfLastSlash = projectFilename.lastIndexOf('/');
             return projectFilename.substring(0, indexOfLastSlash+1);
         })
-        //@todo add other events
     }
 
     /**
@@ -224,6 +229,21 @@ define('dahuapp', [
             workSpaceScreen.setModel(screen);
         }
     }
+    /*
+     * Start capture mode
+     */
+    function onCaptureStart() {
+        //Start to listen to
+    }
+
+    /*
+     *Stop capture mode
+     * use for debug to take a screenshot while keyboard not implemented
+     */
+    function onCaptureStop() {
+
+    }
+
 
     /**
      * Handle the key release event.
