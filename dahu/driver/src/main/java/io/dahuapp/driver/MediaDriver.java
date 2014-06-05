@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Media driver.
@@ -16,34 +17,42 @@ import java.io.IOException;
  */
 public class MediaDriver {
 
+    private static String SCREEN_IMAGE_EXT = "png";
+
     /**
-     * Take a screenshot and writes the new screen image in the project
-     * directory.
+     * Take a screen capture and write the captured screen image
+     * in the project directory.
+     *
      * @param captureContext A set of data for the screenshot
      * @param projectDir The project directory (absolute path).
-     * @param id A unique if for the image
-     * @return The name of the image created (or null if fail)
+     * @param imageId A unique if for the image
+     * @return A capture if successful; null otherwise
      */
+    public static Capture takeCapture(CaptureContext captureContext, String projectDir, String imageId) {
+        final String imageName = imageId + "." + SCREEN_IMAGE_EXT;
 
-    public static String takeScreen(CaptureContext captureContext, String projectDir, String id) {
-        final BufferedImage capture = captureContext.getRobot().createScreenCapture(captureContext.getBounds());
-        final String imageName = id + ".png";
-        final String separator = System.getProperty("file.separator");
-        final File imageFile = new File(projectDir + separator + imageName);
+        // capture the screen and the cursor
+        final BufferedImage screenCapture = captureContext.getRobot().createScreenCapture(captureContext.getBounds());
+        final Dimension screenDimension = Toolkit.getDefaultToolkit().getScreenSize();
+        final Point cursorCapture = MouseInfo.getPointerInfo().getLocation();
+
         try {
-            if (ImageIO.write(capture, "png", imageFile)) {
-                LoggerDriver.info(MediaDriver.class.getName(), "takeScreen",
-                        "create png file " + imageName);
-                return imageName;
+            File imageFile = Paths.get(projectDir, imageName).toFile();
+            if (ImageIO.write(screenCapture, SCREEN_IMAGE_EXT, imageFile)) {
+                LoggerDriver.info(MediaDriver.class.getName(), "takeScreen", "create png file {}", imageName);
             } else {
-                LoggerDriver.error(MediaDriver.class.getName(), "takeScreen",
-                        "fail to create " + imageName);
+                LoggerDriver.error(MediaDriver.class.getName(), "takeScreen", "fail to create {}", imageName);
                 return null;
             }
         } catch (IOException e) {
-            LoggerDriver.error("Unable to write the image :", e);
+            LoggerDriver.error("Unable to write the image {} on the filesystem at {}. {}",
+                    imageName,
+                    projectDir,
+                    e.getMessage());
             return null;
         }
+
+        return new Capture(imageName, screenDimension, cursorCapture);
     }
 
 
@@ -71,9 +80,35 @@ public class MediaDriver {
             LoggerDriver.error("Unable to load java.awt.Robot.");
             Platform.exit();
         }
+
         return new CaptureContext(mode,graphicsDevice,robot,bounds);
     }
 
+    /**
+     * Hold the result of a capture
+     */
+    public static class Capture {
+        // The filename of the screen captured
+        public String screen;
+        // The screen size
+        public Dimension screenSize;
+        // The cursor position
+        public Point cursor;
+
+        public Capture(String screen, Dimension screenSize, Point cursor) {
+            this.screen = screen;
+            this.screenSize = screenSize;
+            this.cursor = cursor;
+        }
+
+        public double getMouseX() {
+            return cursor.getX() / screenSize.getWidth();
+        }
+
+        public double getMouseY() {
+            return cursor.getY() / screenSize.getHeight();
+        }
+    }
 
     /**
      * Set of data for the screen shots.
