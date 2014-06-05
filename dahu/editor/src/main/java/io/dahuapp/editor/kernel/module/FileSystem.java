@@ -133,4 +133,19 @@ public class FileSystem implements Module {
         }
         return deleted;
     }
+
+    /**
+     * Delete a file
+     * @param fileName Path of the file to delete
+     * @return  {@code true} if and only if the file or directory is
+     *          successfully deleted; {@code false} otherwise.
+     */
+    public boolean removeFile(String fileName){
+        boolean deleted = FileSystemDriver.delete(fileName);
+        if (!deleted) {
+            Path dahuProjectFilePath = Paths.get(fileName);
+            LoggerDriver.error("Deletion of file {} failed", dahuProjectFilePath.toAbsolutePath());
+        }
+        return deleted;
+    }
 }
