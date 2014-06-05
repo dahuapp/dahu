@@ -1,13 +1,5 @@
 apply plugin: 'java'
 
-
-// Repositories
-repositories {
-    maven {
-        url "http://clojars.org/repo/"
-    }
-}
-
 // Dependencies
 dependencies {
     // common-io for easy IO
