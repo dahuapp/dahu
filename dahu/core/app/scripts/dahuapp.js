@@ -108,16 +108,19 @@ define('dahuapp', [
     function initEvent() {
         events.on('app:onFileOpen', function() {
             onFileOpen();
-        })
+        });
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
-        })
+        });
         events.on('app:onCaptureStart', function(){
             onCaptureStart();
-        })
-        events.on('app:onCaptureStop', function(){
+        });
+        events.on('app:onCaptureStop', function() {
             onCaptureStop();
-        })
+        });
+        events.on('kernel:keyboard:onKeyRelease', function(keyCode, keyName) {
+            onKeyRelease(keyCode, keyName);
+        });
         //@todo add other events
     }
 
@@ -241,6 +244,14 @@ define('dahuapp', [
 
     }
 
+
+    /**
+     * Handle the key release event.
+     * @param keyCode : the code of the pressed key
+     * @param keyName : the name of the pressed key
+     */
+    function onKeyRelease(keyCode, keyName) {
+    }
 
     /**
      * Return the exported API.
