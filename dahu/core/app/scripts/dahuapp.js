@@ -58,12 +58,16 @@ define('dahuapp', [
     'modules/kernel/SCI',
     'modules/events',
     'modules/requestResponse',
+    'modules/utils/paths',
     'models/screencast',
+    'models/screen',
+    'models/objects/background',
+    'models/objects/mouse',
     'layouts/dahuapp',
     'views/filmstrip/screens',
     'views/workspace/screen'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse,
-            ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths,
+            ScreencastModel, ScreenModel, BackgroundModel, MouseModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
 
     var projectFilename;
     var projectScreencast;
@@ -236,15 +240,17 @@ define('dahuapp', [
      * Start capture mode
      */
     function onCaptureStart() {
-        //Start to listen to
+        //Start listening to the keyboard events
+        Kernel.module('keyboard').addKeyListener("kernel:keyboard:onKeyRelease");
     }
 
-    /*
-     *Stop capture mode
+    /**
+     * Stop capture mode
      * use for debug to take a screenshot while keyboard not implemented
      */
     function onCaptureStop() {
-
+        //Stop listening to the keyboard events
+        Kernel.module('keyboard').removeKeyListener("kernel:keyboard:onKeyRelease");
     }
 
 
@@ -254,6 +260,36 @@ define('dahuapp', [
      * @param keyName : the name of the pressed key
      */
     function onKeyRelease(keyCode, keyName) {
+        // we start initially with a fixed screenshot keyName.
+        //@todo Make this more dynamic and flexible.
+        if (keyName == 'F7') {
+            takeCapture();
+        }
+    }
+
+    /**
+     * Take a screen capture and add it to the
+     * screencast model.
+     */
+    function takeCapture() {
+        // create new models
+        var screen = new ScreenModel();
+        var background = new BackgroundModel();
+        // take the screenshot
+        var imgDir = Paths.getProjectImgDirectory();
+        var capture = Kernel.module('media').takeCapture(imgDir, background.get('id'));
+        // set the img path in background
+        background.set('img', Paths.getRelativeImgPath(capture.screen));
+        // Insert objects in the screen
+        screen.get('objects').add(background);
+        screen.get('objects').add(new MouseModel());
+
+        //@todo insert initial mouse action in the screen
+
+        // Insert the screen in the screencast
+        projectScreencast.get('screens').add(screen);
+        // Refresh the workspace
+        onScreenSelect(screen);
     }
 
     /**
