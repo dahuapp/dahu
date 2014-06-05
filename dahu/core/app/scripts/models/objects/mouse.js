@@ -15,6 +15,7 @@ define([
         defaults: {
             type: 'mouse',
             id: "mouse-cursor"
+
         }
     });
 

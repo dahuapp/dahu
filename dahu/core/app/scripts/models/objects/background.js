@@ -15,7 +15,7 @@ define([
         defaults: {
             type: 'background',
             img: null
-        },
+        }
 
     });
 

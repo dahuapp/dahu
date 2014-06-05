@@ -5,14 +5,26 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/workspace/mouse.html'
-], function(Handlebars, Marionette, Objetcs_mouse_tpl){
+    'text!templates/views/workspace/mouse.html',
+    'models/actions/move',
+    ''
+], function(Handlebars, Marionette, Objetcs_mouse_tpl, MoveModel){
 
     /**
      * Screen background view
      */
     var mouseView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(Objetcs_mouse_tpl)
+        template: Handlebars.default.compile(Objetcs_mouse_tpl),
+        templateHelpers: {
+            getAbs: function () {
+
+                return 2 ;
+            },
+            getOrd: function () {
+                return MoveModel.finalOrd;
+            }
+        }
+
     });
 
     return mouseView;
