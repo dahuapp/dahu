@@ -112,6 +112,9 @@ define('dahuapp', [
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
         })
+        events.on('kernel:keyboard:onKeyRelease', function(keyCode, keyName) {
+            onKeyRelease(keyCode, keyName);
+        })
         //@todo add other events
     }
 
@@ -220,6 +223,14 @@ define('dahuapp', [
         if (workSpaceScreen.model != screen) {
             workSpaceScreen.setModel(screen);
         }
+    }
+
+    /**
+     * Handle the key release event.
+     * @param keyCode : the code of the pressed key
+     * @param keyName : the name of the pressed key
+     */
+    function onKeyRelease(keyCode, keyName) {
     }
 
     /**
