@@ -118,4 +118,8 @@ public class Keyboard implements Module {
        KeyboardDriver.onLoad();
     }
 
+    @Override
+    public void unload() {
+        KeyboardDriver.onUnload();
+    }
 }

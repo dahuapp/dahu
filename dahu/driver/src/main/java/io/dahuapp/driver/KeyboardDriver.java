@@ -49,6 +49,13 @@ public class KeyboardDriver {
         listeners.remove(listener);
     }
 
+    /**
+     * Load the keyboard driver.
+     *
+     * Register the native hook.
+     * @warning It is mandatory to unregister it before
+     * closing the application by calling {@code onUnload}
+     */
     public static void onLoad() {
         // register the native hook.
         try {
@@ -92,5 +99,14 @@ public class KeyboardDriver {
                 }
             }
         });
+    }
+
+    /**
+     * Stop the driver.
+     *
+     * Unregister the native hook.
+     */
+    public static void onUnload() {
+        GlobalScreen.unregisterNativeHook();
     }
 }
