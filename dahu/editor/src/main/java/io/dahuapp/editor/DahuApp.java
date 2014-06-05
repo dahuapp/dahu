@@ -186,6 +186,23 @@ public class DahuApp extends Application {
 
         menuFile.getItems().addAll(menuFileOpen);
 
+        // Capture
+        Menu menuCapture = new Menu("Capture");
+
+        // Capture > Start
+        MenuItem menuCaptureStart = new MenuItem("Start");
+        menuCaptureStart.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStart');");
+        });
+
+        // Capture > Stop
+        MenuItem menuCaptureStop = new MenuItem("Stop");
+        menuCaptureStop.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStop');");
+        });
+
+        menuCapture.getItems().addAll(menuCaptureStart,new SeparatorMenuItem(),menuCaptureStop);
+
         // Help
         Menu menuHelp = new Menu("Help");
 
@@ -202,27 +219,10 @@ public class DahuApp extends Application {
         });
 
         menuHelp.getItems().addAll(menuHelpTips, new SeparatorMenuItem(), menuHelpFeedback);
-
-        // Capture
-        Menu menuCapture = new Menu("Capture");
-
-        // Capture > Start
-        MenuItem menuCaptureStart = new MenuItem("Start");
-        menuCaptureStart.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStart');");
-        });
-
-        // Capture > Stop
-        MenuItem menuCaptureStop = new MenuItem("Stop");
-        menuCaptureStop.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStop');");
-        });
         
-
-        menuCapture.getItems().addAll(menuCaptureStart,new SeparatorMenuItem(),menuCaptureStop);
         // Create the main menu bar
         menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menuFile, menuHelp, menuCapture);
+        menuBar.getMenus().addAll(menuFile, menuCapture, menuHelp);
     }
 
     private void initDahuLayout(Stage primaryStage) {
