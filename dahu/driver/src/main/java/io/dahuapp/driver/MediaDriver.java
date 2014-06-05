@@ -11,10 +11,19 @@ import java.io.IOException;
 /**
  * Media driver.
  *
- * Driver to take screenshots
+ * Driver to take screenshots with AWT
  * This will also be used for compression etc.
  */
 public class MediaDriver {
+
+    /**
+     * Take a screenshot and writes the new screen image in the project
+     * directory.
+     * @param captureContext A set of data for the screenshot
+     * @param projectDir The project directory (absolute path).
+     * @param id A unique if for the image
+     * @return The name of the image created (or null if fail)
+     */
 
     public static String takeScreen(CaptureContext captureContext, String projectDir, String id) {
         final BufferedImage capture = captureContext.getRobot().createScreenCapture(captureContext.getBounds());
@@ -37,10 +46,20 @@ public class MediaDriver {
         }
     }
 
+
+    /**
+     * Tells if the screen data have changed (occurs when the mouse
+     * went in another display).
+     * @return True if the screen data must be updated.
+     */
     public static boolean hasChanged(CaptureContext captureContext) {
         return !MouseInfo.getPointerInfo().getDevice().equals(captureContext.getGraphicsDevice());
     }
 
+    /**
+     * Load a set of data for the screenshot
+     * @return An object containing the data
+     */
     public static CaptureContext loadCaptureContext() {
         GraphicsDevice graphicsDevice = MouseInfo.getPointerInfo().getDevice();
         DisplayMode mode = graphicsDevice.getDisplayMode();
@@ -55,11 +74,31 @@ public class MediaDriver {
         return new CaptureContext(mode,graphicsDevice,robot,bounds);
     }
 
+
+    /**
+     * Set of data for the screen shots.
+     */
     public static class CaptureContext {
+
+        /**
+         * Graphics device, represents the graphic device to capture.
+         */
         private GraphicsDevice graphicsDevice;
-        private Robot robot;
-        private Rectangle bounds;
+
+        /**
+         * Display mode, allows to get screen width and height.
+         */
         private DisplayMode mode;
+
+        /**
+         * Rectangle representing the area of screen to capture.
+         */
+        private Rectangle bounds;
+
+        /**
+         * Robot used to take the screen shot.
+         */
+        private Robot robot;
 
         private CaptureContext(DisplayMode mode, GraphicsDevice graphicsDevice, Robot robot, Rectangle bounds) {
             this.mode = mode;

@@ -18,6 +18,13 @@ public class Media implements Module {
         captureContext = MediaDriver.loadCaptureContext();
     }
 
+    /**
+     * Takes a screenShot of the current screen
+     * and saves it to projectDir/id.png
+     * @param projectDir Path to project directory
+     * @param id Unique id of the image
+     * @return The name of the image created (or null if fail)
+     */
     public String takeScreen(String projectDir, String id) {
         if (MediaDriver.hasChanged(captureContext)){
             captureContext = MediaDriver.loadCaptureContext();
