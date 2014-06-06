@@ -58,12 +58,16 @@ define('dahuapp', [
     'modules/kernel/SCI',
     'modules/events',
     'modules/requestResponse',
+    'modules/utils/paths',
     'models/screencast',
     'layouts/dahuapp',
     'views/filmstrip/screens',
-    'views/workspace/screen'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse,
-            ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
+    'views/workspace/screen',
+    'handlebars',
+    'text!templates/layouts/presentation/screencast.html'
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths,
+            ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView,
+            Handlebars, presentation_tpl) {
 
     var projectFilename;
     var projectScreencast;
@@ -243,7 +247,21 @@ define('dahuapp', [
      * Generate the presentation in the build directory
      */
     function onGenerate(){
-        //TODO
+        // create the view
+        // we use for a basic compilation the filmstrip view
+        // @todo create a dedicated view to handle the presentation.
+        var viewHtml = new FilmstripScreensView({collection: projectScreencast.get('screens')});
+        viewHtml.render();
+        // apply the view the specified template
+        var template = Handlebars.default.compile(presentation_tpl);
+        var outputHtml = template({myPresentation : viewHtml.el.innerHTML});
+        // replace all occurences of the protocol dahufile to file
+        // this is a temporary solution until we upgrade to a new specific view.
+        outputHtml = outputHtml.replace(new RegExp('dahufile:', 'g'), 'file:');
+        // save the output on the dedicated file.
+        // @todo move this calls to the controller when introduced
+        var path = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'presentation.html']);
+        Kernel.module('filesystem').writeToFile(path, outputHtml);
     }
 
     /**
