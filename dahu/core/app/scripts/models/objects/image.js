@@ -9,16 +9,14 @@ define([
 ], function(_, Backbone, ObjectModel){
 
     /**
-     *  Model of background object
+     *  Model of image object
      */
-    var BackgroundModel = ObjectModel.extend({
+    var ImageModel = ObjectModel.extend({
         defaults: {
-            type: 'background',
-            img: null,
-            
+            img: null
         }
 
     });
 
-    return BackgroundModel;
+    return ImageModel;
 });

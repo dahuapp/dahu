@@ -6,10 +6,10 @@ define([
     'underscore',
     'backbone',
     'models/object',
-    'models/objects/background',
+    'models/objects/image',
     'models/objects/mouse',
     'models/objects/tooltip'
-], function(_, Backbone, ObjectModel, BackgroundModel, MouseModel, TooltipModel){
+], function(_, Backbone, ObjectModel, ImageModel, MouseModel, TooltipModel){
 
     /**
      * Base *Object* collection.
@@ -19,8 +19,8 @@ define([
         // The model depends on the type of the object
         model: function(attrs, options) {
             switch(attrs.type) {
-                case "background":
-                    return new BackgroundModel(attrs, options);
+                case "image":
+                    return new ImageModel(attrs, options);
                 case "mouse":
                     return new MouseModel(attrs, options);
                 case "tooltip":

@@ -11,9 +11,9 @@ define([
 ], function(_, Backbone, ActionModel){
 
     /**
-     *  Model of background object
+     *  Model of image object
      */
-    var BackgroundModel = ActionModel.extend({
+    var ImageModel = ActionModel.extend({
         defaults: {
             type: 'move',
             target:'mouse-cursor',
@@ -24,5 +24,5 @@ define([
 
     });
 
-    return BackgroundModel;
+    return ImageModel;
 });

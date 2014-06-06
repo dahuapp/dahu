@@ -4,15 +4,15 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/workspace/background.html',
+    'text!templates/views/workspace/image.html',
     'modules/utils/paths'
-], function(Handlebars, Marionette, Workspace_background_tpl, Paths){
+], function(Handlebars, Marionette, Workspace_image_tpl, Paths){
 
     /**
-     * Screen background view
+     * Screen image view
      */
-    var backgroundView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(Workspace_background_tpl),
+    var imageView = Marionette.ItemView.extend({
+        template: Handlebars.default.compile(Workspace_image_tpl),
         templateHelpers: {
             // The name of the picture's full path
             imgFullPath: function() {
@@ -21,5 +21,5 @@ define([
         }
     });
 
-    return backgroundView;
+    return imageView;
 });

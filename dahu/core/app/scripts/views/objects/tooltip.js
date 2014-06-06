@@ -8,7 +8,7 @@ define([
 ], function(Handlebars, Marionette, Objetcs_tooltip_tpl){
 
     /**
-     * Screen background view
+     * Screen image view
      */
     var mouseView = Marionette.ItemView.extend({
         template: Handlebars.default.compile(Objetcs_tooltip_tpl)

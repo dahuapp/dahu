@@ -10,7 +10,7 @@ define([
 ], function(Handlebars, Marionette, Objetcs_mouse_tpl){
 
     /**
-     * Screen background view
+     * Screen image view
      */
     var mouseView = Marionette.ItemView.extend({
         template: Handlebars.default.compile(Objetcs_mouse_tpl),
