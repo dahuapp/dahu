@@ -14,7 +14,8 @@ define([
     var BackgroundModel = ObjectModel.extend({
         defaults: {
             type: 'background',
-            img: null
+            img: null,
+            
         }
 
     });

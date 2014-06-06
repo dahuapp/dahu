@@ -6,9 +6,8 @@ define([
     'handlebars',
     'backbone.marionette',
     'text!templates/views/workspace/mouse.html',
-    'models/actions/move',
-    ''
-], function(Handlebars, Marionette, Objetcs_mouse_tpl, MoveModel){
+    'models/actions/move'
+], function(Handlebars, Marionette, Objetcs_mouse_tpl){
 
     /**
      * Screen background view
@@ -21,7 +20,7 @@ define([
                 return 2 ;
             },
             getOrd: function () {
-                return MoveModel.finalOrd;
+                return 3;
             }
         }
 
