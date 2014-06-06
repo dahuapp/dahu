@@ -43,6 +43,8 @@ public class FileSystem implements Module {
         this.dahuFileAccessManager = fileAccessManager;
     }
 
+    public final String FILE_SEPARATOR = FileSystemDriver.getFileSeparator();
+
     public boolean exists(String pathname) {
         return FileSystemDriver.exists(pathname);
     }

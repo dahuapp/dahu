@@ -149,4 +149,8 @@ public class FileSystemDriver {
             return false;
         }
     }
+
+    public static String getFileSeparator() {
+        return System.getProperty("file.separator");
+    }
 }
