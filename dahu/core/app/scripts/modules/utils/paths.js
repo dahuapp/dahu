@@ -4,8 +4,11 @@
 
 define([
     'underscore',
-    'modules/requestResponse'
-], function(_, ReqResponse){
+    'modules/requestResponse',
+    'modules/kernel/SCI'
+], function(_, ReqResponse, Kernel){
+
+    var fileSeparator = Kernel.module('filesystem').FILE_SEPARATOR;
 
     /**
      * Join one or more path components intelligently.
@@ -16,17 +19,17 @@ define([
         _.each(paths, function(path) {
             var newPath = path;
             var length = newPath.length;
-            // Delete the last slash if it's the last character
-            if (newPath.lastIndexOf('/') == length-1) {
+            // Delete the last fileSeparator if it's the last character
+            if (newPath.lastIndexOf(fileSeparator) == length-1) {
                 newPath = newPath.substring(0, length-1);
             }
-            // Add a slash (if not there) to fullPath if we
+            // Add a fileSeparator (if not there) to fullPath if we
             // are to concatenate with another path.
             length = fullPath.length;
-            if (length > 0 && fullPath.lastIndexOf('/') < length-1) {
-                // We test if the new path to concatenate starts with a slash
-                if (newPath.charAt(0) != "/") {
-                    fullPath = fullPath.concat('/');
+            if (length > 0 && fullPath.lastIndexOf(fileSeparator) < length-1) {
+                // We test if the new path to concatenate starts with a fileSeparator
+                if (newPath.charAt(0) != fileSeparator) {
+                    fullPath = fullPath.concat(fileSeparator);
                 }
             }
             fullPath = fullPath.concat(newPath);

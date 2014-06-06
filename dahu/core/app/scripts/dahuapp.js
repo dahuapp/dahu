@@ -123,7 +123,8 @@ define('dahuapp', [
     function initRequestResponse() {
         // Prepare a response that gives the project directory.
         reqResponse.setHandler("app:projectDirectory", function(){
-            var indexOfLastSlash = projectFilename.lastIndexOf('/');
+            var fileSeparator = Kernel.module('filesystem').FILE_SEPARATOR;
+            var indexOfLastSlash = projectFilename.lastIndexOf(fileSeparator);
             return projectFilename.substring(0, indexOfLastSlash+1);
         })
         //@todo add other events
