@@ -265,6 +265,10 @@ define('dahuapp', [
         if (keyName == 'F7') {
             takeCapture();
         }
+        // capture the escape button to stop the capture mode
+        if (keyCode == '27') {
+            onCaptureStop();
+        }
     }
 
     /**
