@@ -275,17 +275,18 @@ define('dahuapp', [
         // create new models
         var screen = new ScreenModel();
         var background = new BackgroundModel();
+        var mouse = new MouseModel();
         // take the screenshot
         var imgDir = Paths.getProjectImgDirectory();
         var capture = Kernel.module('media').takeCapture(imgDir, background.get('id'));
         // set the img path in background
         background.set('img', Paths.getRelativeImgPath(capture.screen));
+        // set the coordinates of the mouse cursor
+        mouse.set('posX', capture.getMouseX());
+        mouse.set('posY', capture.getMouseY());
         // Insert objects in the screen
         screen.get('objects').add(background);
-        screen.get('objects').add(new MouseModel());
-
-        //@todo insert initial mouse action in the screen
-
+        screen.get('objects').add(mouse);
         // Insert the screen in the screencast
         projectScreencast.get('screens').add(screen);
         // Refresh the workspace
