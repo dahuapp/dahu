@@ -236,7 +236,7 @@
 
 #edit-tooltip-popup {
     position: relative;
-    z-index: 10;
+    z-index: 12;
     width: 500px;
     height: 420px;
     background: white;
