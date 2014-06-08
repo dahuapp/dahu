@@ -58,16 +58,18 @@ define('dahuapp', [
     'modules/kernel/SCI',
     'modules/events',
     'modules/requestResponse',
+    'controller/screencast',
     'models/screencast',
     'layouts/dahuapp',
     'views/filmstrip/screens',
     'views/workspace/screen'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse,
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, ScreencastController,
             ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
 
     var projectFilename;
     var projectScreencast;
     var workSpaceScreen;
+    var screencastController;
 
     //
     // Application
@@ -86,6 +88,7 @@ define('dahuapp', [
         Kernel.start();
         initBackbone();
         initEvent();
+        initController();
         initRequestResponse();
     });
 
@@ -125,6 +128,13 @@ define('dahuapp', [
     }
 
     /**
+     * Initializes the project controllers
+     */
+    function initController() {
+        screencastController = new ScreencastController({model : projectScreencast});
+    }
+
+    /**
      * Bind Requests to Specified functions.
      * Requests are used to answer some common
      * questions that modules can need.
@@ -134,6 +144,10 @@ define('dahuapp', [
         reqResponse.setHandler("app:projectDirectory", function(){
             var indexOfLastSlash = projectFilename.lastIndexOf('/');
             return projectFilename.substring(0, indexOfLastSlash+1);
+        })
+        // Prepare a response that gives the project screencast controller
+        reqResponse.setHandler("app:screencast:controller", function(){
+            return screencastController;
         })
     }
 
