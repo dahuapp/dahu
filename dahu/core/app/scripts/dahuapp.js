@@ -65,13 +65,16 @@ define('dahuapp', [
     'models/objects/mouse',
     'layouts/dahuapp',
     'views/filmstrip/screens',
-    'views/workspace/screen'
+    'views/workspace/screen',
+    'collections/screens'
 ], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths,
-            ScreencastModel, ScreenModel, BackgroundModel, MouseModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
+            ScreencastModel, ScreenModel, BackgroundModel, MouseModel, DahuLayout,
+            FilmstripScreensView, WorkspaceScreenView, ScreensCollection) {
 
     var projectFilename;
     var projectScreencast;
     var workSpaceScreen;
+    var screensToDelete;
 
     //
     // Application
@@ -269,6 +272,11 @@ define('dahuapp', [
         if (keyCode == '27') {
             onCaptureStop();
         }
+        // delete the selected screenshot
+        //@todo make this possible outside the capture mode
+        if (keyCode == '8') {
+            deleteSelectedScreen();
+        }
     }
 
     /**
@@ -295,6 +303,29 @@ define('dahuapp', [
         projectScreencast.get('screens').add(screen);
         // Refresh the workspace
         onScreenSelect(screen);
+    }
+
+    /**
+     * Delete the selected screenshot
+     */
+    function deleteSelectedScreen() {
+        var currentScreen = workSpaceScreen.model;
+        var id = projectScreencast.get('screens').indexOf(currentScreen);
+        var nbOfScreens = projectScreencast.get('screens').size();
+        // delete screen model
+        currentScreen = projectScreencast.get('screens').remove(currentScreen);
+        // put the picture file on a wait to delete list
+        if (screensToDelete == undefined) {
+            screensToDelete = new ScreensCollection();
+        }
+        screensToDelete.add(currentScreen);
+
+        // select the next screen to show in the workspace
+        if (id == nbOfScreens -1) {
+            id --;
+        }
+        onScreenSelect(projectScreencast.get('screens').at(id));
+
     }
 
     /**
