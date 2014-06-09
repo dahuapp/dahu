@@ -504,8 +504,8 @@ var dahuapp = (function(dahuapp, $) {
         var makeTooltipEditable = function(idSlide, tooltipId){
             $('#'+tooltipId).dblclick(function(){
                 var tooltip = $('#'+tooltipId);
-                $('#edit-tooltip-input').html(tooltip.html());
                 $('#tooltip-id-container').text(tooltipId);
+                $('#edit-tooltip-input').val(tooltip.html());
                 showPopup("#edit-tooltip-popup");
             });
         };
@@ -1088,7 +1088,7 @@ var dahuapp = (function(dahuapp, $) {
                     var tooltipId = jsonModel.getSlide(selectedSlide).object[objectLength-1].id;
                     jsonModel.addAction(selectedSlide,"appear",tooltipId, "onClick",0.0,0.0,400);
                     var tooltip = $('#'+tooltipId);
-                    $('#edit-tooltip-input').html(tooltip.html());
+                    $('#tooltip-id-container').empty();
                     $('#tooltip-id-container').text(tooltipId);
                     showPopup("#edit-tooltip-popup");
 					updatePreview(selectedSlide);
@@ -1143,6 +1143,7 @@ var dahuapp = (function(dahuapp, $) {
                     }
                 }
                 updatePreview(selectedSlide);
+                $("#tooltip-id-container").empty();
                 closePopup('#edit-tooltip-popup');
                 $('#edit-tooltip-input').val('');
             };

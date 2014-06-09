@@ -594,7 +594,7 @@
                          * TODO: we'll need a more robust unique name
                          * when we start actually using this.
                          */
-                        object.id = "s" + json.data.length + "-o" + json.data[idSlide].object.length;
+                        object.id = "s" + idSlide + "-o" + json.data[idSlide].object.length;
                         object.text = arguments[2] || "";
                         object.color = arguments[3] || null;
 						object.width = arguments[4] || "";
