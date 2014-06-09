@@ -16,8 +16,10 @@ define([
     // kernel modules
     // @todo we might do some optimization (check with @barraq)
     'modules/kernel/console',
-    'modules/kernel/filesystem'
-], function(_, Backbone, Console, Filesystem) {
+    'modules/kernel/filesystem',
+    'modules/kernel/media',
+    'modules/kernel/keyboard'
+], function(_, Backbone, Console, Filesystem, Media, Keyboard) {
 
     var self = {};
 
@@ -45,6 +47,8 @@ define([
             // start the kernel
             kernel.start();
             expose('filesystem', Filesystem);
+            expose('media', Media);
+            expose('keyboard', Keyboard);
         } else {
             // we do not have an existing kernel
             // this case happen when we are running
@@ -52,10 +56,13 @@ define([
             // modules loaded here or just for debugging purpose
             // you can load what you want!
             expose('filesystem', Filesystem); // fallback Filesystem
+            expose('media', Media);
+            expose('keyboard', Keyboard); // fallback Keyboard
         }
 
         // console is mandatory
         expose('console', Console, true);
+
     };
 
     /**
