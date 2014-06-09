@@ -178,6 +178,12 @@ public class DahuApp extends Application {
         // File
         Menu menuFile = new Menu("File");
 
+        // File > New
+        MenuItem menuFileCreate = new MenuItem("New");
+        menuFileCreate.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onFileCreate');");
+        });
+
         // File > Open
         MenuItem menuFileOpen = new MenuItem("Open");
         menuFileOpen.setOnAction((event) -> {
@@ -189,7 +195,8 @@ public class DahuApp extends Application {
         menuProjectSave.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:onProjectSave');");
         });
-        menuFile.getItems().addAll(menuFileOpen, new SeparatorMenuItem(), menuProjectSave);
+
+        menuFile.getItems().addAll(menuFileCreate, menuFileOpen, new SeparatorMenuItem(), menuProjectSave);
 
         // Capture
         Menu menuCapture = new Menu("Capture");

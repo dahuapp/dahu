@@ -38,7 +38,9 @@ define([
         initialize : function () {
             // Specify that the collection we want to iterate, for the itemView, is
             // given by the attribute objects.
-            this.collection = this.model.get('objects');
+            if (this.model != null) {
+                this.collection = this.model.get('objects');
+            }
         },
 
         // Detect a click on the screen div

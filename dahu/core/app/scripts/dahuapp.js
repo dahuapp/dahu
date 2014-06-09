@@ -58,13 +58,13 @@ define('dahuapp', [
     'modules/kernel/SCI',
     'modules/events',
     'modules/requestResponse',
+    'modules/utils/paths',
     'controller/screencast',
     'models/screencast',
     'layouts/dahuapp',
     'views/filmstrip/screens',
     'views/workspace/screen'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse, ScreencastController,
-            ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths, ScreencastController, ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
 
     var projectFilename;
     var projectScreencast;
@@ -109,6 +109,9 @@ define('dahuapp', [
      * but also as interface between Java and JavaScript.
      */
     function initEvent() {
+        events.on('app:onFileCreate', function() {
+            onFileCreate();
+        })
         events.on('app:onFileOpen', function() {
             onFileOpen();
         });
@@ -220,14 +223,65 @@ define('dahuapp', [
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
 
+        // create the layout
+        createLayout();
+    }
+
+    /**
+     * Create a Dahu project file.
+     * This prompts the user to select a directory destination.
+     */
+    function onFileCreate() {
+        // ask user for project destination
+        projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
+
+        // calculate the path of the .dahu file to create
+        projectFilename = screencastController.getDahuFileFromDirectory(projectDirectoryName);
+
+        // return if no given
+        if( projectDirectoryName == null ) {
+            return;
+        }
+
+        // test if the file exists, return if true
+        if (Kernel.module('filesystem').exists(projectFilename)) {
+            return;
+        }
+
+        //@todo : Ask the user to specify some MetaData & settings.
+
+        // create project screencast
+        projectScreencast = new ScreencastModel();
+
+        // grant access to project
+        Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
+
+        // create project file
+        projectScreencast.save();
+
+        // create the initial layout
+        createLayout();
+    }
+
+    /**
+     * Create a layout for opened or new projects
+     */
+    function createLayout() {
         try {
             var layout = new DahuLayout();
             layout.render();
             app.frame.show(layout);
             // show screens in filmstrip region
+            // if it's a new project, it is initialized with no screens.
             layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
-            // Initialize the workspace with the first screen
-            workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+            // Initialize the workspace with the first screen if available
+            // if not, use an empty screen.
+            if (projectScreencast.get('screens') == null) {
+                workSpaceScreen = new WorkspaceScreenView();
+            }
+            else {
+                workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+            }
             // Show workspace screen
             layout.workspace.show(workSpaceScreen);
         } catch(e) {

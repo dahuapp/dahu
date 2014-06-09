@@ -31,11 +31,15 @@ define([
         initialize : function () {
             // Specify that the collection we want to iterate, for the itemView, is
             // given by the attribute objects.
-            this.collection = this.model.get('objects');
-            // Tell the view to render itself when the
-            // model/collection is changed.
-            this.model.on('change', this.onChanged(), this);
-            this.collection.on('change', this.onChanged(), this);
+            if (this.model != null) {
+                this.collection = this.model.get('objects');
+                // Tell the view to render itself when the
+                // model/collection is changed.
+                this.model.on('change', this.onChanged(), this);
+                if (this.collection != null) {
+                    this.collection.on('change', this.onChanged(), this);
+                }
+            }
         },
 
         setModel: function(newModel){

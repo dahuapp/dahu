@@ -3,9 +3,8 @@
  */
 
 define([
-    'underscore',
-    'modules/requestResponse'
-], function(_, ReqResponse){
+    'underscore'
+], function(_){
 
     /**
      * Join one or more path components intelligently.
@@ -34,16 +33,7 @@ define([
         return fullPath;
     }
 
-    /**
-     * Gets the full path of a project picture.
-     */
-    function getImgFullPath(img) {
-        var dir = ReqResponse.request("app:projectDirectory");
-        return join(['dahufile:', dir, img]);
-    }
-
     return {
-        join: join,
-        getImgFullPath: getImgFullPath
+        join: join
     };
 });

@@ -5,6 +5,7 @@ import io.dahuapp.common.net.DahuFileAccessManager;
 import io.dahuapp.driver.FileSystemDriver;
 import io.dahuapp.common.kernel.Module;
 import io.dahuapp.driver.LoggerDriver;
+import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -84,6 +85,25 @@ public class FileSystem implements Module {
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
             return selectedFile.getAbsolutePath();
+        }
+
+        // otherwise return null
+        return null;
+    }
+
+    /**
+     * Ask user to select a directory.
+     *
+     * @param actionTitle Title of the action that will be displayed to the user.
+     * @return a string path to the directory if everything is fine, null otherwise.
+     */
+    public String getDirectoryFromUser(String actionTitle) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle(actionTitle);
+
+        File selectedDir = directoryChooser.showDialog(primaryStage);
+        if (selectedDir != null) {
+            return selectedDir.getAbsolutePath();
         }
 
         // otherwise return null
