@@ -247,21 +247,17 @@ define('dahuapp', [
      * Generate the presentation in the build directory
      */
     function onGenerate(){
-        // create the view
-        // we use for a basic compilation the filmstrip view
-        // @todo create a dedicated view to handle the presentation.
-        var viewHtml = new FilmstripScreensView({collection: projectScreencast.get('screens')});
-        viewHtml.render();
-        // apply the view the specified template
+        // apply the template to the screens
         var template = Handlebars.default.compile(presentation_tpl);
-        var outputHtml = template({myPresentation : viewHtml.el.innerHTML});
-        // replace all occurences of the protocol dahufile to file
-        // this is a temporary solution until we upgrade to a new specific view.
-        outputHtml = outputHtml.replace(new RegExp('dahufile:', 'g'), 'file:');
+        var outputHtml = template({screens: projectScreencast.get('screens')});
         // save the output on the dedicated file.
         // @todo move this calls to the controller when introduced
         var path = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'presentation.html']);
         Kernel.module('filesystem').writeToFile(path, outputHtml);
+        // copy the image folder to the build/img
+        var srcImgFolder = Paths.join([reqResponse.request("app:projectDirectory"), 'img']);
+        var dstImgFolder = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'img']);
+        Kernel.module('filesystem').copyDir(srcImgFolder, dstImgFolder);
     }
 
     /**
