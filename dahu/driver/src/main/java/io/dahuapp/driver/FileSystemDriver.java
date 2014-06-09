@@ -3,7 +3,6 @@ package io.dahuapp.driver;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 
 /**
@@ -144,6 +143,22 @@ public class FileSystemDriver {
     static public boolean copyFile(String source, String destination) {
         try {
             FileUtils.copyFile(new File(source), new File(destination));
+            return true;
+        } catch (IOException ex) {
+            return false;
+        }
+    }
+
+    /**
+     *  Copies a directory to a new location.
+     *
+     * @param source an existing directoryname to copy, must not be {@code null}
+     * @param destination the new directoryname, must not be {@code null}
+     * @return {@code true} if the copy was successful; {@code false} otherwise.
+     */
+    static public boolean copyDir(String source, String destination) {
+        try {
+            FileUtils.copyDirectory(new File(source), new File(destination));
             return true;
         } catch (IOException ex) {
             return false;
