@@ -59,16 +59,17 @@ define('dahuapp', [
     'modules/events',
     'modules/requestResponse',
     'modules/utils/paths',
+    'controller/screencast',
     'models/screencast',
     'layouts/dahuapp',
     'views/filmstrip/screens',
-    'views/workspace/screen',
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths,
-            ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
+    'views/workspace/screen'
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths, ScreencastController, ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
 
     var projectFilename;
     var projectScreencast;
     var workSpaceScreen;
+    var screencastController;
 
     //
     // Application
@@ -87,6 +88,7 @@ define('dahuapp', [
         Kernel.start();
         initBackbone();
         initEvent();
+        initController();
         initRequestResponse();
     });
 
@@ -112,14 +114,30 @@ define('dahuapp', [
         })
         events.on('app:onFileOpen', function() {
             onFileOpen();
-        })
+        });
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
-        })
+        });
+        events.on('app:onProjectSave', function() {
+            onProjectSave();
+        });
+        events.on('app:onCaptureStart', function(){
+            onCaptureStart();
+        });
+        events.on('app:onCaptureStop', function() {
+            onCaptureStop();
+        });
         events.on('kernel:keyboard:onKeyRelease', function(keyCode, keyName) {
             onKeyRelease(keyCode, keyName);
-        })
+        });
         //@todo add other events
+    }
+
+    /**
+     * Initializes the project controllers
+     */
+    function initController() {
+        screencastController = new ScreencastController({model : projectScreencast});
     }
 
     /**
@@ -133,7 +151,10 @@ define('dahuapp', [
             var indexOfLastSlash = projectFilename.lastIndexOf('/');
             return projectFilename.substring(0, indexOfLastSlash+1);
         })
-        //@todo add other events
+        // Prepare a response that gives the project screencast controller
+        reqResponse.setHandler("app:screencast:controller", function(){
+            return screencastController;
+        })
     }
 
     /**
@@ -264,6 +285,14 @@ define('dahuapp', [
         }
     }
 
+    /*
+    * Save the current project
+     */
+    function onProjectSave(){
+        if(projectScreencast){
+            projectScreencast.save();
+        }
+    }
 
     /**
      * Show the selected filmstrip screen in the main region.
@@ -275,6 +304,21 @@ define('dahuapp', [
             workSpaceScreen.setModel(screen);
         }
     }
+    /*
+     * Start capture mode
+     */
+    function onCaptureStart() {
+        //Start to listen to
+    }
+
+    /*
+     *Stop capture mode
+     * use for debug to take a screenshot while keyboard not implemented
+     */
+    function onCaptureStop() {
+
+    }
+
 
     /**
      * Handle the key release event.
