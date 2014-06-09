@@ -184,7 +184,12 @@ public class DahuApp extends Application {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:onFileOpen');");
         });
 
-        menuFile.getItems().addAll(menuFileOpen);
+        // File Save
+        MenuItem menuProjectSave = new MenuItem("Save");
+        menuProjectSave.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onProjectSave');");
+        });
+        menuFile.getItems().addAll(menuFileOpen, new SeparatorMenuItem(), menuProjectSave);
 
         // Capture
         Menu menuCapture = new Menu("Capture");
