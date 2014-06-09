@@ -223,19 +223,8 @@ define('dahuapp', [
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
 
-        try {
-            var layout = new DahuLayout();
-            layout.render();
-            app.frame.show(layout);
-            // show screens in filmstrip region
-            layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
-            // Initialize the workspace with the first screen
-            workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
-            // Show workspace screen
-            layout.workspace.show(workSpaceScreen);
-        } catch(e) {
-            Kernel.console.error(e.stack);
-        }
+        // create the layout
+        createLayout();
     }
 
     /**
@@ -270,14 +259,29 @@ define('dahuapp', [
         // create project file
         projectScreencast.save();
 
+        // create the initial layout
+        createLayout();
+    }
+
+    /**
+     * Create a layout for opened or new projects
+     */
+    function createLayout() {
         try {
             var layout = new DahuLayout();
             layout.render();
             app.frame.show(layout);
-            // Initialize the filmstrip with no screens.
+            // show screens in filmstrip region
+            // if it's a new project, it is initialized with no screens.
             layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
-            // Initialize the workspace with an empty screen
-            workSpaceScreen =  new WorkspaceScreenView();
+            // Initialize the workspace with the first screen if available
+            // if not, use an empty screen.
+            if (projectScreencast.get('screens') == null) {
+                workSpaceScreen = new WorkspaceScreenView();
+            }
+            else {
+                workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+            }
             // Show workspace screen
             layout.workspace.show(workSpaceScreen);
         } catch(e) {
