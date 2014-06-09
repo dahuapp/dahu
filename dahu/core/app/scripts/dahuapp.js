@@ -247,7 +247,7 @@ define('dahuapp', [
         projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
 
         // calculate the path of the .dahu file to create
-        projectFilename = Paths.getDahuFileFromDirectory(projectDirectoryName);
+        projectFilename = screencastController.getDahuFileFromDirectory(projectDirectoryName);
 
         // return if no given
         if( projectDirectoryName == null ) {

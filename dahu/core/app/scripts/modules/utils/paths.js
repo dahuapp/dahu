@@ -3,9 +3,8 @@
  */
 
 define([
-    'underscore',
-    'modules/requestResponse'
-], function(_, ReqResponse){
+    'underscore'
+], function(_){
 
     /**
      * Join one or more path components intelligently.
@@ -34,26 +33,7 @@ define([
         return fullPath;
     }
 
-    /**
-     * Gets the full path of a project picture.
-     */
-    function getImgFullPath(img) {
-        var dir = ReqResponse.request("app:projectDirectory");
-        return join(['dahufile:', dir, img]);
-    }
-
-    /**
-     * Gets the name of the presentation to create relating to
-     * a directory.
-     * @param directory of the project
-     */
-    function getDahuFileFromDirectory(directory) {
-        return join([directory, 'presentation.dahu']);
-    }
-
     return {
-        join: join,
-        getImgFullPath: getImgFullPath,
-        getDahuFileFromDirectory: getDahuFileFromDirectory
+        join: join
     };
 });
