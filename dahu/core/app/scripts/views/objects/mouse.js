@@ -17,10 +17,10 @@ define([
         templateHelpers: {
             getAbs: function () {
 
-                return 2 ;
+                return (this.posx)*500 ;
             },
             getOrd: function () {
-                return 3;
+                return (this.posy)*500;
             }
         }
 

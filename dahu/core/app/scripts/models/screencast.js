@@ -89,8 +89,8 @@ define([
          */
         newFromOldDataFormat: function(jsonData, version) {
             var screencast = new ScreencastModel();
-
             if( version === 1 ) {
+
                 // import settings (old metaData)
                 var settings = screencast.get('settings');
                 settings.screenWidth = jsonData.metaData.imageWidth;
@@ -98,16 +98,60 @@ define([
 
                 // import screens (old data)
                 var screens = screencast.get('screens');
-                _.each(jsonData.data, function(oldScreen) {
+                // remove first oldscreen
+                var oldScreenCur= null;
+                _.each(jsonData.data, function(oldScreenNext) {
+                //initialize
+                if(oldScreenCur== null){
+                    oldScreenCur= oldScreenNext;
+
+                }else {
+
+                    var screenObjectsOld= [];
                     var screen = screens.create();
                     var screenObjects = screen.get('objects');
-                    _.each(oldScreen.object, function(oldObject) {
-                        screenObjects.add(oldObject);
+                    //Add old screens to a temporary var
+                    _.each(oldScreenCur.object, function (oldObject) {
+                        screenObjectsOld.push(oldObject);
                     });
                     var screenActions = screen.get('actions');
-                    _.each(oldScreen.action, function(oldAction) {
-                        screenActions.add(oldAction);
+                    //For each actions we will find the mouse coordinates
+                    _.each(oldScreenCur.action, function (oldAction) {
+                        if (oldAction.type == 'move' && oldAction.target == 'mouse-cursor') {
+                            //Copy the coordinates from the action to the object
+                            var mouseObject = _.find(screenObjectsOld, function (object) {
+                                return object.type == 'mouse';
+                            });
+
+                            mouseObject.posx = oldAction.finalAbs;
+                            mouseObject.posy = oldAction.finalOrd;
+
+                            //Copy all object into the new screen
+                            _.each(screenObjectsOld, function (object) {
+                                screenObjects.add(object);
+                            });
+                            //Search the coordoniates from the next screen
+                            var moveMouseAction = _.find(oldScreenNext.action, function (oldNextAction) {
+                                return oldNextAction.target == 'mouse-cursor' && oldNextAction.type == 'move';
+                            });
+                            //Copy the old action into the new screen
+                            //Debug only
+                            if (moveMouseAction != undefined) {
+
+                                oldAction.finalAbs = moveMouseAction.finalAbs;
+                                oldAction.finalOrd = moveMouseAction.finalOrd;
+                            }else{
+                                oldAction.finalAbs = 0;
+                                oldAction.finalOrd = 0;
+                            }
+                            screenActions.add(oldAction);
+                        } else {
+                            screenActions.add(oldAction);
+                        }
                     });
+                    //The next screen become the current screen
+                    oldScreenCur = oldScreenNext;
+                }
                 });
 
             }

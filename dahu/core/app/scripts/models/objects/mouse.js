@@ -14,7 +14,9 @@ define([
     var MouseModel = ObjectModel.extend({
         defaults: {
             type: 'mouse',
-            id: "mouse-cursor"
+            id: "mouse-cursor",
+            posx: null,
+            posy:null
 
         }
     });

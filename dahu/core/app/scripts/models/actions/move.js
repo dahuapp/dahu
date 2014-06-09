@@ -16,7 +16,7 @@ define([
     var ImageModel = ActionModel.extend({
         defaults: {
             type: 'move',
-            target:'mouse-cursor',
+            target:null,
             trigger: null,
             finalAbs: null,
             finalOrd: null

@@ -13,7 +13,11 @@ define([
      */
     var ImageModel = ObjectModel.extend({
         defaults: {
-            img: null
+
+            img: null,
+            posx:0,
+            posy:0
+
         }
 
     });

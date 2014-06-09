@@ -19,7 +19,7 @@ define([
         // The model depends on the type of the object
         model: function(attrs, options) {
             switch(attrs.type) {
-                case "image":
+                case "background" || "image":
                     return new ImageModel(attrs, options);
                 case "mouse":
                     return new MouseModel(attrs, options);
