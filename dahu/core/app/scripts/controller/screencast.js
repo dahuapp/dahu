@@ -21,7 +21,6 @@ define([
             return Paths.dirname(ReqResponse.request("app:projectFilePath"));
         },
 
-
         /**
          * Gets the full path of a project picture
          */
