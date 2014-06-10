@@ -33,7 +33,34 @@ define([
         return fullPath;
     }
 
+    /**
+     * Gets the full path of a project picture.
+     */
+    function getImgFullPath(img) {
+        var dir = ReqResponse.request("app:projectDirectory");
+        return join(['dahufile:', dir, img]);
+    }
+
+    /**
+     * Gets the full path of the img directory of the current project
+     */
+    function getProjectImgDirectory() {
+        var dir = ReqResponse.request("app:projectDirectory");
+        return join([dir, 'img']);
+    }
+
+    /**
+     * Gets the relative path of the img file of the current project
+     * i.e : 'img/nameOfImg.extension'
+     */
+    function getRelativeImgPath(img) {
+        return join(['img', img]);
+    }
+
     return {
-        join: join
+        join: join,
+        getImgFullPath: getImgFullPath,
+        getProjectImgDirectory: getProjectImgDirectory,
+        getRelativeImgPath: getRelativeImgPath
     };
 });
