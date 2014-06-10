@@ -113,13 +113,17 @@ public class Keyboard implements Module {
         }
     }
 
-    @Override
-    public void load() {
-       KeyboardDriver.onLoad();
+    /* Keyboard must not be loaded in load() because
+     * it causes pthread_mutex_lock on Linux
+     * We start it and stop it when we need it
+     * e.g. when switching on Capture Mode
+     */
+
+    public void start(){
+        KeyboardDriver.onLoad();
     }
 
-    @Override
-    public void unload() {
+    public void stop() {
         KeyboardDriver.onUnload();
     }
 }
