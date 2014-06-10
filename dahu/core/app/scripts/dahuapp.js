@@ -155,14 +155,10 @@ define('dahuapp', [
      * questions that modules can need.
      */
     function initRequestResponse() {
-        // Prepare a response that gives the project directory.
-        reqResponse.setHandler("app:projectDirectory", function(){
-            if (projectFilename != null) {
-                var indexOfLastSlash = projectFilename.lastIndexOf('/');
-                return projectFilename.substring(0, indexOfLastSlash + 1);
-            }
-            return null;
-        })
+        // Prepare a response that gives the path the project file
+        reqResponse.setHandler("app:projectFilePath"), function(){
+            return projectFilename;
+        };
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;
@@ -325,6 +321,7 @@ define('dahuapp', [
      */
     function onCaptureStart() {
         //Start listening to the keyboard events
+        Kernel.module('keyboard').start();
         Kernel.module('keyboard').addKeyListener("kernel:keyboard:onKeyRelease");
     }
 
@@ -335,6 +332,7 @@ define('dahuapp', [
     function onCaptureStop() {
         //Stop listening to the keyboard events
         Kernel.module('keyboard').removeKeyListener("kernel:keyboard:onKeyRelease");
+        Kernel.module('keyboard').stop();
     }
 
 

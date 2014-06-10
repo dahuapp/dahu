@@ -44,6 +44,8 @@ public class FileSystem implements Module {
         this.dahuFileAccessManager = fileAccessManager;
     }
 
+    public final String FILE_SEPARATOR = FileSystemDriver.FILE_SEPARATOR;
+
     public boolean exists(String pathname) {
         return FileSystemDriver.exists(pathname);
     }
@@ -137,5 +139,35 @@ public class FileSystem implements Module {
         Path dahuProjectDirPath = dahuProjectFilePath.getParent();
         LoggerDriver.info("Revoking access to directory {}", dahuProjectDirPath.toAbsolutePath());
         dahuFileAccessManager.removeAllowedDirectory(dahuProjectDirPath);
+    }
+
+    /**
+     * Delete a directory
+     * @param dirName Path of the directory to delete
+     * @return  {@code true} if and only if the file or directory is
+     *          successfully deleted; {@code false} otherwise.
+     */
+    public boolean removeDir(String dirName){
+        boolean deleted = FileSystemDriver.rmdir(dirName, true);
+        if (!deleted) {
+            Path dahuProjectFilePath = Paths.get(dirName);
+            LoggerDriver.error("Deletion of directory {} failed", dahuProjectFilePath.toAbsolutePath());
+        }
+        return deleted;
+    }
+
+    /**
+     * Delete a file
+     * @param fileName Path of the file to delete
+     * @return  {@code true} if and only if the file or directory is
+     *          successfully deleted; {@code false} otherwise.
+     */
+    public boolean removeFile(String fileName){
+        boolean deleted = FileSystemDriver.delete(fileName);
+        if (!deleted) {
+            Path dahuProjectFilePath = Paths.get(fileName);
+            LoggerDriver.error("Deletion of file {} failed", dahuProjectFilePath.toAbsolutePath());
+        }
+        return deleted;
     }
 }

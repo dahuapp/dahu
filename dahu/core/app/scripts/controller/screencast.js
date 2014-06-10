@@ -14,10 +14,19 @@ define([
     var ScreencastController = Marionette.Controller.extend({
 
         /**
+         * Gets the path of the project directory
+         * @returns String
+         */
+        getProjectDirectory: function(){
+            return Paths.dirname(ReqResponse.request("app:projectFilePath"));
+        },
+
+
+        /**
          * Gets the full path of a project picture
          */
         getImgFullPath: function(img) {
-            var dir = ReqResponse.request("app:projectDirectory");
+            var dir = this.getProjectDirectory();
             return Paths.join(['dahufile:', dir, img]);
         },
 

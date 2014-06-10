@@ -150,6 +150,5 @@ public class FileSystemDriver {
         }
     }
 
-    static public final String fileSeparator = System.getProperty("file.separator");
-
+    static public final String FILE_SEPARATOR = System.getProperty("file.separator");
 }
