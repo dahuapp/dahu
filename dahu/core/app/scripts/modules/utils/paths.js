@@ -44,6 +44,7 @@ define([
     }
 
     return {
-        join: join
+        join: join,
+        dirname: dirname
     };
 });

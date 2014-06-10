@@ -156,9 +156,9 @@ define('dahuapp', [
      */
     function initRequestResponse() {
         // Prepare a response that gives the path the project file
-        reqResponse.setHandler("app:projectFilePath"), function(){
+        reqResponse.setHandler("app:projectFilePath", function(){
             return projectFilename;
-        };
+        });
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;
