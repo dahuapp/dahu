@@ -11,7 +11,20 @@ define([
      * Screen image view
      */
     var mouseView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(Objetcs_tooltip_tpl)
+        template: Handlebars.default.compile(Objetcs_tooltip_tpl),
+
+        templateHelpers: {
+            getAbs: function () {
+                return (this.posx) * 500;
+            },
+            getOrd: function () {
+                return (this.posy)*500;
+            },
+            getText: function () {
+                return this.text;
+            }
+        }
+
     });
 
     return mouseView;
