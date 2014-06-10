@@ -61,15 +61,22 @@ define('dahuapp', [
     'modules/utils/paths',
     'controller/screencast',
     'models/screencast',
+    'models/screen',
+    'models/objects/background',
+    'models/objects/mouse',
     'layouts/dahuapp',
     'views/filmstrip/screens',
-    'views/workspace/screen'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths, ScreencastController, ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView) {
+    'views/workspace/screen',
+    'collections/screens'
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths,
+            ScreencastController, ScreencastModel, ScreenModel, BackgroundModel, MouseModel, DahuLayout,
+            FilmstripScreensView, WorkspaceScreenView, ScreensCollection) {
 
     var projectFilename;
     var projectScreencast;
     var workSpaceScreen;
     var screencastController;
+    var screensToDelete;
 
     //
     // Application
@@ -148,8 +155,11 @@ define('dahuapp', [
     function initRequestResponse() {
         // Prepare a response that gives the project directory.
         reqResponse.setHandler("app:projectDirectory", function(){
-            var indexOfLastSlash = projectFilename.lastIndexOf('/');
-            return projectFilename.substring(0, indexOfLastSlash+1);
+            if (projectFilename != null) {
+                var indexOfLastSlash = projectFilename.lastIndexOf('/');
+                return projectFilename.substring(0, indexOfLastSlash + 1);
+            }
+            return null;
         })
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
@@ -317,8 +327,8 @@ define('dahuapp', [
         Kernel.module('keyboard').addKeyListener("kernel:keyboard:onKeyRelease");
     }
 
-    /*
-     *Stop capture mode
+    /**
+     * Stop capture mode
      * use for debug to take a screenshot while keyboard not implemented
      */
     function onCaptureStop() {
@@ -334,6 +344,69 @@ define('dahuapp', [
      * @param keyName : the name of the pressed key
      */
     function onKeyRelease(keyCode, keyName) {
+        // we start initially with a fixed screenshot keyName.
+        //@todo Make this more dynamic and flexible.
+        if (keyName == 'F7') {
+            takeCapture();
+        }
+        // capture the escape button to stop the capture mode
+        if (keyCode == '27') {
+            onCaptureStop();
+        }
+        // delete the selected screenshot
+        //@todo make this possible outside the capture mode
+        if (keyCode == '8') {
+            deleteSelectedScreen();
+        }
+    }
+
+    /**
+     * Take a screen capture and add it to the
+     * screencast model.
+     */
+    function takeCapture() {
+        // create new models
+        var screen = new ScreenModel();
+        var background = new BackgroundModel();
+        var mouse = new MouseModel();
+        // take the screenshot
+        var imgDir = Paths.getProjectImgDirectory();
+        var capture = Kernel.module('media').takeCapture(imgDir, background.get('id'));
+        // set the img path in background
+        background.set('img', Paths.getRelativeImgPath(capture.screen));
+        // set the coordinates of the mouse cursor
+        mouse.set('posX', capture.getMouseX());
+        mouse.set('posY', capture.getMouseY());
+        // Insert objects in the screen
+        screen.get('objects').add(background);
+        screen.get('objects').add(mouse);
+        // Insert the screen in the screencast
+        projectScreencast.get('screens').add(screen);
+        // Refresh the workspace
+        onScreenSelect(screen);
+    }
+
+    /**
+     * Delete the selected screenshot
+     */
+    function deleteSelectedScreen() {
+        var currentScreen = workSpaceScreen.model;
+        var id = projectScreencast.get('screens').indexOf(currentScreen);
+        var nbOfScreens = projectScreencast.get('screens').size();
+        // delete screen model
+        currentScreen = projectScreencast.get('screens').remove(currentScreen);
+        // put the picture file on a wait to delete list
+        if (screensToDelete == undefined) {
+            screensToDelete = new ScreensCollection();
+        }
+        screensToDelete.add(currentScreen);
+
+        // select the next screen to show in the workspace
+        if (id == nbOfScreens -1) {
+            id --;
+        }
+        onScreenSelect(projectScreencast.get('screens').at(id));
+
     }
 
     /**
