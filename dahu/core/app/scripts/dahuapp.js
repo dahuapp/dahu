@@ -367,8 +367,12 @@ define('dahuapp', [
         var screen = new ScreenModel();
         var background = new BackgroundModel();
         var mouse = new MouseModel();
+        var imgDir = screencastController.getProjectImgDirectory();
+        // test if the image directory exists, if not create it
+        if (!Kernel.module('filesystem').exists(imgDir)) {
+            Kernel.module('filesystem').mkdir(imgDir);
+        }
         // take the screenshot
-        var imgDir = Paths.getProjectImgDirectory();
         var capture = Kernel.module('media').takeCapture(imgDir, background.get('id'));
         // set the img path in background
         background.set('img', screencastController.getRelativeImgPath(capture.screen));
