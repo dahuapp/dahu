@@ -164,4 +164,6 @@ public class FileSystemDriver {
             return false;
         }
     }
+
+    static public final String FILE_SEPARATOR = System.getProperty("file.separator");
 }

@@ -6,8 +6,8 @@ define([
     'handlebars',
     'backbone.marionette',
     'text!templates/views/filmstrip/background.html',
-    'modules/utils/paths'
-], function(Handlebars, Marionette, Filmstrip_background_tpl, Paths){
+    'modules/requestResponse'
+], function(Handlebars, Marionette, Filmstrip_background_tpl, reqResponse){
 
     /**
      * Screen background view
@@ -17,7 +17,7 @@ define([
         templateHelpers: {
             // The name of the picture's full path
             imgFullPath: function() {
-                return Paths.getImgFullPath(this.img);
+                return reqResponse.request("app:screencast:controller").getImgFullPath(this.img);
             }
         }
     });

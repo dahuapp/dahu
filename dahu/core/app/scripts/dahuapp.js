@@ -59,19 +59,21 @@ define('dahuapp', [
     'modules/events',
     'modules/requestResponse',
     'modules/utils/paths',
+    'controller/screencast',
     'models/screencast',
     'layouts/dahuapp',
     'views/filmstrip/screens',
     'views/workspace/screen',
     'handlebars',
     'text!templates/layouts/presentation/screencast.html'
-], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths,
+], function($, _, Backbone, Marionette, Kernel, events, reqResponse, Paths, ScreencastController,
             ScreencastModel, DahuLayout, FilmstripScreensView, WorkspaceScreenView,
             Handlebars, presentation_tpl) {
 
     var projectFilename;
     var projectScreencast;
     var workSpaceScreen;
+    var screencastController;
 
     //
     // Application
@@ -90,6 +92,7 @@ define('dahuapp', [
         Kernel.start();
         initBackbone();
         initEvent();
+        initController();
         initRequestResponse();
     });
 
@@ -110,22 +113,44 @@ define('dahuapp', [
      * but also as interface between Java and JavaScript.
      */
     function initEvent() {
+        events.on('app:onFileCreate', function() {
+            onFileCreate();
+        })
         events.on('app:onFileOpen', function() {
             onFileOpen();
-        })
+        });
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
-        })
+        });
         events.on('app:onClean', function(){
             onClean();
-        })
+        });
         events.on('app:onGenerate', function(){
             onGenerate();
-        })
+        });
         events.on('app:onPreview', function(){
             onPreview();
-        })
+        });
+        events.on('app:onProjectSave', function() {
+            onProjectSave();
+        });
+        events.on('app:onCaptureStart', function(){
+            onCaptureStart();
+        });
+        events.on('app:onCaptureStop', function() {
+            onCaptureStop();
+        });
+        events.on('kernel:keyboard:onKeyRelease', function(keyCode, keyName) {
+            onKeyRelease(keyCode, keyName);
+        });
         //@todo add other events
+    }
+
+    /**
+     * Initializes the project controllers
+     */
+    function initController() {
+        screencastController = new ScreencastController({model : projectScreencast});
     }
 
     /**
@@ -134,12 +159,14 @@ define('dahuapp', [
      * questions that modules can need.
      */
     function initRequestResponse() {
-        // Prepare a response that gives the project directory.
-        reqResponse.setHandler("app:projectDirectory", function(){
-            var indexOfLastSlash = projectFilename.lastIndexOf('/');
-            return projectFilename.substring(0, indexOfLastSlash+1);
+        // Prepare a response that gives the path the project file
+        reqResponse.setHandler("app:projectFilePath"), function(){
+            return projectFilename;
+        };
+        // Prepare a response that gives the project screencast controller
+        reqResponse.setHandler("app:screencast:controller", function(){
+            return screencastController;
         })
-        //@todo add other events
     }
 
     /**
@@ -208,14 +235,65 @@ define('dahuapp', [
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
 
+        // create the layout
+        createLayout();
+    }
+
+    /**
+     * Create a Dahu project file.
+     * This prompts the user to select a directory destination.
+     */
+    function onFileCreate() {
+        // ask user for project destination
+        projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
+
+        // calculate the path of the .dahu file to create
+        projectFilename = screencastController.getDahuFileFromDirectory(projectDirectoryName);
+
+        // return if no given
+        if( projectDirectoryName == null ) {
+            return;
+        }
+
+        // test if the file exists, return if true
+        if (Kernel.module('filesystem').exists(projectFilename)) {
+            return;
+        }
+
+        //@todo : Ask the user to specify some MetaData & settings.
+
+        // create project screencast
+        projectScreencast = new ScreencastModel();
+
+        // grant access to project
+        Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
+
+        // create project file
+        projectScreencast.save();
+
+        // create the initial layout
+        createLayout();
+    }
+
+    /**
+     * Create a layout for opened or new projects
+     */
+    function createLayout() {
         try {
             var layout = new DahuLayout();
             layout.render();
             app.frame.show(layout);
             // show screens in filmstrip region
+            // if it's a new project, it is initialized with no screens.
             layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
-            // Initialize the workspace with the first screen
-            workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+            // Initialize the workspace with the first screen if available
+            // if not, use an empty screen.
+            if (projectScreencast.get('screens') == null) {
+                workSpaceScreen = new WorkspaceScreenView();
+            }
+            else {
+                workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+            }
             // Show workspace screen
             layout.workspace.show(workSpaceScreen);
         } catch(e) {
@@ -223,6 +301,14 @@ define('dahuapp', [
         }
     }
 
+    /*
+    * Save the current project
+     */
+    function onProjectSave(){
+        if(projectScreencast){
+            projectScreencast.save();
+        }
+    }
 
     /**
      * Show the selected filmstrip screen in the main region.
@@ -233,6 +319,33 @@ define('dahuapp', [
         if (workSpaceScreen.model != screen) {
             workSpaceScreen.setModel(screen);
         }
+    }
+    /*
+     * Start capture mode
+     */
+    function onCaptureStart() {
+        //Start listening to the keyboard events
+        Kernel.module('keyboard').start();
+        Kernel.module('keyboard').addKeyListener("kernel:keyboard:onKeyRelease");
+    }
+
+    /*
+     *Stop capture mode
+     * use for debug to take a screenshot while keyboard not implemented
+     */
+    function onCaptureStop() {
+        //Stop listening to the keyboard events
+        Kernel.module('keyboard').removeKeyListener("kernel:keyboard:onKeyRelease");
+        Kernel.module('keyboard').stop();
+    }
+
+
+    /**
+     * Handle the key release event.
+     * @param keyCode : the code of the pressed key
+     * @param keyName : the name of the pressed key
+     */
+    function onKeyRelease(keyCode, keyName) {
     }
 
     /**

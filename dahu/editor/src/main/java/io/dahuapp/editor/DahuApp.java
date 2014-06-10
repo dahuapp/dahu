@@ -178,13 +178,42 @@ public class DahuApp extends Application {
         // File
         Menu menuFile = new Menu("File");
 
+        // File > New
+        MenuItem menuFileCreate = new MenuItem("New");
+        menuFileCreate.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onFileCreate');");
+        });
+
         // File > Open
         MenuItem menuFileOpen = new MenuItem("Open");
         menuFileOpen.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:onFileOpen');");
         });
 
-        menuFile.getItems().addAll(menuFileOpen);
+        // File Save
+        MenuItem menuProjectSave = new MenuItem("Save");
+        menuProjectSave.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onProjectSave');");
+        });
+
+        menuFile.getItems().addAll(menuFileCreate, menuFileOpen, new SeparatorMenuItem(), menuProjectSave);
+
+        // Capture
+        Menu menuCapture = new Menu("Capture");
+
+        // Capture > Start
+        MenuItem menuCaptureStart = new MenuItem("Start");
+        menuCaptureStart.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStart');");
+        });
+
+        // Capture > Stop
+        MenuItem menuCaptureStop = new MenuItem("Stop");
+        menuCaptureStop.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onCaptureStop');");
+        });
+
+        menuCapture.getItems().addAll(menuCaptureStart,new SeparatorMenuItem(),menuCaptureStop);
 
         // Generation
         Menu menuGeneration = new Menu("Generation");
@@ -215,20 +244,20 @@ public class DahuApp extends Application {
         // Help > Tip of the Day
         MenuItem menuHelpTips = new MenuItem("Tip of the Day");
         menuHelpTips.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onHelpTips');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onHelpTips');");
         });
 
         // Help > Submit Feedback
         MenuItem menuHelpFeedback = new MenuItem("Submit Feedback");
         menuHelpFeedback.setOnAction((event) -> {
-            webEngineRuntime.executeScript("dahuapp.events.trigger('dahuapp:onHelpFeedback');");
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:onHelpFeedback');");
         });
 
         menuHelp.getItems().addAll(menuHelpTips, new SeparatorMenuItem(), menuHelpFeedback);
-
+        
         // Create the main menu bar
         menuBar = new MenuBar();
-        menuBar.getMenus().addAll(menuFile, menuGeneration, menuHelp);
+        menuBar.getMenus().addAll(menuFile, menuCapture, menuGeneration, menuHelp);
     }
 
     private void initDahuLayout(Stage primaryStage) {
