@@ -98,61 +98,54 @@ define([
 
                 // import screens (old data)
                 var screens = screencast.get('screens');
-                // remove first oldscreen
-                var oldScreenCur= null;
-                _.each(jsonData.data, function(oldScreenNext) {
-                //initialize
-                if(oldScreenCur== null){
-                    oldScreenCur= oldScreenNext;
-
-                }else {
-
-                    var screenObjectsOld= [];
+                _.each(jsonData.data, function(oldScreenCur,index,data) {
+                    //Initialize the new current screen
                     var screen = screens.create();
+                    //Add oldObjects to the screen
                     var screenObjects = screen.get('objects');
-                    //Add old screens to a temporary var
                     _.each(oldScreenCur.object, function (oldObject) {
-                        screenObjectsOld.push(oldObject);
+                        screenObjects.add(oldObject);
                     });
+                    //Add actions and set objects of the screen
                     var screenActions = screen.get('actions');
                     //For each actions we will find the mouse coordinates
                     _.each(oldScreenCur.action, function (oldAction) {
-                        if (oldAction.type == 'move' && oldAction.target == 'mouse-cursor') {
-                            //Copy the coordinates from the action to the object
-                            var mouseObject = _.find(screenObjectsOld, function (object) {
-                                return object.type == 'mouse';
+                        //Move action
+                        if (oldAction.type == 'move') {
+                            //Memorize the target
+                            var target = oldAction.target;
+                            //Copy the coordinates from the action move to the object targeted
+                            var mouseObject = _.find(screenObjects.models, function (object) {
+                                return object.id == target;
                             });
-
-                            mouseObject.posx = oldAction.finalAbs;
-                            mouseObject.posy = oldAction.finalOrd;
-
-                            //Copy all object into the new screen
-                            _.each(screenObjectsOld, function (object) {
-                                screenObjects.add(object);
-                            });
+                            mouseObject.set('posx',oldAction.finalAbs);
+                            mouseObject.set('posy',oldAction.finalOrd);
                             //Search the coordoniates from the next screen
-                            var moveMouseAction = _.find(oldScreenNext.action, function (oldNextAction) {
-                                return oldNextAction.target == 'mouse-cursor' && oldNextAction.type == 'move';
-                            });
-                            //Copy the old action into the new screen
-                            //Debug only
-                            if (moveMouseAction != undefined) {
+                            if(data[index+1] != undefined ) {
+                                var moveMouseAction = _.find((data[index + 1]).action, function (oldNextAction) {
+                                    return oldNextAction.target == target && oldNextAction.type == 'move';
+                                });
+                                if (moveMouseAction != undefined)
+                                {
+                                    //Copy the old action into the new screen
+                                    oldAction.finalAbs = moveMouseAction.finalAbs;
+                                    oldAction.finalOrd = moveMouseAction.finalOrd;
+                                }else{
+                                    oldAction.finalAbs = 0;
+                                    oldAction.finalOrd = 0;
+                                }
 
-                                oldAction.finalAbs = moveMouseAction.finalAbs;
-                                oldAction.finalOrd = moveMouseAction.finalOrd;
-                            }else{
-                                oldAction.finalAbs = 0;
-                                oldAction.finalOrd = 0;
                             }
+
                             screenActions.add(oldAction);
+
+                        //Appear Action
                         } else {
                             screenActions.add(oldAction);
                         }
                     });
-                    //The next screen become the current screen
-                    oldScreenCur = oldScreenNext;
-                }
                 });
+
 
             }
 
