@@ -36,6 +36,13 @@ define([
         return fullPath;
     }
 
+    /**
+     * Get directory name from a path
+     */
+    function dirname(path) {
+        return path.substring(0, path.lastIndexOf(Kernel.module('filesystem').FILE_SEPARATOR)+1);
+    }
+
     return {
         join: join
     };

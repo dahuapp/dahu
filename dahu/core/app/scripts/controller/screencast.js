@@ -18,8 +18,7 @@ define([
          * @returns String
          */
         getProjectDirectory: function(){
-            var projectFileName = ReqResponse.request("app:projectFilePath");
-            return projectFileName.substring(0, projectFileName.lastIndexOf(Paths.fileSeparator)+1);
+            return Paths.dirname(ReqResponse.request("app:projectFilePath"));
         },
 
 
