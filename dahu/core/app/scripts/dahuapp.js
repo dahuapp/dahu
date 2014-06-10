@@ -312,7 +312,9 @@ define('dahuapp', [
      * Start capture mode
      */
     function onCaptureStart() {
-        //Start to listen to
+        //Start listening to the keyboard events
+        Kernel.module('keyboard').start();
+        Kernel.module('keyboard').addKeyListener("kernel:keyboard:onKeyRelease");
     }
 
     /*
@@ -320,7 +322,9 @@ define('dahuapp', [
      * use for debug to take a screenshot while keyboard not implemented
      */
     function onCaptureStop() {
-
+        //Stop listening to the keyboard events
+        Kernel.module('keyboard').removeKeyListener("kernel:keyboard:onKeyRelease");
+        Kernel.module('keyboard').stop();
     }
 
 
