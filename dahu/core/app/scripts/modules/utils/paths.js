@@ -3,8 +3,9 @@
  */
 
 define([
-    'underscore'
-], function(_){
+    'underscore',
+    'modules/requestResponse'
+], function(_, ReqResponse){
 
     /**
      * Join one or more path components intelligently.
