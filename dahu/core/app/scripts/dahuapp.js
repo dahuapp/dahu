@@ -323,6 +323,7 @@ define('dahuapp', [
      */
     function onCaptureStart() {
         //Start listening to the keyboard events
+        Kernel.module('keyboard').start();
         Kernel.module('keyboard').addKeyListener("kernel:keyboard:onKeyRelease");
     }
 
@@ -333,6 +334,7 @@ define('dahuapp', [
     function onCaptureStop() {
         //Stop listening to the keyboard events
         Kernel.module('keyboard').removeKeyListener("kernel:keyboard:onKeyRelease");
+        Kernel.module('keyboard').stop();
     }
 
 
