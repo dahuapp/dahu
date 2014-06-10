@@ -1,9 +1,7 @@
 /**
- * Created by dufourau on 6/5/14.
+ * Created by dufourau on 6/10/14.
  */
-/**
- * Created by dufourau on 6/5/14.
- */
+
 define([
     'underscore',
     'backbone',
@@ -13,16 +11,15 @@ define([
     /**
      *  Model of image object
      */
-    var MoveModel = ActionModel.extend({
+    var AppearModel = ActionModel.extend({
         defaults: {
-            type: 'move',
+            type: 'appear',
             target:null,
             trigger: null,
-            finalAbs: null,
-            finalOrd: null
+            duration: null
         }
 
     });
 
-    return MoveModel;
+    return AppearModel;
 });

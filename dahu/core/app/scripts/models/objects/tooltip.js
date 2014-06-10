@@ -16,7 +16,9 @@ define([
             type: 'tooltip',
             text: null,
             color: null,
-            width: null
+            width: null,
+            posx: null,
+            posy: null
         }
     });
 

@@ -126,6 +126,7 @@ define([
                             var targetObject = _.find(screenObjects.models, function (object) {
                                 return object.id == target;
                             });
+
                             targetObject.set('posx',oldAction.finalAbs);
                             targetObject.set('posy',oldAction.finalOrd);
 
@@ -155,7 +156,17 @@ define([
 
                         //Appear Action
                         } else if (oldAction.type == 'appear') {
-                            var newAction;
+
+                            //Memorize the target
+                            target = oldAction.target;
+                            //Copy the coordinates from the action move to the object targeted
+                            targetObject = _.find(screenObjects.models, function (object) {
+                                return object.id == target;
+                            });
+                            targetObject.set('posx',oldAction.abs);
+                            targetObject.set('posy',oldAction.ord);
+                            oldAction.abs= undefined;
+                            oldAction.ord= undefined;
                             screenActions.add(oldAction);
                         //Others action
                         } else {
