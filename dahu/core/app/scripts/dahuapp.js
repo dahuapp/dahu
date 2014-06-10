@@ -146,12 +146,10 @@ define('dahuapp', [
      * questions that modules can need.
      */
     function initRequestResponse() {
-        // Prepare a response that gives the project directory.
-        reqResponse.setHandler("app:projectDirectory", function(){
-            var fileSeparator = Kernel.module('filesystem').FILE_SEPARATOR;
-            var indexOfLastSlash = projectFilename.lastIndexOf(fileSeparator);
-            return projectFilename.substring(0, indexOfLastSlash+1);
-        })
+        // Prepare a response that gives the path the project file
+        reqResponse.setHandler("app:projectFilePath"), function(){
+            return projectFilename;
+        };
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;

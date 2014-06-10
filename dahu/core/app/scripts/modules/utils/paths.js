@@ -8,12 +8,11 @@ define([
     'modules/kernel/SCI'
 ], function(_, ReqResponse, Kernel){
 
-    var fileSeparator = Kernel.module('filesystem').FILE_SEPARATOR;
-
     /**
      * Join one or more path components intelligently.
      */
     function join(paths) {
+        var fileSeparator = Kernel.module('filesystem').FILE_SEPARATOR;
         var fullPath = "";
         // concatenate the single path to the full path iteratively
         _.each(paths, function(path) {
