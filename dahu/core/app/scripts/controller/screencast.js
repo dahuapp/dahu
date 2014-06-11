@@ -21,7 +21,6 @@ define([
             return Paths.dirname(ReqResponse.request("app:projectFilePath"));
         },
 
-
         /**
          * Gets the full path of a project picture
          */
@@ -37,6 +36,22 @@ define([
          */
         getDahuFileFromDirectory: function (directory) {
             return Paths.join([directory, 'presentation.dahu']);
+        },
+
+        /**
+         * Gets the full path of the img directory of the current project
+         */
+        getProjectImgDirectory: function () {
+            var dir = this.getProjectDirectory();
+            return Paths.join([dir, 'img']);
+        },
+
+        /**
+         * Gets the relative path of the img file of the current project
+         * i.e : 'img/nameOfImg.extension'
+         */
+        getRelativeImgPath: function (img) {
+            return Paths.join(['img', img]);
         }
     });
 

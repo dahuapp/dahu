@@ -3,10 +3,7 @@ package io.dahuapp.editor.kernel;
 import io.dahuapp.common.javascript.WebEngineRuntime;
 import io.dahuapp.common.kernel.Kernel;
 import io.dahuapp.common.net.DahuFileAccessManager;
-import io.dahuapp.editor.kernel.module.FileSystem;
-import io.dahuapp.editor.kernel.module.Keyboard;
-import io.dahuapp.editor.kernel.module.Logger;
-import io.dahuapp.editor.kernel.module.Media;
+import io.dahuapp.editor.kernel.module.*;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
@@ -21,6 +18,7 @@ public class DahuAppKernel implements Kernel {
     public Logger console;
     public FileSystem filesystem;
     public Keyboard keyboard;
+    public Browser browser;
 
     // shared objects
     private Stage primaryStage;
@@ -34,6 +32,7 @@ public class DahuAppKernel implements Kernel {
         console = new Logger();
         keyboard = new Keyboard(webEngineRuntime);
         filesystem = new FileSystem(primaryStage, fileAccessManager);
+        browser = new Browser();
     }
 
     @Override
@@ -42,6 +41,7 @@ public class DahuAppKernel implements Kernel {
         filesystem.load();
         media.load();
         keyboard.load();
+        browser.load();
         // done loading
         console.info("Dahuapp kernel started!");
     }
@@ -53,7 +53,9 @@ public class DahuAppKernel implements Kernel {
         filesystem.unload();
         media.unload();
         keyboard.unload();
+        browser.unload();
         console.unload();
+        browser.unload();
         // exit app
         Platform.exit();
     }
