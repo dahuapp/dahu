@@ -62,6 +62,10 @@ public class FileSystem implements Module {
         return FileSystemDriver.copyFile(source, target);
     }
 
+    public boolean copyDir(String source, String target) {
+        return FileSystemDriver.copyDir(source, target);
+    }
+
     public boolean mkdir(String dirname) {
         return FileSystemDriver.mkdir(dirname);
     }

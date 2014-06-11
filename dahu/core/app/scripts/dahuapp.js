@@ -55,24 +55,36 @@ define('dahuapp', [
     'underscore',
     'backbone',
     'backbone.marionette',
+    'handlebars',
+    // modules
     'modules/kernel/SCI',
     'modules/events',
     'modules/requestResponse',
     'modules/utils/paths',
+    // controllers
     'controller/screencast',
+    // models
     'models/screencast',
     'models/screen',
     'models/objects/background',
     'models/objects/mouse',
+    // collections
+    'collections/screens',
+    // layouts
     'layouts/dahuapp',
+    // views
     'views/filmstrip/screens',
     'views/workspace/screen',
-    'collections/screens'
-], function($, _, Backbone, Marionette,
-            Kernel, events, reqResponse, Paths,
-            ScreencastController, ScreencastModel, ScreenModel, BackgroundModel, MouseModel,
-            DahuLayout, FilmstripScreensView, WorkspaceScreenView,
-            ScreensCollection) {
+    // template
+    'text!templates/layouts/presentation/screencast.html'
+], function($, _, Backbone, Marionette, Handlebars,
+    Kernel, events, reqResponse, Paths,
+    ScreencastController,
+    ScreencastModel, ScreenModel, BackgroundModel, MouseModel,
+    ScreensCollection,
+    DahuLayout,
+    FilmstripScreensView, WorkspaceScreenView,
+    presentation_tpl) {
 
     var projectFilename;
     var projectScreencast;
@@ -126,6 +138,15 @@ define('dahuapp', [
         });
         events.on('app:filmstrip:onScreenSelected', function(screen) {
             onScreenSelect(screen);
+        });
+        events.on('app:onClean', function(){
+            onClean();
+        });
+        events.on('app:onGenerate', function(){
+            onGenerate();
+        });
+        events.on('app:onPreview', function(){
+            onPreview();
         });
         events.on('app:onProjectSave', function() {
             onProjectSave();
@@ -443,6 +464,38 @@ define('dahuapp', [
         Kernel.console.info("onPreview");
         var path = Paths.join([screencastController.getProjectDirectory(), 'build', 'presentation.html']);
         Kernel.module('browser').runPreview(path);
+    }
+
+    /**
+     * Clean the build directory
+     */
+    function onClean(){
+        var dirToRemove = Paths.join([reqResponse.request("app:projectDirectory"), 'build']);
+        Kernel.module('filesystem').removeDir(dirToRemove);
+    }
+
+    /**
+     * Generate the presentation in the build directory
+     */
+    function onGenerate(){
+        // apply the template to the screens
+        var template = Handlebars.default.compile(presentation_tpl);
+        var outputHtml = template({screens: projectScreencast.get('screens')});
+        // save the output on the dedicated file.
+        // @todo move this calls to the controller when introduced
+        var path = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'presentation.html']);
+        Kernel.module('filesystem').writeToFile(path, outputHtml);
+        // copy the image folder to the build/img
+        var srcImgFolder = Paths.join([reqResponse.request("app:projectDirectory"), 'img']);
+        var dstImgFolder = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'img']);
+        Kernel.module('filesystem').copyDir(srcImgFolder, dstImgFolder);
+    }
+
+    /**
+     * Launch the browser to preview the presentation
+     */
+    function onPreview(){
+        //TODO
     }
 
     /**
