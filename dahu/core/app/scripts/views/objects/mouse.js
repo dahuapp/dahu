@@ -5,8 +5,9 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/workspace/mouse.html'
-], function(Handlebars, Marionette, Objetcs_mouse_tpl){
+    'text!templates/views/workspace/mouse.html',
+    'modules/utils/paths'
+], function(Handlebars, Marionette, Objetcs_mouse_tpl, Paths){
 
     /**
      * Screen image view
@@ -20,6 +21,11 @@ define([
             },
             getOrd: function () {
                 return (this.posy)*494;
+            },
+
+            cursorFullPath: function() {
+                var img = 'Next/dahu/dahu/cursor.png';
+                return Paths.getImgFullPath(img);
             }
         }
 
