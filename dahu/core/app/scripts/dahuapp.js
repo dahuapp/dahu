@@ -470,7 +470,7 @@ define('dahuapp', [
      * Clean the build directory
      */
     function onClean(){
-        var dirToRemove = Paths.join([reqResponse.request("app:projectDirectory"), 'build']);
+        var dirToRemove = Paths.join([screencastController.getProjectDirectory(), 'build']);
         Kernel.module('filesystem').removeDir(dirToRemove);
     }
 
@@ -483,19 +483,12 @@ define('dahuapp', [
         var outputHtml = template({screens: projectScreencast.get('screens')});
         // save the output on the dedicated file.
         // @todo move this calls to the controller when introduced
-        var path = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'presentation.html']);
+        var path = Paths.join([screencastController.getProjectDirectory(), 'build', 'presentation.html']);
         Kernel.module('filesystem').writeToFile(path, outputHtml);
         // copy the image folder to the build/img
-        var srcImgFolder = Paths.join([reqResponse.request("app:projectDirectory"), 'img']);
-        var dstImgFolder = Paths.join([reqResponse.request("app:projectDirectory"), 'build', 'img']);
+        var srcImgFolder = Paths.join([screencastController.getProjectDirectory(), 'img']);
+        var dstImgFolder = Paths.join([screencastController.getProjectDirectory(), 'build', 'img']);
         Kernel.module('filesystem').copyDir(srcImgFolder, dstImgFolder);
-    }
-
-    /**
-     * Launch the browser to preview the presentation
-     */
-    function onPreview(){
-        //TODO
     }
 
     /**
