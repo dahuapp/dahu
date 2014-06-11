@@ -62,6 +62,10 @@ public class FileSystem implements Module {
         return FileSystemDriver.copyFile(source, target);
     }
 
+    public boolean mkdir(String dirname) {
+        return FileSystemDriver.mkdir(dirname);
+    }
+
     /**
      * Ask user to select a file according to some file filters.
      *
