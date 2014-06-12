@@ -4,9 +4,16 @@
 
 define([
     'backbone.marionette',
+    // modules
+    'modules/kernel/SCI',
     'modules/utils/paths',
-    'modules/requestResponse'
-], function (Marionette, Paths, ReqResponse) {
+    'modules/compiler',
+    'modules/requestResponse',
+    // models
+    'models/screencast'
+], function (Marionette,
+    Kernel, Paths, Compiler, ReqResponse,
+    ScreencastModel) {
 
     /**
      * Screencast controller
@@ -14,36 +21,198 @@ define([
     var ScreencastController = Marionette.Controller.extend({
 
         /**
-         * Gets the path of the project directory
+         * Load a screencast project.
+         *
+         * @param projectFilename
+         */
+        load: function(projectFilename) {
+            if( this.loaded ) {
+                throw "A Dahu project ("+this.projectFilename+") is already loaded."
+            }
+
+            // keep track of screencast project filename
+            this.projectFilename = projectFilename;
+
+            // read project file content
+            var projectFileContent = Kernel.module('filesystem').readFromFile(projectFilename);
+
+            // return if content is null
+            if( projectFileContent == null ) {
+                return;
+            }
+
+            // check if an upgrade is needed.
+            var needAnUpgrade = ScreencastModel.needToUpgradeVersion(projectFileContent);
+
+            // if an update is needed create a backup of old version
+            if( needAnUpgrade ) {
+                Kernel.module('filesystem').copyFile(projectFilename, projectFilename+'.old')
+            }
+
+            // load the screencast
+            this.screencastModel = ScreencastModel.newFromString(projectFileContent);
+
+            // grant access to project
+            Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
+
+            // we are loaded
+            this.loaded = true;
+
+            // save it if it was an upgrade
+            if( needAnUpgrade ) {
+                this.save();
+            }
+        },
+
+        create: function (projectFilename) {
+            if( this.loaded ) {
+                throw "A Dahu project ("+this.projectFilename+") is already loaded."
+            }
+
+            // keep track of screencast project filename
+            this.projectFilename = projectFilename;
+
+            // create the screencast
+            this.screencastModel = new ScreencastModel();
+
+            // grant access to project
+            Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
+
+            // we are loaded
+            this.loaded = true;
+
+            // save it
+            this.save();
+        },
+
+        /**
+         * Close the current screencast project.
+         */
+        close: function() {
+            this.loaded = false;
+            this.screencastModel = null;
+            this.projectFilename = null;
+            this.projectDirectory = null;
+            this.projectBuildDirectory = null;
+        },
+
+        /**
+         * Save the current screencast project.
+         */
+        save: function() {
+            if( this.loaded && this.screencastModel ) {
+                this.screencastModel.save();
+            } else {
+                throw "No Dahu project loaded."
+            }
+        },
+
+        /**
+         * Clean the current screencast project.
+         *
+         * @param projectDirectory Path to the project directory
+         */
+        clean: function() {
+            if( this.loaded ) {
+                Kernel.module('filesystem').removeDir(Paths.join([getProjectDirectory(), 'build']));
+            } else {
+                throw "No Dahu project loaded."
+            }
+        },
+
+        generate: function() {
+            if( this.loaded ) {
+                // compile the current screencast model
+                var generatedHTML = Compiler.compile(this.screencastModel);
+
+                // write to disk
+                var path = Paths.join([this.getProjectBuildDirectory(), 'presentation.html']);
+                Kernel.console.info("Writing generated screencast to {}", path);
+                Kernel.module('filesystem').writeToFile(path, generatedHTML);
+                Kernel.console.info("done.");
+
+                Kernel.console.info("Copying images");
+                // copy the image folder to the build/img
+                Kernel.module('filesystem').copyDir(
+                    this.getProjectImgDirectory, // origin
+                    Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
+                );
+                Kernel.console.info("done.");
+            } else {
+                throw "No Dahu project loaded."
+            }
+        },
+
+        getScreencastModel: function() {
+            return this.screencastModel;
+        },
+
+        /**
+         * Gets the current screencast project's filename.
+         * @returns {*}
+         */
+        getProjectFilename: function() {
+            return this.projectFilename;
+        },
+
+        /**
+         * Gets the current screencast project's directory.
+         *
          * @returns String
          */
         getProjectDirectory: function(){
-            return Paths.dirname(ReqResponse.request("app:projectFilePath"));
+            if( ! this.projectDirectory) {
+                this.projectDirectory = Paths.dirname(this.projectFilename);
+            }
+
+            return this.projectDirectory;
+        },
+
+        /**
+         * Get the current screencast project's *build* directory.
+         *
+         * @returns {String} path to the build directory.
+         */
+        getProjectBuildDirectory: function() {
+            if( ! this.projectBuildDirectory ) {
+                this.projectBuildDirectory = Paths.join([this.getProjectDirectory(), 'build']);
+            }
+
+            return this.projectBuildDirectory;
         },
 
         /**
          * Gets the full path of a project picture
          */
         getImgFullPath: function(img) {
-            var dir = this.getProjectDirectory();
-            return Paths.join(['dahufile:', dir, img]);
+            return Paths.join(['dahufile:', this.getProjectDirectory(), img]);
         },
 
         /**
-         * Gets the name of the presentation to create relating to
-         * a directory.
+         * Gets path of a Dahu screencast project file according  to some *directory*.
+         *
          * @param directory of the project
+         * @return {String} dahu screencast filename.
          */
         getDahuFileFromDirectory: function (directory) {
             return Paths.join([directory, 'presentation.dahu']);
         },
 
         /**
+         * Gets path of a generated Dahu screencast according to some *directory*.
+         *
+         * @param directory of the project
+         * @return {String} dahu screencast filename.
+         */
+        getDahuFileGeneratedScreencastFromDirectory: function (directory) {
+            return Paths.join([directory, 'presentation.html']);
+        },
+
+        /**
          * Gets the full path of the img directory of the current project
          */
         getProjectImgDirectory: function () {
-            var dir = this.getProjectDirectory();
-            return Paths.join([dir, 'img']);
+            return Paths.join([this.getProjectDirectory(), 'img']);
         },
 
         /**

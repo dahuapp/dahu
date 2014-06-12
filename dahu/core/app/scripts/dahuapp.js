@@ -74,21 +74,16 @@ define('dahuapp', [
     'layouts/dahuapp',
     // views
     'views/filmstrip/screens',
-    'views/workspace/screen',
-    // template
-    'text!templates/layouts/presentation/screencast.html'
+    'views/workspace/screen'
 ], function($, _, Backbone, Marionette, Handlebars,
     Kernel, events, reqResponse, Paths,
     ScreencastController,
     ScreencastModel, ScreenModel, ImageModel, MouseModel,
     ScreensCollection,
     DahuLayout,
-    FilmstripScreensView, WorkspaceScreenView,
-    presentation_tpl) {
+    FilmstripScreensView, WorkspaceScreenView) {
 
-    var projectFilename;
-    var projectScreencast;
-    var workSpaceScreen;
+    var workspaceScreen;
     var screensToDelete;
     var screencastController;
 
@@ -167,7 +162,7 @@ define('dahuapp', [
      * Initializes the project controllers
      */
     function initController() {
-        screencastController = new ScreencastController({model : projectScreencast});
+        screencastController = new ScreencastController();
     }
 
     /**
@@ -176,10 +171,6 @@ define('dahuapp', [
      * questions that modules can need.
      */
     function initRequestResponse() {
-        // Prepare a response that gives the path the project file
-        reqResponse.setHandler("app:projectFilePath", function(){
-            return projectFilename;
-        });
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;
@@ -201,7 +192,7 @@ define('dahuapp', [
                     // define the indentation value to write the updated dahu file
                     var indentation = 4;
                     Kernel.console.log(model.toJSON(indentation));
-                    Kernel.module('filesystem').writeToFile(projectFilename, model.toJSON(indentation));
+                    Kernel.module('filesystem').writeToFile(screencastController.getProjectFilename(), model.toJSON(indentation));
                 }
                 //@todo handle other methods
             } else {
@@ -220,37 +211,15 @@ define('dahuapp', [
      */
     function onFileOpen() {
         // ask user for project
-        projectFilename = Kernel.module('filesystem').getFileFromUser("Open Dahu Project", "dahuProjectFile");
+        var projectFilename = Kernel.module('filesystem').getFileFromUser("Open Dahu Project", "dahuProjectFile");
 
         // return if no given
         if( projectFilename == null ) {
             return;
         }
 
-        // read project file content
-        var projectFileContent = Kernel.module('filesystem').readFromFile(projectFilename);
-
-        // return if content is null
-        if( projectFileContent == null ) {
-            return;
-        }
-
-        // check if an upgrade is needed, if yes create a backup of old version.
-        var needAnUpgrade = ScreencastModel.needToUpgradeVersion(projectFileContent);
-        if( needAnUpgrade ) {
-            Kernel.module('filesystem').copyFile(projectFilename, projectFilename+'.old')
-        }
-
-        // load the screencast
-        projectScreencast = ScreencastModel.newFromString(projectFileContent);
-
-        // save it if it was an upgrade
-        if( needAnUpgrade ) {
-            projectScreencast.save();
-        }
-
-        // grant access to project
-        Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
+        // load the screencast project
+        screencastController.load(projectFilename);
 
         // create the layout
         createLayout();
@@ -262,31 +231,24 @@ define('dahuapp', [
      */
     function onFileCreate() {
         // ask user for project destination
-        projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
-
-        // calculate the path of the .dahu file to create
-        projectFilename = screencastController.getDahuFileFromDirectory(projectDirectoryName);
+        var projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
 
         // return if no given
         if( projectDirectoryName == null ) {
             return;
         }
 
+        // calculate the path of the .dahu file to create
+        var projectFilename = screencastController.getDahuFileFromDirectory(projectDirectoryName);
+
         // test if the file exists, return if true
         if (Kernel.module('filesystem').exists(projectFilename)) {
+            //@todo throw an exception to the user!
             return;
         }
 
-        //@todo : Ask the user to specify some MetaData & settings.
-
-        // create project screencast
-        projectScreencast = new ScreencastModel();
-
-        // grant access to project
-        Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
-
-        // create project file
-        projectScreencast.save();
+        // load the screencast project
+        screencastController.create(projectFilename);
 
         // create the initial layout
         createLayout();
@@ -294,25 +256,28 @@ define('dahuapp', [
 
     /**
      * Create a layout for opened or new projects
+     *
+     * @todo cleanup
      */
     function createLayout() {
         try {
             var layout = new DahuLayout();
+            var screencastModel = screencastController.getScreencastModel();
             layout.render();
             app.frame.show(layout);
             // show screens in filmstrip region
             // if it's a new project, it is initialized with no screens.
-            layout.filmstrip.show(new FilmstripScreensView({collection: projectScreencast.get('screens')}));
+            layout.filmstrip.show(new FilmstripScreensView({collection: screencastModel.get('screens')}));
             // Initialize the workspace with the first screen if available
             // if not, use an empty screen.
-            if (projectScreencast.get('screens') == null) {
-                workSpaceScreen = new WorkspaceScreenView();
+            if (screencastModel.get('screens') == null) {
+                workspaceScreen = new WorkspaceScreenView();
             }
             else {
-                workSpaceScreen =  new WorkspaceScreenView({model: projectScreencast.get('screens').at(0)});
+                workspaceScreen =  new WorkspaceScreenView({model: screencastModel.get('screens').at(0)});
             }
             // Show workspace screen
-            layout.workspace.show(workSpaceScreen);
+            layout.workspace.show(workspaceScreen);
         } catch(e) {
             Kernel.console.error(e.stack);
         }
@@ -322,9 +287,7 @@ define('dahuapp', [
     * Save the current project
      */
     function onProjectSave(){
-        if(projectScreencast){
-            projectScreencast.save();
-        }
+        screencastController.save();
     }
 
     /**
@@ -333,8 +296,8 @@ define('dahuapp', [
     function onScreenSelect(screen) {
         // Change the model of the workspace screen if the
         // selected screen is different than the actual one.
-        if (workSpaceScreen.model != screen) {
-            workSpaceScreen.setModel(screen);
+        if (workspaceScreen.model != screen) {
+            workspaceScreen.setModel(screen);
         }
     }
     /*
@@ -382,6 +345,8 @@ define('dahuapp', [
     /**
      * Take a screen capture and add it to the
      * screencast model.
+     *
+     * @todo cleanup
      */
     function takeCapture() {
         // create new models
@@ -404,20 +369,23 @@ define('dahuapp', [
         screen.get('objects').add(image);
         screen.get('objects').add(mouse);
         // Insert the screen in the screencast
-        projectScreencast.get('screens').add(screen);
+        screencastController.getScreencastModel().get('screens').add(screen);
         // Refresh the workspace
         onScreenSelect(screen);
     }
 
     /**
-     * Delete the selected screenshot
+     * Delete the selected screenshot.
+     *
+     * @todo cleanup and move part in screencast controller.
      */
     function deleteSelectedScreen() {
-        var currentScreen = workSpaceScreen.model;
-        var id = projectScreencast.get('screens').indexOf(currentScreen);
-        var nbOfScreens = projectScreencast.get('screens').size();
+        var screencastModel = screencastController.getScreencastModel();
+        var currentScreen = workspaceScreen.model;
+        var id = screencastModel.get('screens').indexOf(currentScreen);
+        var nbOfScreens = screencastModel.get('screens').size();
         // delete screen model
-        currentScreen = projectScreencast.get('screens').remove(currentScreen);
+        currentScreen = screencastModel.get('screens').remove(currentScreen);
         // put the picture file on a wait to delete list
         if (screensToDelete == undefined) {
             screensToDelete = new ScreensCollection();
@@ -428,16 +396,16 @@ define('dahuapp', [
         if (id == nbOfScreens -1) {
             id --;
         }
-        onScreenSelect(projectScreencast.get('screens').at(id));
-
+        onScreenSelect(screencastModel.get('screens').at(id));
     }
 
     /**
-     * Launch the browser to preview the presentation
+     * Launch the browser to preview the screencast.
+     *
      */
     function onPreview(){
         Kernel.console.info("onPreview");
-        var path = Paths.join([screencastController.getProjectDirectory(), 'build', 'presentation.html']);
+        var path = screencastController.getDahuFileGeneratedScreencastFromDirectory(screencastController.getProjectBuildDirectory());
         Kernel.module('browser').runPreview(path);
     }
 
@@ -445,25 +413,14 @@ define('dahuapp', [
      * Clean the build directory
      */
     function onClean(){
-        var dirToRemove = Paths.join([screencastController.getProjectDirectory(), 'build']);
-        Kernel.module('filesystem').removeDir(dirToRemove);
+        screencastController.clean();
     }
 
     /**
      * Generate the presentation in the build directory
      */
     function onGenerate(){
-        // apply the template to the screens
-        var template = Handlebars.default.compile(presentation_tpl);
-        var outputHtml = template({screens: projectScreencast.get('screens')});
-        // save the output on the dedicated file.
-        // @todo move this calls to the controller when introduced
-        var path = Paths.join([screencastController.getProjectDirectory(), 'build', 'presentation.html']);
-        Kernel.module('filesystem').writeToFile(path, outputHtml);
-        // copy the image folder to the build/img
-        var srcImgFolder = Paths.join([screencastController.getProjectDirectory(), 'img']);
-        var dstImgFolder = Paths.join([screencastController.getProjectDirectory(), 'build', 'img']);
-        Kernel.module('filesystem').copyDir(srcImgFolder, dstImgFolder);
+        screencastController.generate();
     }
 
     /**
