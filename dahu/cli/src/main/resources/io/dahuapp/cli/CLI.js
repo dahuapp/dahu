@@ -8,6 +8,3 @@ var arguments = CLI.arguments;
 for(var propertyName in dahubridge) {
     kernel.console.log("dahubridge has property {}", propertyName);
 }
-
-// do some other stuff
-kernel.console.log(dahubridge.hello("dahu"));

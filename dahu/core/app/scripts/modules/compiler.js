@@ -4,34 +4,36 @@
 define([
     'underscore',
     'handlebars',
+    // modules
     'modules/kernel/SCI',
-    'models/screencast'
-], function (_, Handlebars, Kernel, ScreencastModel) {
+    // template
+    'text!templates/layouts/presentation/screencast.html'
+], function (_, Handlebars, Kernel) {
 
-    function compile(data) {
-        Kernel.console.info("Starting compilation...");
+    /**
+     * Compile a *screencastModel* and return the output.
+     *
+     * @param screencastModel Screencast model to compile.
+     *
+     * @returns {String} the generated content. Undefined if a problem occurred.
+     */
+    function compile(screencastModel) {
 
-        // compile dahu here
+        var output;
 
-        Kernel.console.info("Compilation done!");
-    }
+        try {
+            Kernel.console.info("Starting compilation...");
+            var template = Handlebars.default.compile(presentation_tpl);
+            output = template({screens: screencastModel.get('screens')});
+            Kernel.console.info("Compilation done!");
+        } catch(e) {
+            Kernel.console.error("Compilation failed. {}", e.stack);
+        }
 
-    // demo functions, @todo to remove
-
-    function hello(who) {
-        var template = Handlebars.default.compile("hello {{who}} from Handlebars!");
-        return template({who: who})
-    }
-
-    function createScreencast(data) {
-        return new ScreencastModel(data)
+        return output;
     }
 
     return {
-        compile: compile,
-
-        // @todo remove this, this is only a sample
-        hello: hello,
-        createScreencast: createScreencast
+        compile: compile
     }
 });
