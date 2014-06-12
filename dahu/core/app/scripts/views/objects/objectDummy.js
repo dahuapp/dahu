@@ -5,7 +5,7 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/filmstrip/objectDummy.html'
+    'text!templates/views/workspace/objectDummy.html'
 ], function(Handlebars, Marionette, Filmstrip_objectDummy_tpl){
 
     /**
