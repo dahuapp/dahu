@@ -8,7 +8,7 @@ define([
     'modules/kernel/SCI',
     // template
     'text!templates/layouts/presentation/screencast.html'
-], function (_, Handlebars, Kernel) {
+], function (_, Handlebars, Kernel, presentation_tpl) {
 
     /**
      * Compile a *screencastModel* and return the output.
