@@ -5,10 +5,10 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/filmstrip/screen.html',
+    'text!templates/views/screen.html',
     'models/objects/background',
-    'views/objects/background',
-    'views/filmstrip/objectDummy'
+    'views/workspace/background',
+    'views/objects/objectDummy'
 ], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView){
 
     /**
