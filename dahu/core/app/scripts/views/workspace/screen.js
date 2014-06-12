@@ -6,10 +6,10 @@ define([
     'handlebars',
     'backbone.marionette',
     'text!templates/views/screen.html',
-    'models/objects/background',
-    'views/workspace/background',
+    'models/objects/image',
+    'views/workspace/image',
     'views/objects/object'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectView){
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, ImageView, ObjectView){
 
     /**
      * Filmstrip screen view
@@ -18,8 +18,8 @@ define([
         template: Handlebars.default.compile(Filmstrip_screen_tpl),
         // We select the ItemView depending on the object type.
         getItemView: function(item){
-            if(item instanceof BackgroundModel) {
-                return  BackgroundView;
+            if(item instanceof ImageModel) {
+                return  ImageView;
             }
             //@todo handle other types of objects
             else {
