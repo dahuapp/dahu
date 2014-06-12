@@ -8,8 +8,8 @@ define([
     'text!templates/views/screen.html',
     'models/objects/background',
     'views/workspace/background',
-    'views/objects/objectDummy'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView){
+    'views/objects/object'
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectView){
 
     /**
      * Filmstrip screen view
@@ -23,7 +23,7 @@ define([
             }
             //@todo handle other types of objects
             else {
-                return ObjectDummyView;
+                return ObjectView;
             }
         },
         itemViewContainer: '#objects',
