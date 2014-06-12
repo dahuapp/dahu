@@ -66,7 +66,7 @@ define('dahuapp', [
     // models
     'models/screencast',
     'models/screen',
-    'models/objects/background',
+    'models/objects/image',
     'models/objects/mouse',
     // collections
     'collections/screens',
@@ -80,7 +80,7 @@ define('dahuapp', [
 ], function($, _, Backbone, Marionette, Handlebars,
     Kernel, events, reqResponse, Paths,
     ScreencastController,
-    ScreencastModel, ScreenModel, BackgroundModel, MouseModel,
+    ScreencastModel, ScreenModel, ImageModel, MouseModel,
     ScreensCollection,
     DahuLayout,
     FilmstripScreensView, WorkspaceScreenView,
@@ -386,7 +386,7 @@ define('dahuapp', [
     function takeCapture() {
         // create new models
         var screen = new ScreenModel();
-        var background = new BackgroundModel();
+        var image = new ImageModel();
         var mouse = new MouseModel();
         var imgDir = screencastController.getProjectImgDirectory();
         // test if the image directory exists, if not create it
@@ -394,14 +394,14 @@ define('dahuapp', [
             Kernel.module('filesystem').mkdir(imgDir);
         }
         // take the screenshot
-        var capture = Kernel.module('media').takeCapture(imgDir, background.get('id'));
-        // set the img path in background
-        background.set('img', screencastController.getRelativeImgPath(capture.screen));
+        var capture = Kernel.module('media').takeCapture(imgDir, image.get('id'));
+        // set the img path in image
+        image.set('img', screencastController.getRelativeImgPath(capture.screen));
         // set the coordinates of the mouse cursor
         mouse.set('posX', capture.getMouseX());
         mouse.set('posY', capture.getMouseY());
         // Insert objects in the screen
-        screen.get('objects').add(background);
+        screen.get('objects').add(image);
         screen.get('objects').add(mouse);
         // Insert the screen in the screencast
         projectScreencast.get('screens').add(screen);

@@ -10,18 +10,17 @@ define([
 ], function(_, Backbone, ObjectModel, UUID){
 
     /**
-     *  Model of background object
+     *  Model of image object
      */
-    var BackgroundModel = ObjectModel.extend({
+    var ImageModel = ObjectModel.extend({
         defaults: function() {
             return {
                 id: UUID.v4(),
-                type: 'background',
                 img: null
             }
         }
 
     });
 
-    return BackgroundModel;
+    return ImageModel;
 });
