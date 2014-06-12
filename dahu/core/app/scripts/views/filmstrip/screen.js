@@ -8,9 +8,8 @@ define([
     'text!templates/views/screen.html',
     'models/objects/background',
     'views/filmstrip/background',
-    'views/objects/objectDummy',
     'modules/events'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, ObjectDummyView, events){
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, BackgroundModel, BackgroundView, events){
 
     /**
      * Filmstrip screen view
@@ -23,8 +22,6 @@ define([
         getItemView: function(item){
             if(item instanceof BackgroundModel) {
                 return  BackgroundView;
-            } else {
-                return ObjectDummyView;
             }
         },
 
