@@ -34,6 +34,7 @@ require.config({
         }
     },
     paths: {
+        text: '../components/requirejs-text/text',
         backbone: '../components/backbone/backbone',
         underscore: '../components/underscore/underscore',
         handlebars: '../components/handlebars/handlebars.amd',
