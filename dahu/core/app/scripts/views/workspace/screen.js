@@ -7,9 +7,13 @@ define([
     'backbone.marionette',
     'text!templates/views/screen.html',
     'models/objects/image',
+    'models/objects/mouse',
+    'models/objects/tooltip',
     'views/workspace/image',
+    'views/objects/mouse',
+    'views/objects/tooltip',
     'views/objects/object'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, ImageView, ObjectView){
+], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, MouseModel, TooltipModel, ImageView, MouseView, TooltipView, ObjectView){
 
     /**
      * Filmstrip screen view
@@ -19,12 +23,15 @@ define([
         // We select the ItemView depending on the object type.
         getItemView: function(item){
             if(item instanceof ImageModel) {
-                return  ImageView;
-            }
-            //@todo handle other types of objects
-            else {
+                return ImageView;
+            }else if(item instanceof MouseModel){
+                return MouseView;
+            }else if(item instanceof TooltipModel){
+                return TooltipView;
+            }else{
                 return ObjectView;
             }
+
         },
         itemViewContainer: '#objects',
 

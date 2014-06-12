@@ -3,13 +3,15 @@
  */
 
 define([
+    'handlebars',
     'backbone.marionette'
-], function(Marionette){
+], function(Handlebars, Marionette){
 
     /**
      * Object general view
      */
     var objectView = Marionette.ItemView.extend({
+        template: Handlebars.default.compile(''),
         templateHelpers: {
             getAbs: function () {
                 return (this.posx);

@@ -10,7 +10,9 @@ define([
     var ObjectModel = Backbone.Model.extend({
         defaults: function() {
             return {
-                id: UUID.v4()
+                id: UUID.v4(),
+                posx: 0,
+                posy: 0
             }
         }
     });
