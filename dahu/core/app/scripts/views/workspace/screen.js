@@ -57,6 +57,10 @@ define([
 
         onChanged: function(){
             this.render();
+        },
+
+        modelEvents: {
+            'change': 'onChanged'
         }
     });
 
