@@ -74,16 +74,16 @@ define('dahuapp', [
     'collections/screens',
     // layouts
     'layouts/dahuapp',
+    'layouts/workspace',
     // views
-    'views/filmstrip/screens',
-    'views/workspace/screen'
+    'views/filmstrip/screens'
 ], function($, _, Backbone, Marionette, Handlebars,
     Kernel, events, reqResponse, Paths,
     ScreencastController, WorkspaceLayoutController,
     ScreencastModel, ScreenModel, ImageModel, MouseModel, TooltipModel,
     ScreensCollection,
-    DahuLayout,
-    FilmstripScreensView, WorkspaceScreenView) {
+    DahuLayout, WorkspaceLayout,
+    FilmstripScreensView) {
 
     var workspaceScreen;
     var screensToDelete;
@@ -284,14 +284,16 @@ define('dahuapp', [
             layout.filmstrip.show(new FilmstripScreensView({collection: screencastModel.get('screens')}));
             // Initialize the workspace with the first screen if available
             // if not, use an empty screen.
-            if (screencastModel.get('screens') == null) {
-                workspaceScreen = new WorkspaceScreenView();
-            }
-            else {
-                workspaceScreen =  new WorkspaceScreenView({model: screencastModel.get('screens').at(0)});
-            }
+            workspaceScreen = new WorkspaceLayout();
             // Show workspace screen
             layout.workspace.show(workspaceScreen);
+            // Show the screen actions & objects in the workspace layout.
+            if (screencastModel.get('screens') == null) {
+                workspaceLayoutController.showAllInLayout(workspaceScreen);
+            }
+            else {
+                workspaceLayoutController.showAllInLayout(workspaceScreen, screencastModel.get('screens').at(0));
+            }
         } catch(e) {
             Kernel.console.error(e.stack);
         }
@@ -308,10 +310,10 @@ define('dahuapp', [
      * Show the selected filmstrip screen in the main region.
      */
     function onScreenSelect(screen) {
-        // Change the model of the workspace screen if the
+        // Change the model shown in the workspace layout if the
         // selected screen is different than the actual one.
         if (workspaceScreen.model != screen) {
-            workspaceScreen.setModel(screen);
+            workspaceLayoutController.showAllInLayout(workspaceScreen, screen);
         }
     }
     /*

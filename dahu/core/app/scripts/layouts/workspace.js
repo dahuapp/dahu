@@ -7,8 +7,9 @@ define([
     'handlebars',
     'backbone.marionette',
     'views/workspace/screen',
+    'views/workspace/actions',
     'text!templates/layouts/workspace.html'
-], function(_, Handlebars, Marionette, screenView, Workspace_tpl){
+], function(_, Handlebars, Marionette, screenView, actionsView, Workspace_tpl){
 
     /**
      * Dahu workspace layout.
