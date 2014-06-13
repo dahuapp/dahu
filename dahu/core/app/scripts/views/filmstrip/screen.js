@@ -7,7 +7,7 @@ define([
     'backbone.marionette',
     'text!templates/views/screen.html',
     'models/objects/image',
-    'views/filmstrip/image',
+    'views/objects/image',
     'modules/events'
 ], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, ImageView, events){
 

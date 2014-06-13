@@ -9,7 +9,7 @@ define([
     'models/objects/image',
     'models/objects/mouse',
     'models/objects/tooltip',
-    'views/workspace/image',
+    'views/objects/image',
     'views/objects/mouse',
     'views/objects/tooltip',
     'views/objects/object'

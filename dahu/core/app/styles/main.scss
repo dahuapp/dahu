@@ -41,6 +41,14 @@ html, body {
   width: 220px;
   overflow-x: visible;
   overflow-y: scroll;
+
+  .image {
+    width: 150px;
+
+    img {
+      width: 100%;
+    }
+  }
 }
 
 #workspace {
@@ -50,6 +58,15 @@ html, body {
   left: 220px;
   right: 0px;
   bottom: 220px;
+
+  .image {
+    width: 100%;
+
+    img {
+      max-width: 80%;
+      max-height: 80%;
+    }
+  }
 }
 
 #note {
