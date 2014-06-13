@@ -14,9 +14,11 @@ define([
     var TooltipModel = ObjectModel.extend({
         defaults: {
             type: 'tooltip',
-            text: null,
-            color: null,
-            width: null
+            text: "",
+            color: "#FFFFDD",
+            width: "240px",
+            posx: 0.3,
+            posy: 0.3
         },
 
         modifyText: function(newText) {
