@@ -20,6 +20,8 @@ define([
         model: function(attrs, options) {
             switch(attrs.type) {
                 case "background":
+                    attrs.type= 'image';
+                    attrs.kind= 'background';
                     return new ImageModel(attrs, options);
                 case "image":
                     return new ImageModel(attrs, options);
