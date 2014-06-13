@@ -285,6 +285,14 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/firebug-lite/skin/'
                 }]
+            },
+            deckjs: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.js/',
+                    src: ['**'],
+                    dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/deck.js/'
+                }]
             }
         },
         // Remove logging from generated files.
