@@ -3,6 +3,7 @@
  */
 
 define([
+    'handlebars',
     'backbone.marionette',
     // modules
     'modules/kernel/SCI',
@@ -11,16 +12,36 @@ define([
     'modules/requestResponse',
     // models
     'models/screencast'
-], function (Marionette,
+], function (Handlebars, Marionette,
     Kernel, Paths, Compiler, ReqResponse,
     ScreencastModel) {
+
 
     /**
      * Screencast controller
      */
     var ScreencastController = Marionette.Controller.extend({
+        /*
+         * Create a general helpers
+         */
+        loadTemplate: function() {
+            Handlebars.default.registerHelper('normalizedToPixel', function (prop, taille) {
+                return prop * taille;
+            });
+        },
+        updateSettings: function() {
+            var width = this.getScreencastModel().get('settings').screenWidth;
+            Handlebars.default.registerHelper('screencastWidth', function () {
+                return width;
+            });
+            var height = this.getScreencastModel().get('settings').screenHeight;
+            Handlebars.default.registerHelper('screencastHeight', function () {
+                return height;
+            });
+        },
 
-        /**
+
+    /**
          * Load a screencast project.
          *
          * @param projectFilename

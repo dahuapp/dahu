@@ -163,6 +163,10 @@ define('dahuapp', [
      */
     function initController() {
         screencastController = new ScreencastController();
+        //Load general template
+        screencastController.loadTemplate();
+
+
     }
 
     /**
@@ -221,6 +225,8 @@ define('dahuapp', [
         // load the screencast project
         screencastController.load(projectFilename);
 
+        //Update settings
+        screencastController.updateSettings();
         // create the layout
         createLayout();
     }
@@ -250,6 +256,8 @@ define('dahuapp', [
         // load the screencast project
         screencastController.create(projectFilename);
 
+        //Update settings
+        screencastController.updateSettings();
         // create the initial layout
         createLayout();
     }
