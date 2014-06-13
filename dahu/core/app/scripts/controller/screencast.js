@@ -3,6 +3,7 @@
  */
 
 define([
+    'handlebars',
     'backbone.marionette',
     // modules
     'modules/kernel/SCI',
@@ -11,9 +12,34 @@ define([
     'modules/requestResponse',
     // models
     'models/screencast'
-], function (Marionette,
+], function (Handlebars, Marionette,
     Kernel, Paths, Compiler, ReqResponse,
     ScreencastModel) {
+
+    /**
+     * Handlebars setup.
+     */
+    Handlebars.default.registerHelper('normalizedToPixel', function (prop, taille) {
+        return prop * taille;
+    });
+
+    /**
+     * Update Handlebars with last information
+     * from the current screencast controller.
+     *
+     * @param controller
+     * @todo optimize a bit
+     */
+    function updateHandlebars(controller) {
+        var width = controller.getScreencastModel().get('settings').screenWidth;
+        Handlebars.default.registerHelper('screencastWidth', function () {
+            return width;
+        });
+        var height = controller.getScreencastModel().get('settings').screenHeight;
+        Handlebars.default.registerHelper('screencastHeight', function () {
+            return height;
+        });
+    }
 
     /**
      * Screencast controller
@@ -58,6 +84,9 @@ define([
             // we are loaded
             this.loaded = true;
 
+            // update handlebars
+            updateHandlebars(this);
+
             // save it if it was an upgrade
             if( needAnUpgrade ) {
                 this.save();
@@ -80,6 +109,9 @@ define([
 
             // we are loaded
             this.loaded = true;
+
+            // update handlebars
+            updateHandlebars(this);
 
             // save it
             this.save();

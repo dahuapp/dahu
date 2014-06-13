@@ -11,15 +11,6 @@ define([
      * Object general view
      */
     var objectView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(''),
-        templateHelpers: {
-            getAbs: function () {
-                return (this.posx);
-            },
-            getOrd: function () {
-                return (this.posy);
-            }
-        }
     });
 
     return objectView;
