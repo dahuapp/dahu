@@ -53,7 +53,7 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
      * @return {@code true} if FirebugLite was loaded; {@code false} otherwise.
      */
     public boolean loadFirebugLite() {
-        return loadFirebugLite(true);
+        return loadFirebugLite(true, false);
     }
 
     /**
@@ -62,7 +62,7 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
      * @param localVersion {@code true} if local version should be loaded; {@code false} otherwise.
      * @return {@code true} if FirebugLite was loaded; {@code false} otherwise.
      */
-    public boolean loadFirebugLite(boolean localVersion) {
+    public boolean loadFirebugLite(boolean localVersion, boolean startOpened) {
         if(isFirebugLiteLoaded) {
             return false;
         }
@@ -70,7 +70,7 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
         if(localVersion) {
             // try to load it locally
             executeScript("var firebug = document.createElement('script');\n" +
-                    "firebug.setAttribute('src', 'components/firebug-lite/build/firebug-lite.js#startOpened');\n" +
+                    "firebug.setAttribute('src', 'components/firebug-lite/build/firebug-lite.js"+(startOpened?"#startOpened":"")+"');\n" +
                     "document.body.appendChild(firebug);\n" +
                     "(function () {\n" +
                     "    if (window.firebug.version) {\n" +
@@ -81,7 +81,7 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
                     "})();\n" +
                     "void(firebug);");
         } else {
-            executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/' + '#startOpened');}");
+            executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/'"+(startOpened? "+ '#startOpened'":"")+");}");
         }
 
         return isFirebugLiteLoaded = true;

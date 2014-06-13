@@ -126,7 +126,10 @@ public class DahuApp extends Application {
                 if (newState == Worker.State.SUCCEEDED) {
 
                     // load FirebugLite for debugging
-                    webEngineRuntime.loadFirebugLite();
+                    webEngineRuntime.loadFirebugLite(
+                            true,   // local version - yes
+                            false   // start opened  - no
+                    );
 
                     // load kernel
                     JSObject window = webEngineRuntime.getJSObject("window");
