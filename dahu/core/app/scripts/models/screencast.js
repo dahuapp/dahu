@@ -3,8 +3,9 @@ define([
     'backbone',
     'models/metadata',
     'models/settings',
+    'models/objects/tooltip',
     'collections/screens'
-], function(_, Backbone, Metadata, Settings, ScreenCollection){
+], function(_, Backbone, Metadata, Settings, TooltipModel, ScreenCollection){
 
     var VERSION = 2;
 
@@ -32,6 +33,13 @@ define([
             // indentation allows the proper indentation of the returned string.
             indentation = indentation || undefined;
             return JSON.stringify(this.attributes, undefined, indentation)
+        },
+
+        addTooltip: function(tooltipText, screenModel) {
+            var tooltip = new TooltipModel({text : tooltipText});
+            if (screenModel != undefined) {
+                screenModel.get('objects').add(tooltip);
+            }
         }
     }, { // class properties (static)
 
