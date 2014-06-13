@@ -398,8 +398,8 @@ define('dahuapp', [
         // set the img path in image
         image.set('img', screencastController.getRelativeImgPath(capture.screen));
         // set the coordinates of the mouse cursor
-        mouse.set('posX', capture.getMouseX());
-        mouse.set('posY', capture.getMouseY());
+        mouse.set('posx', capture.getMouseX());
+        mouse.set('posy', capture.getMouseY());
         // Insert objects in the screen
         screen.get('objects').add(image);
         screen.get('objects').add(mouse);
