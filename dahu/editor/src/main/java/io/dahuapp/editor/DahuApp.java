@@ -7,15 +7,11 @@ import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
 import io.dahuapp.editor.helper.OSCheck;
 import io.dahuapp.editor.kernel.DahuAppKernel;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.concurrent.Worker;
 import javafx.scene.Scene;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
+import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.FontSmoothingType;
@@ -23,7 +19,7 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 import netscape.javascript.JSObject;
 
-import java.net.*;
+import java.net.URL;
 
 /**
  * Main class of the application. Runs the GUI to allow the user to take
@@ -51,6 +47,7 @@ public class DahuApp extends Application {
     private WebEngineRuntime webEngineRuntime;
     private DahuFileAccessManager dahuFileAccessManager;
     private MenuBar menuBar;
+    private ToolBar toolBar;
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
@@ -86,6 +83,9 @@ public class DahuApp extends Application {
 
         // init dahu menu
         initDahuMenu();
+
+        // init dahu toolbar
+        initDahuToolbar();
 
         // init layout
         initDahuLayout(primaryStage);
@@ -188,6 +188,7 @@ public class DahuApp extends Application {
         MenuItem menuFileOpen = new MenuItem("Open");
         menuFileOpen.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:onFileOpen');");
+            showToolbar();
         });
 
         // File Save
@@ -267,10 +268,15 @@ public class DahuApp extends Application {
         OSCheck.OSType OS = OSCheck.getOperatingSystemType();
 
         // pin the menu
-        borderPane.setTop(menuBar);
+        BorderPane topPane = new BorderPane(menuBar);
         if (OS == OSCheck.OSType.MacOS) {
             menuBar.setUseSystemMenuBar(true);
         }
+        // pin the toolBar
+        topPane.setBottom(toolBar);
+
+        // pin the menu + toolbar
+        borderPane.setTop(topPane);
 
         // pin the webView
         borderPane.setCenter(webView);
@@ -287,5 +293,23 @@ public class DahuApp extends Application {
         primaryStage.setOnCloseRequest((event) -> {
             webEngineRuntime.executeScript("dahuapp.stop();");
         });
+    }
+
+    private void initDahuToolbar () {
+        // create the toolbar
+        toolBar = new ToolBar();
+        toolBar.setPrefWidth(300);
+        toolBar.setPrefHeight(30);
+    }
+
+    private void showToolbar () {
+        // Fill in the toolbar when we need it
+        // create new tooltip button
+        Button newTooltip = new Button("New tooltip");
+        newTooltip.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:tooltips:new');");
+        });
+        toolBar.getItems().add(newTooltip);
+        toolBar.getItems().add(new Separator());
     }
 }

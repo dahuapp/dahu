@@ -68,6 +68,7 @@ define('dahuapp', [
     'models/screen',
     'models/objects/image',
     'models/objects/mouse',
+    'models/objects/tooltip',
     // collections
     'collections/screens',
     // layouts
@@ -78,7 +79,7 @@ define('dahuapp', [
 ], function($, _, Backbone, Marionette, Handlebars,
     Kernel, events, reqResponse, Paths,
     ScreencastController,
-    ScreencastModel, ScreenModel, ImageModel, MouseModel,
+    ScreencastModel, ScreenModel, ImageModel, MouseModel, TooltipModel,
     ScreensCollection,
     DahuLayout,
     FilmstripScreensView, WorkspaceScreenView) {
@@ -154,6 +155,12 @@ define('dahuapp', [
         });
         events.on('kernel:keyboard:onKeyRelease', function(keyCode, keyName) {
             onKeyRelease(keyCode, keyName);
+        });
+        events.on('app:workspace:tooltips:new', function() {
+            onTooltipAdd();
+        });
+        events.on('app:workspace:tooltips:edit', function(tooltip) {
+            onTooltipEdit(tooltip);
         });
         //@todo add other events
     }
@@ -421,6 +428,31 @@ define('dahuapp', [
      */
     function onGenerate(){
         screencastController.generate();
+    }
+
+    /**
+     * Add a new tooltip
+     * We show a popup window to ask the user to give the text of the tooltip.
+     */
+    function onTooltipAdd() {
+        var tooltipText = Kernel.module('media').getInputPopup("Add a new tooltip",
+            "Enter the text of your tooltip here");
+        var screen = workspaceScreen.model;
+        screencastController.getScreencastModel().addTooltip(tooltipText, screen);
+    }
+
+    /**
+     * Edit the text of a tooltip
+     * @param tooltip
+     */
+    function onTooltipEdit(tooltip) {
+        var newText = null;
+        if (tooltip != null && tooltip.get('text') != undefined) {
+            newText = Kernel.module('media').getInputPopup("Edit your tooltip", tooltip.get('text'));
+        }
+        if (newText != null) {
+            tooltip.modifyText(newText);
+        }
     }
 
     /**

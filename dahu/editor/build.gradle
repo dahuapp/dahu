@@ -15,5 +15,8 @@ dependencies {
     runtime project(':dahu:core')
     compile project(':dahu:driver')
     compile project(':dahu:common')
+
+    // ControlsFx
+    compile group: 'org.controlsfx', name: 'controlsfx', version: '8.0.6'
 }
 
