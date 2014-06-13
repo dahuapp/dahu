@@ -15,7 +15,8 @@
     "node-uuid": "~1.4.1",
     "backbone.wreqr": "~1.3.1",
     "backbone.marionette": "~1.8.5",
-    "summernote": "~0.5.1"
+    "summernote": "~0.5.1",
+    "deck.js": "~1.1.0"
   },
   "devDependencies": {}
 }
