@@ -4,9 +4,10 @@
 define([
     'handlebars',
     'backbone.marionette',
+    'modules/events',
     'views/objects/object',
     'text!templates/views/workspace/tooltip.html'
-], function(Handlebars, Marionette, ObjectView, Objetcs_tooltip_tpl){
+], function(Handlebars, Marionette, events, ObjectView, Objetcs_tooltip_tpl){
 
     /**
      * Tooltip view
@@ -18,6 +19,22 @@ define([
             getText: function () {
                 return this.text;
             }
+        },
+
+        events: {
+            "click": "edit"
+        },
+
+        edit: function(event) {
+            events.trigger('app:workspace:tooltips:edit', this.model);
+        },
+
+        modelEvents: {
+            'change': 'fieldsChanged'
+        },
+
+        fieldsChanged: function() {
+            this.render();
         }
 
     });

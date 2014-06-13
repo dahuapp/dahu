@@ -159,6 +159,9 @@ define('dahuapp', [
         events.on('app:workspace:tooltips:new', function() {
             onTooltipAdd();
         });
+        events.on('app:workspace:tooltips:edit', function(tooltip) {
+            onTooltipEdit(tooltip);
+        });
         //@todo add other events
     }
 
@@ -436,6 +439,20 @@ define('dahuapp', [
             "Enter the text of your tooltip here");
         var screen = workspaceScreen.model;
         screencastController.getScreencastModel().addTooltip(tooltipText, screen);
+    }
+
+    /**
+     * Edit the text of a tooltip
+     * @param tooltip
+     */
+    function onTooltipEdit(tooltip) {
+        var newText = null;
+        if (tooltip != null && tooltip.get('text') != undefined) {
+            newText = Kernel.module('media').getInputPopup("Edit your tooltip", tooltip.get('text'));
+        }
+        if (newText != null) {
+            tooltip.modifyText(newText);
+        }
     }
 
     /**

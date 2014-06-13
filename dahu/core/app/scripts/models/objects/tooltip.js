@@ -17,6 +17,10 @@ define([
             text: null,
             color: null,
             width: null
+        },
+
+        modifyText: function(newText) {
+            this.set('text', newText);
         }
     });
 
