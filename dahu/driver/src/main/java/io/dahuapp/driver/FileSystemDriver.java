@@ -4,6 +4,9 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.jar.JarFile;
 
 /**
  * FileSystem driver.
@@ -152,8 +155,8 @@ public class FileSystemDriver {
     /**
      *  Copies a directory to a new location.
      *
-     * @param source an existing directoryname to copy, must not be {@code null}
-     * @param destination the new directoryname, must not be {@code null}
+     * @param source an existing directory name to copy, must not be {@code null}
+     * @param destination the new directory name, must not be {@code null}
      * @return {@code true} if the copy was successful; {@code false} otherwise.
      */
     static public boolean copyDir(String source, String destination) {
@@ -163,6 +166,47 @@ public class FileSystemDriver {
         } catch (IOException ex) {
             return false;
         }
+    }
+
+    /**
+     * Copy a resource from the classpath to a new location.
+     *
+     * @param jarFilePath Path to the jar which contain the resource to copy.
+     * @param resource Resource name to copy
+     * @param destination A destination path
+     * @return {@code true} if the copy was successful: {@code false} otherwise.
+     */
+    static public boolean copyResourceDir(String jarFilePath, String resource, String destination) {
+        try {
+            // access Jar
+            final JarFile jarFile = new JarFile(jarFilePath);
+
+            // iterate over resources and copy only those
+            // in the *resource* directory.
+            jarFile.stream().parallel().
+                    filter(entry -> Paths.get(entry.getName()).startsWith(resource)).
+                    forEach(entry -> {
+                                File dstFile = Paths.get(
+                                        destination,
+                                        Paths.get(entry.getName().substring(resource.length())).toString()).toFile();
+                                if (!entry.isDirectory()) {
+                                    try {
+                                        InputStream is = jarFile.getInputStream(entry);
+                                        FileUtils.copyInputStreamToFile(is, dstFile);
+                                    } catch (Exception ex) {
+                                        LoggerDriver.error("Error while writing resource {}.", dstFile.getName());
+                                    }
+                                }
+                            }
+                    );
+
+            // we are done!
+            return true;
+        } catch (Exception ex) {
+            LoggerDriver.error("Resource {} does not exist in {}.", resource, jarFilePath);
+        }
+
+        return false;
     }
 
     static public final String FILE_SEPARATOR = System.getProperty("file.separator");

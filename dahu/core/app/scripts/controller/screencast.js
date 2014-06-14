@@ -163,13 +163,24 @@ define([
                 Kernel.module('filesystem').writeToFile(path, generatedHTML);
                 Kernel.console.info("done.");
 
+                // copy media
                 Kernel.console.info("Copying images");
-                // copy the image folder to the build/img
+                //// copy the image folder to the build/img
                 Kernel.module('filesystem').copyDir(
                     this.getProjectImgDirectory, // origin
                     Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
                 );
                 Kernel.console.info("done.");
+
+                // copy resources
+                Kernel.console.info("Copying resources");
+                //// copy deck.js folder to build/libs/deck.js
+                Kernel.module('filesystem').copyResourceDir(
+                    'classpath:///io/dahuapp/core/components/deck.js', // origin
+                    Paths.join([this.getProjectBuildDirectory(), 'libs']) // destination
+                );
+                Kernel.console.info("done.");
+
             } else {
                 throw "No Dahu project loaded."
             }
