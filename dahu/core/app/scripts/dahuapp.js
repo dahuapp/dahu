@@ -63,6 +63,7 @@ define('dahuapp', [
     'modules/utils/paths',
     // controllers
     'controller/screencast',
+    'controller/workspaceLayout',
     // models
     'models/screencast',
     'models/screen',
@@ -78,7 +79,7 @@ define('dahuapp', [
     'views/workspace/screen'
 ], function($, _, Backbone, Marionette, Handlebars,
     Kernel, events, reqResponse, Paths,
-    ScreencastController,
+    ScreencastController, WorkspaceLayoutController,
     ScreencastModel, ScreenModel, ImageModel, MouseModel, TooltipModel,
     ScreensCollection,
     DahuLayout,
@@ -87,6 +88,7 @@ define('dahuapp', [
     var workspaceScreen;
     var screensToDelete;
     var screencastController;
+    var workspaceLayoutController;
 
     //
     // Application
@@ -170,6 +172,7 @@ define('dahuapp', [
      */
     function initController() {
         screencastController = new ScreencastController();
+        workspaceLayoutController = new WorkspaceLayoutController();
     }
 
     /**
@@ -181,7 +184,11 @@ define('dahuapp', [
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;
-        })
+        });
+        // Prepare a response that gives the workspace layout controller
+        reqResponse.setHandler("app:workspace:layout:controller", function(){
+            return workspaceLayoutController;
+        });
     }
 
     /**
