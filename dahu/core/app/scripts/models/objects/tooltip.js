@@ -5,20 +5,24 @@
 define([
     'underscore',
     'backbone',
-    'models/object'
-], function(_, Backbone, ObjectModel){
+    'models/object',
+    'uuid'
+], function(_, Backbone, ObjectModel, UUID){
 
     /**
      *  Model of tooltip object
      */
     var TooltipModel = ObjectModel.extend({
-        defaults: {
-            type: 'tooltip',
-            text: "",
-            color: "#FFFFDD",
-            width: "240px",
-            posx: 0.3,
-            posy: 0.3
+        defaults: function(){
+            return {
+                id: UUID.v4(),
+                type: 'tooltip',
+                text: "",
+                color: "#FFFFDD",
+                width: "240px",
+                posx: 0.3,
+                posy: 0.3
+            }
         },
 
         modifyText: function(newText) {
