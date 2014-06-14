@@ -1,6 +1,19 @@
 <div class="appear">
-    {{type}}
-    {{target}}
-    {{trigger}}
-    {{duration}}
+    <hr/>
+    <h1>Appear</h1>
+    <ul>
+        <li>Target : {{target}}</li>
+        <li>Trigger :
+            <select id="appearTrigger" name="trigger">
+                <option value="onClick"
+                {{{isMyTrigger "onClick"}}} >on click</option>
+                <option value="afterPrevious"
+                {{{isMyTrigger "afterPrevious"}}} >after previous</option>
+            </select>
+        </li>
+        <li {{{hasSpeedAndDelayAfter}}}>Speed : <input id="appearSpeed" type="number" size="6" value="{{speed}}"/></li>
+        <li>Duration : <input id="appearDuration" type="number" size="6" value="{{duration}}"/></li>
+        <li {{{hasSpeedAndDelayAfter}}}>delayAfter : <input id="appearDelayAfter" type="number" size="6" value="{{delayAfter}}"/></li>
+    </ul>
+    <button class="editAppear">modify</button>
 </div>
