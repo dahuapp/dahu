@@ -22,7 +22,7 @@ define([
         },
 
         events: {
-            "click": "edit"
+            "click .editTooltip": "edit",
         },
 
         edit: function(event) {
