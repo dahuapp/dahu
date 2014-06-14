@@ -4,8 +4,9 @@
 
 define([
     'handlebars',
-    'backbone.marionette'
-], function(Handlebars, Marionette){
+    'backbone.marionette',
+    'modules/requestResponse'
+], function(Handlebars, Marionette, ReqResponse){
 
     /**
      * Object general view
@@ -18,6 +19,17 @@ define([
             },
             getOrd: function () {
                 return (this.posy);
+            }
+        },
+
+        events: {
+            "click" : "objectSelected"
+        },
+
+        objectSelected: function() {
+            var workspaceController = ReqResponse.request('app:workspace:layout:controller');
+            if (this.model != undefined) {
+                workspaceController.showActions(this.model.get('id'));
             }
         }
     });

@@ -6,6 +6,7 @@ define([
     'handlebars',
     'backbone.marionette',
     'text!templates/views/workspace/actions.html',
+    'collections/actions',
     'models/actions/appear',
     'models/actions/disappear',
     'models/actions/move',
@@ -13,6 +14,7 @@ define([
     'views/actions/disappear',
     'views/actions/move'
 ], function(Handlebars, Marionette, Workspace_actions_tpl,
+            ActionsCollection,
             AppearModel, DisappearModel, MoveModel,
             AppearView, DisappearView, MoveView
     ){
@@ -34,11 +36,20 @@ define([
         },
         itemViewContainer: '#myActions',
 
-        initialize : function () {
+        initialize : function (model, objectId) {
             // Specify that the collection we want to iterate, for the itemView, is
             // given by the attribute actions.
+            this.model = model.model;
             if (this.model != null) {
-                this.collection = this.model.get('actions');
+                if (objectId != null) {
+                    var actionsArray = _.filter(this.model.get('actions').models, function(action){
+                        return action.get('target') == objectId;
+                    });
+                    this.collection = new ActionsCollection(actionsArray);
+                }
+                else {
+                    this.collection = this.model.get('actions');
+                }
                 // Tell the view to render itself when the
                 // model/collection is changed.
                 this.model.on('change', this.onChanged(), this);
