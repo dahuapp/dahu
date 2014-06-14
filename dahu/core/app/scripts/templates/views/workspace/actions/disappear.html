@@ -1,6 +1,17 @@
 <div class="disappear">
-    {{type}}
-    {{target}}
-    {{trigger}}
-    {{duration}}
+    <hr/>
+    <h1>Disappear</h1>
+    <ul>
+        <li>Target : {{target}}</li>
+        <li>Trigger :
+            <select id="disappearTrigger" name="trigger">
+                <option value="onClick"
+                {{{isMyTrigger "onClick"}}} >on click</option>
+                <option value="afterPrevious"
+                {{{isMyTrigger "afterPrevious"}}} >after previous</option>
+            </select>
+        </li>
+        <li>Duration : <input id="disappearDuration" type="number" size="6" value="{{duration}}"/></li>
+    </ul>
+    <button class="editDisappear">modify</button>
 </div>
