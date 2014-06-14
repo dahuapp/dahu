@@ -4,13 +4,24 @@
 
 define([
     'handlebars',
-    'backbone.marionette'
-], function(Handlebars, Marionette){
+    'backbone.marionette',
+    'modules/requestResponse'
+], function(Handlebars, Marionette, ReqResponse){
 
     /**
      * Object general view
      */
     var objectView = Marionette.ItemView.extend({
+        events: {
+            "click" : "objectSelected"
+        },
+
+        objectSelected: function() {
+            var workspaceController = ReqResponse.request('app:workspace:layout:controller');
+            if (this.model != undefined) {
+                workspaceController.showActions(this.model.get('id'));
+            }
+        }
     });
 
     return objectView;

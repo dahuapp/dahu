@@ -6,8 +6,7 @@ define([
     'backbone.marionette',
     // views
     'views/workspace/screen',
-    'views/workspace/actions',
-    'modules/kernel/SCI'
+    'views/workspace/actions'
 ], function (Marionette,
              ScreenView, ActionsView) {
 
@@ -24,6 +23,7 @@ define([
         showAllInLayout: function(layout, screenModel) {
             // the shown model in the workspace
             this.screenModel = screenModel;
+            this.layout = layout;
             if (screenModel == null || screenModel == undefined) {
                 layout.screenEditor.show(new ScreenView());
                 layout.actionsEditor.show(new ActionsView());
@@ -36,6 +36,14 @@ define([
 
         getCurrentScreen: function() {
             return this.screenModel;
+        },
+
+        /**
+         * Show specific actions for the given object.
+         * @param objectId : id of the object
+         */
+        showActions: function(objectId) {
+            this.layout.actionsEditor.show(new ActionsView({model : this.screenModel}, objectId));
         }
     });
 
