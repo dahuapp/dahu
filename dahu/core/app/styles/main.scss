@@ -69,6 +69,19 @@ html, body {
   }
 }
 
+#actions {
+  @extend %panel;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  width: 220px;
+  padding-left: 15px;
+  border-left: 5px solid #e5e5e5;
+  overflow-x: visible;
+  overflow-y: scroll;
+}
+
 #note {
   @extend %panel;
   position: absolute;
@@ -76,6 +89,7 @@ html, body {
   left: 220px;
   right: 0px;
   bottom: 0px;
+  border-top: 5px solid #e5e5e5;
 }
 
 // Filmstrip

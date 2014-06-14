@@ -63,6 +63,7 @@ define('dahuapp', [
     'modules/utils/paths',
     // controllers
     'controller/screencast',
+    'controller/workspaceLayout',
     // models
     'models/screencast',
     'models/screen',
@@ -73,20 +74,21 @@ define('dahuapp', [
     'collections/screens',
     // layouts
     'layouts/dahuapp',
+    'layouts/workspace',
     // views
-    'views/filmstrip/screens',
-    'views/workspace/screen'
+    'views/filmstrip/screens'
 ], function($, _, Backbone, Marionette, Handlebars,
     Kernel, events, reqResponse, Paths,
-    ScreencastController,
+    ScreencastController, WorkspaceLayoutController,
     ScreencastModel, ScreenModel, ImageModel, MouseModel, TooltipModel,
     ScreensCollection,
-    DahuLayout,
-    FilmstripScreensView, WorkspaceScreenView) {
+    DahuLayout, WorkspaceLayout,
+    FilmstripScreensView) {
 
     var workspaceScreen;
     var screensToDelete;
     var screencastController;
+    var workspaceLayoutController;
 
     //
     // Application
@@ -170,6 +172,7 @@ define('dahuapp', [
      */
     function initController() {
         screencastController = new ScreencastController();
+        workspaceLayoutController = new WorkspaceLayoutController();
     }
 
     /**
@@ -181,7 +184,11 @@ define('dahuapp', [
         // Prepare a response that gives the project screencast controller
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;
-        })
+        });
+        // Prepare a response that gives the workspace layout controller
+        reqResponse.setHandler("app:workspace:layout:controller", function(){
+            return workspaceLayoutController;
+        });
     }
 
     /**
@@ -277,14 +284,16 @@ define('dahuapp', [
             layout.filmstrip.show(new FilmstripScreensView({collection: screencastModel.get('screens')}));
             // Initialize the workspace with the first screen if available
             // if not, use an empty screen.
-            if (screencastModel.get('screens') == null) {
-                workspaceScreen = new WorkspaceScreenView();
-            }
-            else {
-                workspaceScreen =  new WorkspaceScreenView({model: screencastModel.get('screens').at(0)});
-            }
+            workspaceScreen = new WorkspaceLayout();
             // Show workspace screen
             layout.workspace.show(workspaceScreen);
+            // Show the screen actions & objects in the workspace layout.
+            if (screencastModel.get('screens') == null) {
+                workspaceLayoutController.showAllInLayout(workspaceScreen);
+            }
+            else {
+                workspaceLayoutController.showAllInLayout(workspaceScreen, screencastModel.get('screens').at(0));
+            }
         } catch(e) {
             Kernel.console.error(e.stack);
         }
@@ -301,10 +310,10 @@ define('dahuapp', [
      * Show the selected filmstrip screen in the main region.
      */
     function onScreenSelect(screen) {
-        // Change the model of the workspace screen if the
+        // Change the model shown in the workspace layout if the
         // selected screen is different than the actual one.
-        if (workspaceScreen.model != screen) {
-            workspaceScreen.setModel(screen);
+        if (workspaceLayoutController.getCurrentScreen() != screen) {
+            workspaceLayoutController.showAllInLayout(workspaceScreen, screen);
         }
     }
     /*
@@ -388,7 +397,7 @@ define('dahuapp', [
      */
     function deleteSelectedScreen() {
         var screencastModel = screencastController.getScreencastModel();
-        var currentScreen = workspaceScreen.model;
+        var currentScreen = workspaceLayoutController.getCurrentScreen();
         var id = screencastModel.get('screens').indexOf(currentScreen);
         var nbOfScreens = screencastModel.get('screens').size();
         // delete screen model
@@ -437,7 +446,7 @@ define('dahuapp', [
     function onTooltipAdd() {
         var tooltipText = Kernel.module('media').getInputPopup("Add a new tooltip",
             "Enter the text of your tooltip here");
-        var screen = workspaceScreen.model;
+        var screen = workspaceLayoutController.getCurrentScreen();
         screencastController.getScreencastModel().addTooltip(tooltipText, screen);
     }
 

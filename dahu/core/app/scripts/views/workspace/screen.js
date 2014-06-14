@@ -16,7 +16,7 @@ define([
 ], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, MouseModel, TooltipModel, ImageView, MouseView, TooltipView, ObjectView){
 
     /**
-     * Filmstrip screen view
+     * Workspace screen view
      */
     var ScreenView = Marionette.CompositeView.extend({
         template: Handlebars.default.compile(Filmstrip_screen_tpl),
@@ -38,7 +38,7 @@ define([
         initialize : function () {
             // Specify that the collection we want to iterate, for the itemView, is
             // given by the attribute objects.
-            if (this.model != null) {
+            if (this.model != null && this.model != undefined) {
                 this.collection = this.model.get('objects');
                 // Tell the view to render itself when the
                 // model/collection is changed.
@@ -47,12 +47,6 @@ define([
                     this.collection.on('change', this.onChanged(), this);
                 }
             }
-        },
-
-        setModel: function(newModel){
-            this.model = newModel;
-            this.collection = newModel.get('objects');
-            this.onChanged();
         },
 
         onChanged: function(){
