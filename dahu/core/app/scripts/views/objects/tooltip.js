@@ -23,6 +23,7 @@ define([
 
         events: {
             "click .editTooltip": "edit",
+            "click" : "objectSelected"
         },
 
         edit: function(event) {
