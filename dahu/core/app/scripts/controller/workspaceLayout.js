@@ -22,6 +22,8 @@ define([
          * @param screenModel : the screen model to show
          */
         showAllInLayout: function(layout, screenModel) {
+            // the shown model in the workspace
+            this.screenModel = screenModel;
             if (screenModel == null || screenModel == undefined) {
                 layout.screenEditor.show(new ScreenView());
                 layout.actionsEditor.show(new ActionsView());
@@ -30,6 +32,10 @@ define([
                 layout.screenEditor.show(new ScreenView({model : screenModel}));
                 layout.actionsEditor.show(new ActionsView({model : screenModel}));
             }
+        },
+
+        getCurrentScreen: function() {
+            return this.screenModel;
         }
     });
 

@@ -312,7 +312,7 @@ define('dahuapp', [
     function onScreenSelect(screen) {
         // Change the model shown in the workspace layout if the
         // selected screen is different than the actual one.
-        if (workspaceScreen.model != screen) {
+        if (workspaceLayoutController.getCurrentScreen() != screen) {
             workspaceLayoutController.showAllInLayout(workspaceScreen, screen);
         }
     }
@@ -397,7 +397,7 @@ define('dahuapp', [
      */
     function deleteSelectedScreen() {
         var screencastModel = screencastController.getScreencastModel();
-        var currentScreen = workspaceScreen.model;
+        var currentScreen = workspaceLayoutController.getCurrentScreen();
         var id = screencastModel.get('screens').indexOf(currentScreen);
         var nbOfScreens = screencastModel.get('screens').size();
         // delete screen model
@@ -446,7 +446,7 @@ define('dahuapp', [
     function onTooltipAdd() {
         var tooltipText = Kernel.module('media').getInputPopup("Add a new tooltip",
             "Enter the text of your tooltip here");
-        var screen = workspaceScreen.model;
+        var screen = workspaceLayoutController.getCurrentScreen();
         screencastController.getScreencastModel().addTooltip(tooltipText, screen);
     }
 
