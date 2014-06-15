@@ -101,6 +101,7 @@ public class Media implements Module {
 
         Optional<String> response = Dialogs.create()
                 .title(title)
+                .style(DialogStyle.NATIVE)
                 .showChoices(choices);
 
         String choosen = null;
@@ -156,14 +157,6 @@ public class Media implements Module {
         dlg.setIconifiable(false);
         dlg.setContent(content);
         dlg.getActions().addAll(Dialog.Actions.OK);
-
-        // request focus on the choiceBox field by default (so the user can
-        // choose immediately without having to click first)
-        Platform.runLater(new Runnable() {
-            public void run() {
-             choiceBox.requestFocus();
-            }
-        });
 
         dlg.show();
         String result = null;

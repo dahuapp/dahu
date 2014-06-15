@@ -484,7 +484,6 @@ define('dahuapp', [
         var choices = "";
         _.each(screen.get('objects').models, function(object) {
             if (choices == "") {
-                Kernel.console.debug(object);
                 choices = object.get('type') + ' : ' + object.get('id');
             }
             else {
@@ -503,7 +502,7 @@ define('dahuapp', [
     /**
      * Add a new title
      */
-    function onTitleAdd(type) {
+    function onTitleAdd() {
         var screen = workspaceLayoutController.getCurrentScreen();
         // we calculate the target choice to give to the user
         // we choose to send the choices within a string to split up by a comma
