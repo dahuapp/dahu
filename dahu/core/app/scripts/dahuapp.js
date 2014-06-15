@@ -164,7 +164,18 @@ define('dahuapp', [
         events.on('app:workspace:tooltips:edit', function(tooltip) {
             onTooltipEdit(tooltip);
         });
-        //@todo add other events
+        events.on('app:workspace:actions:new', function(type) {
+            onActionAdd(type);
+        });
+        events.on('app:workspace:titles:new', function() {
+            onTitleAdd();
+        });
+        events.on('app:workspace:titles:show', function() {
+            onTitlesShow();
+        });
+        events.on('app:workspace:titles:edit', function(type, text) {
+            onTitleEdit(type, text);
+        });
     }
 
     /**
@@ -461,6 +472,92 @@ define('dahuapp', [
         }
         if (newText != null) {
             tooltip.modifyText(newText);
+        }
+    }
+
+    /**
+     * Create a new action
+     * @param : type of the action.
+     */
+    function onActionAdd(type) {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        // we calculate the target choice to give to the user
+        // we choose to send the choices within a string to split up by a comma
+        // this will simplify the transfer between javascript interface
+        // and java kernel module.
+        // we also add in the begining of each object id the type of
+        // the object to help the user choose the correct target.
+        var choices = "";
+        _.each(screen.get('objects').models, function(object) {
+            if (choices == "") {
+                choices = object.get('type') + ' : ' + object.get('id');
+            }
+            else {
+                choices = choices + ',' + object.get('type') + ' : ' + object.get('id');
+            }
+        });
+
+        var target = Kernel.module('media').getChoicePopup(
+            "Choose a target", choices);
+        if (target != null) {
+            screencastController.getScreencastModel().addAction(type, target, screen);
+        }
+
+    }
+
+    /**
+     * Add a new title
+     */
+    function onTitleAdd() {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        // we calculate the target choice to give to the user
+        // we choose to send the choices within a string to split up by a comma
+        // this will simplify the transfer between javascript interface
+        // and java kernel module.
+        // we also add in the begining of each object id the type of
+        // the object to help the user choose the correct target.
+        var choices = "h1,h2,h3";
+        var title = Kernel.module('media').getChoiceAndInputPopup(
+            "Choose a title", choices);
+        if (title != null) {
+            screencastController.getScreencastModel().addTitle(title.substr(0, 2), title.substr(3), screen);
+        }
+    }
+
+    /**
+     * Show current screen's titles
+     */
+    function onTitlesShow() {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        var titles = "";
+        _.each(screen.get('titles').models, function(title) {
+            titles = titles + '\n' + title.get('type') + ' : ' + title.get('text');
+        });
+        var toModify = Kernel.module('media').showInformations(
+            "My titles", titles);
+        if (toModify != "" && toModify != null) {
+            events.trigger('app:workspace:titles:edit', toModify.substr(0,2), toModify.substr(5));
+        }
+    }
+
+    /**
+     * Edit an existing title
+     */
+    function onTitleEdit(type, text) {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        // search for the title to modify
+        // we identify the title by its type and text.
+        var titleModel = _.find(screen.get('titles').models, function(title) {
+            return title.get('type') == type && title.get('text') == text;
+        });
+        if (titleModel == null) {
+            return;
+        }
+        var choices = "h1,h2,h3";
+        var titleInput = Kernel.module('media').getChoiceAndInputPopup(
+            "Edit the title", choices, type, text);
+        if (titleInput != null) {
+            titleModel.modify(titleInput.substr(0, 2), titleInput.substr(3));
         }
     }
 

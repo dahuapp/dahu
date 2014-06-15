@@ -4,8 +4,14 @@ define([
     'models/metadata',
     'models/settings',
     'models/objects/tooltip',
+    'models/actions/appear',
+    'models/actions/disappear',
+    'models/actions/move',
+    'models/planTitle',
     'collections/screens'
-], function(_, Backbone, Metadata, Settings, TooltipModel, ScreenCollection){
+], function(_, Backbone, Metadata, Settings,
+            TooltipModel, AppearModel, DisappearModel, MoveModel, PlanTitleModel,
+            ScreenCollection){
 
     var VERSION = 2;
 
@@ -39,6 +45,31 @@ define([
             var tooltip = new TooltipModel({text : tooltipText});
             if (screenModel != undefined) {
                 screenModel.get('objects').add(tooltip);
+            }
+        },
+
+        addAction: function(actionType, targetId, screenModel) {
+            var action;
+            switch (actionType) {
+                case "appear" :
+                    action = new AppearModel({target: targetId});
+                    break;
+                case "disappear" :
+                    action = new DisappearModel({target: targetId});
+                    break;
+                case "move" :
+                    action = new MoveModel({target: targetId});
+                    break;
+            }
+            if (screenModel != undefined && action != undefined) {
+                screenModel.get('actions').add(action);
+            }
+        },
+
+        addTitle: function(titleType, titleText, screenModel) {
+            if (screenModel != undefined) {
+                var title = new PlanTitleModel({type: titleType, text: titleText});
+                screenModel.get('titles').add(title);
             }
         }
     }, { // class properties (static)

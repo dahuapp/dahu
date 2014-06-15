@@ -1,7 +1,19 @@
 <div class="move">
-    {{type}}
-    {{target}}
-    {{trigger}}
-    {{finalAbs}}
-    {{finalOrd}}
+    <hr/>
+    <h1>Move</h1>
+    <ul>
+        <li>Target : {{target}}</li>
+        <li>Trigger :
+            <select id="moveTrigger" name="trigger">
+                <option value="onClick"
+                {{{isMyTrigger "onClick"}}} >on click</option>
+                <option value="afterPrevious"
+                {{{isMyTrigger "afterPrevious"}}} >after previous</option>
+            </select>
+        </li>
+        <li>Final abscissa (in [0,1]) : <input id="moveFinalAbs" type="number" size="6" value="{{finalAbs}}"/></li>
+        <li>Final ordinate (in [0,1]) : <input id="moveFinalOrd" type="number" size="6" value="{{finalOrd}}"/></li>
+        <li>Duration : <input id="moveDuration" type="number" size="6" value="{{duration}}"/></li>
+    </ul>
+    <button class="editMove">modify</button>
 </div>

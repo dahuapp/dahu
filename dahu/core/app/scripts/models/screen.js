@@ -3,8 +3,9 @@ define([
     'backbone',
     'uuid',
     'collections/objects',
-    'collections/actions'
-], function(_, Backbone, UUID, ObjectCollection, ActionsCollection){
+    'collections/actions',
+    'collections/planTitles'
+], function(_, Backbone, UUID, ObjectCollection, ActionsCollection, PlanTitlesCollection){
 
     /**
      * Base Screen model.
@@ -14,7 +15,8 @@ define([
             return {
                 id: UUID.v4(),
                 objects: new ObjectCollection(),
-                actions : new ActionsCollection()
+                actions : new ActionsCollection(),
+                titles: new PlanTitlesCollection()
             }
         },
 
@@ -26,6 +28,10 @@ define([
             // wrap up actions around ActionsCollection unless it already is
             if ( ! (this.get('actions') instanceof ActionsCollection) ) {
                 this.set('actions', new ActionsCollection(this.get('actions')));
+            }
+            // wrap up actions around PlanTitlesCollection unless it already is
+            if ( ! (this.get('titles') instanceof PlanTitlesCollection) ) {
+                this.set('titles', new PlanTitlesCollection(this.get('titles')));
             }
         }
     });
