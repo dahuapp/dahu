@@ -164,7 +164,10 @@ define('dahuapp', [
         events.on('app:workspace:tooltips:edit', function(tooltip) {
             onTooltipEdit(tooltip);
         });
-        //@todo add other events
+        events.on('app:workspace:actions:new', function(type) {
+            onActionAdd(type);
+        });
+
     }
 
     /**
@@ -462,6 +465,37 @@ define('dahuapp', [
         if (newText != null) {
             tooltip.modifyText(newText);
         }
+    }
+
+    /**
+     * Create a new action
+     * @param : type of the action.
+     */
+    function onActionAdd(type) {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        // we calculate the target choice to give to the user
+        // we choose to send the choices within a string to split up by a comma
+        // this will simplify the transfer between javascript interface
+        // and java kernel module.
+        // we also add in the begining of each object id the type of
+        // the object to help the user choose the correct target.
+        var choices = "";
+        _.each(screen.get('objects').models, function(object) {
+            if (choices == "") {
+                Kernel.console.debug(object);
+                choices = object.get('type') + ' : ' + object.get('id');
+            }
+            else {
+                choices = choices + ',' + object.get('type') + ' : ' + object.get('id');
+            }
+        });
+
+        var target = Kernel.module('media').getChoicePopup(
+            "Choose a target", choices);
+        if (target != null) {
+            screencastController.getScreencastModel().addAction(type, target, screen);
+        }
+
     }
 
     /**
