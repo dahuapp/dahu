@@ -317,6 +317,8 @@ public class DahuApp extends Application {
         actionsMenu.getItems().addAll(appearItem, moveItem, disappearItem);
         // create new title button
         Button newTitle = new Button("Add title");
+        // create show titles button
+        Button showTitles = new Button("Show titles");
 
         // bind clicks to specific events
         newTooltip.setOnAction((event) -> {
@@ -334,8 +336,11 @@ public class DahuApp extends Application {
         newTitle.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:titles:new');");
         });
+        showTitles.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:titles:show');");
+        });
         toolBar.getItems().add(newTooltip);
         toolBar.getItems().addAll(new Separator(), actionsMenu);
-        toolBar.getItems().addAll(new Separator(), newTitle);
+        toolBar.getItems().addAll(new Separator(), newTitle, showTitles);
     }
 }

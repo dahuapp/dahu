@@ -14,6 +14,11 @@ define([
         defaults: {
             text: null,
             type: "h1"
+        },
+
+        modify: function(type, text) {
+            this.set('type', type);
+            this.set('text', text);
         }
     });
 

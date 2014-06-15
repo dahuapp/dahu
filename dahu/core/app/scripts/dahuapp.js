@@ -170,6 +170,12 @@ define('dahuapp', [
         events.on('app:workspace:titles:new', function() {
             onTitleAdd();
         });
+        events.on('app:workspace:titles:show', function() {
+            onTitlesShow();
+        });
+        events.on('app:workspace:titles:edit', function(type, text) {
+            onTitleEdit(type, text);
+        });
     }
 
     /**
@@ -515,6 +521,43 @@ define('dahuapp', [
             "Choose a title", choices);
         if (title != null) {
             screencastController.getScreencastModel().addTitle(title.substr(0, 2), title.substr(3), screen);
+        }
+    }
+
+    /**
+     * Show current screen's titles
+     */
+    function onTitlesShow() {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        var titles = "";
+        _.each(screen.get('titles').models, function(title) {
+            titles = titles + '\n' + title.get('type') + ' : ' + title.get('text');
+        });
+        var toModify = Kernel.module('media').showInformations(
+            "My titles", titles);
+        if (toModify != "" && toModify != null) {
+            events.trigger('app:workspace:titles:edit', toModify.substr(0,2), toModify.substr(5));
+        }
+    }
+
+    /**
+     * Edit an existing title
+     */
+    function onTitleEdit(type, text) {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        // search for the title to modify
+        // we identify the title by its type and text.
+        var titleModel = _.find(screen.get('titles').models, function(title) {
+            return title.get('type') == type && title.get('text') == text;
+        });
+        if (titleModel == null) {
+            return;
+        }
+        var choices = "h1,h2,h3";
+        var titleInput = Kernel.module('media').getChoiceAndInputPopup(
+            "Edit the title", choices, type, text);
+        if (titleInput != null) {
+            titleModel.modify(titleInput.substr(0, 2), titleInput.substr(3));
         }
     }
 

@@ -5,11 +5,13 @@ import io.dahuapp.driver.MediaDriver;
 import io.dahuapp.driver.MediaDriver.Capture;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
+import javafx.scene.text.Text;
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialog.Actions;
 import org.controlsfx.dialog.DialogStyle;
@@ -176,6 +178,40 @@ public class Media implements Module {
      */
     public String getChoiceAndInputPopup(String title, String choices) {
         return getChoiceAndInputPopup (title, choices, choices.split(",")[0], "");
+    }
+
+    public String showInformations(String title, String info) {
+        Dialog dlg = new Dialog(null, title, false, DialogStyle.NATIVE);
+
+        // layout a custom GridPane containing the input field and label
+        final GridPane content = new GridPane();
+        String[] informations = info.split("\n");
+        content.setHgap(2);
+        content.setVgap(informations.length);
+        final String[] toModify = {null};
+        for (int i = 0; i < informations.length; i++) {
+            String inf = informations[i];
+            if ("".equals(inf)) {
+                continue;
+            }
+            content.add(new Text(inf + "  "), 0, i);
+            final Button edit = new Button("edit");
+            edit.setOnAction((event) -> {
+                toModify[0] = inf;
+                dlg.hide();
+            });
+            content.add(edit, 1, i);
+        }
+
+        // create the dialog with a custom graphic and the gridpane above as the
+        // main content region
+        dlg.setResizable(true);
+        dlg.setIconifiable(false);
+        dlg.setContent(content);
+        dlg.getActions().addAll(Dialog.Actions.OK);
+
+        dlg.show();
+        return toModify[0];
     }
 
 }
