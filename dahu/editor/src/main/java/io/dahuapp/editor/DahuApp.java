@@ -315,6 +315,8 @@ public class DahuApp extends Application {
         MenuItem moveItem = new MenuItem("Move");
         MenuItem disappearItem = new MenuItem("Disappear");
         actionsMenu.getItems().addAll(appearItem, moveItem, disappearItem);
+        // create new title button
+        Button newTitle = new Button("Add title");
 
         // bind clicks to specific events
         newTooltip.setOnAction((event) -> {
@@ -329,7 +331,11 @@ public class DahuApp extends Application {
         moveItem.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:actions:new', 'move');");
         });
+        newTitle.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:titles:new');");
+        });
         toolBar.getItems().add(newTooltip);
         toolBar.getItems().addAll(new Separator(), actionsMenu);
+        toolBar.getItems().addAll(new Separator(), newTitle);
     }
 }

@@ -1,21 +1,21 @@
 package io.dahuapp.editor.kernel.module;
 
+import io.dahuapp.common.kernel.Module;
 import io.dahuapp.driver.MediaDriver;
 import io.dahuapp.driver.MediaDriver.Capture;
-import io.dahuapp.common.kernel.Module;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
-
 import org.controlsfx.dialog.Dialog;
 import org.controlsfx.dialog.Dialog.Actions;
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -69,7 +69,7 @@ public class Media implements Module {
         dlg.setContent(content);
         dlg.getActions().addAll(Dialog.Actions.OK);
 
-        // request focus on the username field by default (so the user can
+        // request focus on the inputText field by default (so the user can
         // type immediately without having to click first)
         Platform.runLater(new Runnable() {
             public void run() {
@@ -109,6 +109,80 @@ public class Media implements Module {
             choosen = choosen.split(" : ")[1];
         }
         return choosen;
+    }
+
+    /**
+     * Prompts a popup to the user containing a choice box and a text area.
+     * @param title : title of the window
+     * @param choices : String containing the targets to choose from
+     *                split up by a comma to facilitate the transportation of
+     *                data between javascript interface and module kernel.
+     * @return : the user's input and choice
+     *              it's given by a string giving the type and the text of the title.
+     *              the string is of type : 'type:text'
+     */
+    public String getChoiceAndInputPopup(String title, String choices, String defaultChoice, String defaultText) {
+        final TextArea inputText = new TextArea();
+        final ChoiceBox<String> choiceBox = new ChoiceBox<>();
+        ArrayList<String> choicesArray = new ArrayList<String>();
+        // Transform the choices give in a string split up by comma
+        // into an arraylist
+        if (choices != null) {
+            for (String s : choices.split(",")) {
+                choicesArray.add(s);
+            }
+        }
+        choiceBox.setItems(FXCollections.observableArrayList(choicesArray));
+        choiceBox.setValue(defaultChoice);
+        inputText.setText(defaultText);
+        inputText.setMaxSize(300, 70);
+
+        // we create a new dialog, with no owner, a title,
+        // not limited to the application's limits and with a
+        // native style.
+        Dialog dlg = new Dialog(null, title, false, DialogStyle.NATIVE);
+
+        // layout a custom GridPane containing the input field and label
+        final GridPane content = new GridPane();
+        content.setHgap(2);
+        content.setVgap(0);
+        content.add(choiceBox, 0, 0);
+        content.add(inputText, 1, 0);
+        GridPane.setHgrow(choiceBox, Priority.ALWAYS);
+
+        // create the dialog with a custom graphic and the gridpane above as the
+        // main content region
+        dlg.setResizable(true);
+        dlg.setIconifiable(false);
+        dlg.setContent(content);
+        dlg.getActions().addAll(Dialog.Actions.OK);
+
+        // request focus on the choiceBox field by default (so the user can
+        // choose immediately without having to click first)
+        Platform.runLater(new Runnable() {
+            public void run() {
+             choiceBox.requestFocus();
+            }
+        });
+
+        dlg.show();
+        String result = null;
+        String titleType = choiceBox.getValue();
+        String titleText = inputText.getText();
+        if (!"".equals(titleType) && !"".equals(titleText)) {
+            result = titleType + ":" + titleText;
+        }
+        return result;
+    }
+
+    /**
+     * Call the previous method without specific default values
+     * @param title
+     * @param choices
+     * @return String result
+     */
+    public String getChoiceAndInputPopup(String title, String choices) {
+        return getChoiceAndInputPopup (title, choices, choices.split(",")[0], "");
     }
 
 }
