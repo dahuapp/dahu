@@ -7,9 +7,10 @@ define([
     'models/actions/appear',
     'models/actions/disappear',
     'models/actions/move',
+    'models/planTitle',
     'collections/screens'
 ], function(_, Backbone, Metadata, Settings,
-            TooltipModel, AppearModel, DisappearModel, MoveModel,
+            TooltipModel, AppearModel, DisappearModel, MoveModel, PlanTitleModel,
             ScreenCollection){
 
     var VERSION = 2;
@@ -62,6 +63,13 @@ define([
             }
             if (screenModel != undefined && action != undefined) {
                 screenModel.get('actions').add(action);
+            }
+        },
+
+        addTitle: function(titleType, titleText, screenModel) {
+            if (screenModel != undefined) {
+                var title = new PlanTitleModel({type: titleType, text: titleText});
+                screenModel.get('titles').add(title);
             }
         }
     }, { // class properties (static)

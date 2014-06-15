@@ -167,7 +167,9 @@ define('dahuapp', [
         events.on('app:workspace:actions:new', function(type) {
             onActionAdd(type);
         });
-
+        events.on('app:workspace:titles:new', function() {
+            onTitleAdd();
+        });
     }
 
     /**
@@ -496,6 +498,25 @@ define('dahuapp', [
             screencastController.getScreencastModel().addAction(type, target, screen);
         }
 
+    }
+
+    /**
+     * Add a new title
+     */
+    function onTitleAdd(type) {
+        var screen = workspaceLayoutController.getCurrentScreen();
+        // we calculate the target choice to give to the user
+        // we choose to send the choices within a string to split up by a comma
+        // this will simplify the transfer between javascript interface
+        // and java kernel module.
+        // we also add in the begining of each object id the type of
+        // the object to help the user choose the correct target.
+        var choices = "h1,h2,h3";
+        var title = Kernel.module('media').getChoiceAndInputPopup(
+            "Choose a title", choices);
+        if (title != null) {
+            screencastController.getScreencastModel().addTitle(title.substr(0, 2), title.substr(3), screen);
+        }
     }
 
     /**
