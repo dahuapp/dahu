@@ -146,7 +146,7 @@ define([
          */
         clean: function() {
             if( this.loaded ) {
-                Kernel.module('filesystem').removeDir(Paths.join([getProjectDirectory(), 'build']));
+                Kernel.module('filesystem').removeDir(this.getProjectBuildDirectory());
             } else {
                 throw "No Dahu project loaded."
             }
