@@ -14,6 +14,8 @@ import org.controlsfx.dialog.Dialog.Actions;
 import org.controlsfx.dialog.DialogStyle;
 import org.controlsfx.dialog.Dialogs;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -77,6 +79,36 @@ public class Media implements Module {
 
         dlg.show();
         return inputText.getText();
+    }
+
+    /**
+     * Prompts a popup to the user containing a select input.
+     * @param title : title of the window
+     * @param targets : String containing the targets to choose from
+     *                split up by a comma to facilitate the transportation of
+     *                data between javascript interface and module kernel.
+     * @return : the user's choice
+     */
+    public String getChoicePopup(String title, String targets) {
+        ArrayList choices = new ArrayList<String>();
+        // Transform the choices give in a string split up by comma
+        // into an arraylist
+        if (targets != null) {
+            for (String s : targets.split(",")) {
+                choices.add(s);
+            }
+        }
+
+        Optional<String> response = Dialogs.create()
+                .title(title)
+                .showChoices(choices);
+
+        String choosen = null;
+        if (response.isPresent()) {
+            choosen = response.get();
+            choosen = choosen.split(" : ")[1];
+        }
+        return choosen;
     }
 
 }

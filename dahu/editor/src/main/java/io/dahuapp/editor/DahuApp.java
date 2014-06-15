@@ -309,10 +309,27 @@ public class DahuApp extends Application {
         // Fill in the toolbar when we need it
         // create new tooltip button
         Button newTooltip = new Button("New tooltip");
+        // create new actions button menu
+        MenuButton actionsMenu = new MenuButton("New action");
+        MenuItem appearItem = new MenuItem("Appear");
+        MenuItem moveItem = new MenuItem("Move");
+        MenuItem disappearItem = new MenuItem("Disappear");
+        actionsMenu.getItems().addAll(appearItem, moveItem, disappearItem);
+
+        // bind clicks to specific events
         newTooltip.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:tooltips:new');");
         });
+        appearItem.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:actions:new', 'appear');");
+        });
+        disappearItem.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:actions:new', 'disappear');");
+        });
+        moveItem.setOnAction((event) -> {
+            webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:actions:new', 'move');");
+        });
         toolBar.getItems().add(newTooltip);
-        toolBar.getItems().add(new Separator());
+        toolBar.getItems().addAll(new Separator(), actionsMenu);
     }
 }
