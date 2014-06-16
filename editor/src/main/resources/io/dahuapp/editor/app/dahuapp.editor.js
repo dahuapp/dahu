@@ -295,7 +295,6 @@ var dahuapp = (function(dahuapp, $) {
             var choice = dahuapp.drivers.fileSystem.getDirectoryFromUser("Open Dahu Project");
             if (choice !== null) {
                 projectDir = choice + dahuapp.drivers.fileSystem.getSeparator();
-                alert(projectDir);
                 createFromProjectDir();
             }
         };
