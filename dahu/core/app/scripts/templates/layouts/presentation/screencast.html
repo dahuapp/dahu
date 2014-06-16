@@ -1,7 +1,7 @@
 <html>
     <head lang="en">
         <meta charset="UTF-8">
-        <title>Dahu presentation</title>
+        <title>{{this.screencast.attributes.metadata.title}}</title>
         <!-- Required stylesheet -->
         <link rel="stylesheet" media="screen" href="./deck.js/core/deck.core.css">
 
@@ -25,7 +25,8 @@
         <script src="./deck.js/modernizr.custom.js"></script>
     </head>
     <style>
-        img.padding {
+        /* temporary */
+        img.background {
             position: absolute;
             left: 0px;
             top: 0px;
@@ -39,6 +40,7 @@
             border: 2px black solid;
             font-size: 14px;
         }
+
         .mouse{
             position: absolute;
         }
@@ -49,14 +51,14 @@
             <!-- iterate on all the screens -->
             <section class="slide">
             </section>
-            {{#each this.screens.models}}
+            {{#each this.screencast.attributes.screens.models}}
             <section class="slide" id="screen_{{id}}">
                 <!-- iterate on all objects, show only images -->
                 {{#each attributes.objects.models}}
-                {{#if isimg }}
-                <img src="{{attributes.img}}" class="padding" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
+                {{#if isImage }}
+                <img src="{{attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
                 {{/if}}
-                {{#if istooltip}}
+                {{#if isTooltip }}
                 <div class="slide">
                     <div class="tooltip"
                          style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posY}}; left: {{normalizedToPixel (screencastWidth) attributes.posX}};">
@@ -64,7 +66,7 @@
                     </div>
                 </div>
                 {{/if}}
-                {{#if ismouse }}
+                {{#if isMouse}}
                 <img src="./img/cursor.png" class="mouse"
                      style="top: {{normalizedToPixel (screencastHeight) attributes.posY}}; left:{{normalizedToPixel (screencastWidth) attributes.posX}};">
                 {{/if}}
