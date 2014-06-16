@@ -283,43 +283,19 @@ var dahuapp = (function(dahuapp, $) {
             events.onNewProjectCreated.publish();
             setStateBarMessage("New project created. Click 'Capture mode' to start adding slides.");
         };
-        var openProject = function() {
-            var choice = prompt("Enter the absolute path to the dahu project directory :",
-                    "Dahu project directory.");
-            //var choice = dahuapp.drivers.fileSystem.askForProjectDir();
+        var openProject = function() {;
+            var choice = dahuapp.drivers.fileSystem.getFileFromUser("Open Dahu Project", "dahuProjectFile");
             if (choice !== null) {
-                var fileSystem = dahuapp.drivers.fileSystem;
-                var absolutePath = choice + fileSystem.getSeparator() + jsonFileName;
-                if (!fileSystem.exists(absolutePath)) {
-                    alert("The following file :\n\n" + absolutePath +
-                        "\n\ndoesn't exist. Please create a new project,\n" +
-                        "or specify a valid dahu project directory.");
-                    return;
-                }
-                projectDir = choice;
+                projectDir = choice.substring(0,choice.lastIndexOf(dahuapp.drivers.fileSystem.getSeparator()));
                 loadFromProjectDir();
                 enableProjectButtons();
             }
         };
         var newProject = function() {
-            var choice = prompt("Enter the absolute path of the project directory :",
-                    "Dahu project directory.");
-            //choice = dahuapp.drivers.fileSystem.askForProjectDir();
+            var choice = dahuapp.drivers.fileSystem.getDirectoryFromUser("Open Dahu Project");
             if (choice !== null) {
-                var fileSystem = dahuapp.drivers.fileSystem;
-                if (!fileSystem.exists(choice)) {
-                    if (!fileSystem.create(choice)) {
-                        alert("The directory couldn't be created.\n"
-                                + "Maybe it's an issue with rights.");
-                        return;
-                    } else {
-                        setStateBarMessage("Project " + choice + " created");
-                    }
-                } else {
-                    alert("This directory already exists.\n" +
-                            "It's not a problem, but be careful !");
-                }
-                projectDir = choice;
+                projectDir = choice + dahuapp.drivers.fileSystem.getSeparator();
+                alert(projectDir);
                 createFromProjectDir();
             }
         };
@@ -382,11 +358,13 @@ var dahuapp = (function(dahuapp, $) {
             var keyboardDriver = dahuapp.drivers.keyboard;
             // if we're in capture mode, we exit it, otherwise we enter it
             if (!captureMode) {
+                keyboardDriver.start();
                 keyboardDriver.addKeyListener(self.handleCaptureModeEvent);
                 setStateBarMessage("Capture mode ON (" +
                         applicationSettings.getCaptureKey().toUpperCase() +
                         " to take a screenshot / ESC to exit capture mode)");
             } else {
+                keyboardDriver.start();
                 keyboardDriver.removeKeyListener(self.handleCaptureModeEvent);
                 setStateBarMessage("Capture mode OFF");
             }

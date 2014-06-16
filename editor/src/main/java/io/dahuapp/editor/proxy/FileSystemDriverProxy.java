@@ -130,26 +130,34 @@ public class FileSystemDriverProxy implements Proxy {
     }
 
     /**
-     * Let the user choose the project directory.
+     * Ask user to select a file according to some file filters.
      *
-     * @return The absolute path of the chosen directory.
+     * Note: due to a bug (see https://javafx-jira.kenai.com/browse/RT-37171)
+     * it is not possible to pass String[] from Javascript.
+     * Filters are then join in a string and separated with coma.
+     * @todo change this as soon the bug is solved.
+     *
+     * @param actionTitle Title of the action that will be displayed to the user.
+     * @param filterNames Filter names to use in this action.
+     * @return a string path to the file if everything is fine, null otherwise.
      */
-    public String askForProjectDir() {
-        String dirName = driver.askForProjectDir(primaryStage);
-        if (dirName == null) {
-            return null;
-        }
-        if (!driver.exists(dirName)) {
-            boolean created = driver.create(dirName);
-            if (!created) {
-                LoggerProxy.warning(getClass().getName(), "askForProjectDir",
-                        "Unable to create directory : " + dirName);
-                return null;
-            }
-        }
+    public String getFileFromUser(String actionTitle, String filterNames) {
+        String dirName = driver.getFileFromUser(primaryStage, actionTitle, filterNames);
         return dirName;
     }
-    
+
+    /**
+     * Ask user to select a directory.
+     *
+     * @param actionTitle Title of the action that will be displayed to the user.
+     * @return a string path to the directory if everything is fine, null otherwise.
+     */
+    public String getDirectoryFromUser(String actionTitle) {
+        String dirName = driver.getDirectoryFromUser(primaryStage, actionTitle);
+        return dirName;
+    }
+
+
     /**
      * Check the existence of the specified file or directory.
      * 

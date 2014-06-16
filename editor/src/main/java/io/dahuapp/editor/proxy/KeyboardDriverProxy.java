@@ -1,6 +1,8 @@
 package io.dahuapp.editor.proxy;
 
 import io.dahuapp.editor.drivers.KeyboardDriver;
+
+import java.lang.Override;
 import java.util.HashMap;
 import javafx.application.Platform;
 import javafx.scene.web.WebEngine;
@@ -113,14 +115,19 @@ public class KeyboardDriverProxy implements Proxy {
                 }
         }
     }
-    
+
     @Override
-    public void onLoad() {
+    public void onLoad(){}
+
+    @Override
+    public void onStop(){}
+
+    public void start() {
         driver.onLoad();
     }
     
-    @Override
-    public void onStop() {
+    public void stop() {
         driver.onStop();
     }
+
 }

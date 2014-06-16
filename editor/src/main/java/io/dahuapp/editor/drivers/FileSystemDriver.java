@@ -10,11 +10,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+import javafx.stage.FileChooser;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 import javax.imageio.ImageIO;
+
 
 /**
  * Driver of file system. Writes data to files on disk, or read data from files
@@ -27,7 +31,7 @@ public class FileSystemDriver implements Driver {
      * replaced if we choose a specific format for our projects. At the moment,
      * our projects are just stored in simple directories.
      */
-    private DirectoryChooser directoryChooser = new DirectoryChooser();
+    private FileChooser fileChooser = new FileChooser();
 
     /**
      * Indicates if a specified file or directory exists.
@@ -148,16 +152,65 @@ public class FileSystemDriver implements Driver {
     }
 
     /**
-     * Let the user choose the project directory.
-     * @param parent Parent window (for modality).
-     * @return The absolute path of the chosen directory.
+     * Available extension filters for FileChooser.
      */
-    public String askForProjectDir(Window parent) {
-        File file = directoryChooser.showDialog(parent);
-        if (file == null) {
-            return null;
+    private Map<String, FileChooser.ExtensionFilter> extensionFilterMap = new HashMap<String, FileChooser.ExtensionFilter>() {
+        {
+            put("allFiles", new FileChooser.ExtensionFilter("All Files", "*.*"));
+            put("dahuProjectFile", new FileChooser.ExtensionFilter("Dahu Project", "*.dahu"));
         }
-        return file.getAbsolutePath();
+    };
+
+    /**
+     * Ask user to select a file according to some file filters.
+     *
+     * Note: due to a bug (see https://javafx-jira.kenai.com/browse/RT-37171)
+     * it is not possible to pass String[] from Javascript.
+     * Filters are then join in a string and separated with coma.
+     * @todo change this as soon the bug is solved.
+     *
+     * @param parent Paren window of the FileChooser
+     * @param actionTitle Title of the action that will be displayed to the user.
+     * @param filterNames Filter names to use in this action.
+     * @return a string path to the file if everything is fine, null otherwise.
+     */
+    public String getFileFromUser(Window parent, String actionTitle, String filterNames) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle(actionTitle);
+
+        for(String filterName : filterNames.trim().split(",")) {
+            if(extensionFilterMap.containsKey(filterName)) {
+                fileChooser.getExtensionFilters().add(extensionFilterMap.get(filterName));
+            }
+        }
+
+        File selectedFile = fileChooser.showOpenDialog(parent);
+        if (selectedFile != null) {
+            return selectedFile.getAbsolutePath();
+        }
+
+        // otherwise return null
+        return null;
+    }
+
+    /**
+     * Ask user to select a directory
+     *
+     * @param parent Paren window of the DirectoryChooser
+     * @param actionTitle Title of the action that will be displayed to the user.
+     * @return a string path to the directory if everything is fine, null otherwise.
+     */
+    public String getDirectoryFromUser(Window parent, String actionTitle) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle(actionTitle);
+
+        File selectedDir = directoryChooser.showDialog(parent);
+        if (selectedDir != null) {
+            return selectedDir.getAbsolutePath();
+        }
+
+        // otherwise return null
+        return null;
     }
     
     /**
