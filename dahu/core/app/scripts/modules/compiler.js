@@ -24,7 +24,7 @@ define([
         try {
             Kernel.console.info("Starting compilation...");
             var template = Handlebars.default.compile(presentation_tpl);
-            output = template({screens: screencastModel.get('screens')});
+            output = template({screencast: screencastModel});
             Kernel.console.info("Compilation done!");
         } catch(e) {
             Kernel.console.error("Compilation failed. {}", e.stack);

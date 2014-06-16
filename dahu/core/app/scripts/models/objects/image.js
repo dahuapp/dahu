@@ -16,10 +16,10 @@ define([
         defaults: function() {
             return {
                 id: UUID.v4(),
+                type: 'image',
                 img: null
             }
         }
-
     });
 
     return ImageModel;
