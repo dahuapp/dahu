@@ -312,6 +312,8 @@ public class DahuApp extends Application {
         newTooltip.setOnAction((event) -> {
             webEngineRuntime.executeScript("dahuapp.events.trigger('app:workspace:tooltips:new');");
         });
+        // delete old buttons when we reshow the toolbar
+        toolBar.getItems().removeAll(toolBar.getItems());
         toolBar.getItems().add(newTooltip);
         toolBar.getItems().add(new Separator());
     }
