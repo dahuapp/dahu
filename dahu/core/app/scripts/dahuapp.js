@@ -205,7 +205,6 @@ define('dahuapp', [
                 if( method === 'create' ) {
                     // define the indentation value to write the updated dahu file
                     var indentation = 4;
-                    Kernel.console.log(model.toJSON(indentation));
                     Kernel.module('filesystem').writeToFile(screencastController.getProjectFilename(), model.toJSON(indentation));
                 }
                 //@todo handle other methods
