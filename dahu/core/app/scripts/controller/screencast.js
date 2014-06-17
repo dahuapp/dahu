@@ -167,7 +167,7 @@ define([
                 Kernel.console.info("Copying images");
                 //// copy the image folder to the build/img
                 Kernel.module('filesystem').copyDir(
-                    this.getProjectImgDirectory, // origin
+                    this.getProjectImgDirectory(), // origin
                     Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
                 );
                 Kernel.console.info("done.");
