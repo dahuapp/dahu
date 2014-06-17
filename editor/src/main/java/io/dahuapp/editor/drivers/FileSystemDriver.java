@@ -1,14 +1,8 @@
 package io.dahuapp.editor.drivers;
 
 import io.dahuapp.editor.proxy.LoggerProxy;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,7 +241,25 @@ public class FileSystemDriver implements Driver {
         LoggerProxy.info(getClass().getName(), "copy", "copy " + src + " to " + dest + " success");
         return true;
     }
-    
+
+
+    public void copy(File source, File dest) throws IOException {
+        InputStream input = null;
+        OutputStream output = null;
+        try {
+            input = new FileInputStream(source);
+            output = new FileOutputStream(dest);
+            byte[] buf = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = input.read(buf)) > 0) {
+                output.write(buf, 0, bytesRead);
+            }
+        } finally {
+            input.close();
+            output.close();
+        }
+    }
+
     /**
      * Writes the specified image into the specified file.
      * @param image Image to write on a file.
@@ -262,6 +274,21 @@ public class FileSystemDriver implements Driver {
         }
     }
 
+    /**
+     * Move src file to destDirPath.
+     * @param file File to copy.
+     * @param destDirPath Destination directory.
+     * @return True only if the move succeed.
+     */
+    public boolean move(File file, String destDirPath) {
+        try{
+            return file.renameTo(new File(destDirPath + file.getName()));
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     @Override
     public void onLoad() {
     }
@@ -269,4 +296,5 @@ public class FileSystemDriver implements Driver {
     @Override
     public void onStop() {
     }
+
 }

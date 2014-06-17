@@ -5,12 +5,18 @@ import io.dahuapp.editor.drivers.FileSystemDriver;
 import java.awt.Dimension;
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.stream.ImageInputStream;
 
 /**
  * Proxy for the file system driver.
@@ -215,7 +221,32 @@ public class FileSystemDriverProxy implements Proxy {
             }
         }
     }
-    
+
+    /**
+     * Get the image dimensions without reading it entirely
+     * @return The dimension of the readen image
+     */
+    private Dimension getDimensionImage(File resourceFile) throws IOException {
+        ImageInputStream in = ImageIO.createImageInputStream(resourceFile);
+        if (in != null) {
+            try {
+                final Iterator<ImageReader> readers = ImageIO.getImageReaders(in);
+                if (readers.hasNext()) {
+                    ImageReader reader = readers.next();
+                    try {
+                        reader.setInput(in);
+                        return new Dimension(reader.getWidth(0), reader.getHeight(0));
+                    } finally {
+                        reader.dispose();
+                    }
+                }
+            } finally {
+                if (in != null) in.close();
+            }
+        }
+        return null;
+    }
+
     /**
      * Copies the .png images from a directory to another, and resizes them
      * with the specified ratio.
@@ -230,26 +261,39 @@ public class FileSystemDriverProxy implements Proxy {
         File source = new File(src);
         try {
             for (File imgFile : source.listFiles(imageFilter)) {
-                File destination = new File(dest + getSeparator() + imgFile.getName());
-                String imageURL = imgFile.toURI().toURL().toString();
-                Image image;
-                if (width != 0 && height != 0) {
-                    image = new Image(imageURL, width, height, false, true);
-                } else if (width != 0 || height != 0) {
-                    image = new Image(imageURL, width, height, true, true);
-                } else {
-                    image = new Image(imageURL);
+                Dimension sourceDimension = getDimensionImage(imgFile);
+                if (sourceDimension == null){
+                    continue;
                 }
-                dimension.width = (int)image.getWidth();
-                dimension.height = (int)image.getHeight();
-                driver.writeImage(image, destination);
+                String destinationName = dest + getSeparator() + imgFile.getName();
+                File destination = new File(destinationName);
+                if (sourceDimension.width == width && sourceDimension.height == height){
+                    dimension.width = width;
+                    dimension.height = height;
+                    copyFile(imgFile, destination);
+                } else {
+                    String imageURL = imgFile.toURI().toURL().toString();
+                    Image image;
+                    if (width != 0 && height != 0) {
+                        image = new Image(imageURL, width, height, false, true);
+                    } else if (width != 0 || height != 0) {
+                        image = new Image(imageURL, width, height, true, true);
+                    } else {
+                        image = new Image(imageURL);
+                    }
+                    dimension.width = (int) image.getWidth();
+                    dimension.height = (int) image.getHeight();
+                    driver.writeImage(image, destination);
+                }
             }
         } catch (MalformedURLException e) {
             LoggerProxy.severe("Malformed URL", e);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return dimension;
     }
-    
+
     /**
      * Returns the dimension of a resized image.
      * @param path Path to an image.
@@ -289,7 +333,21 @@ public class FileSystemDriverProxy implements Proxy {
             LoggerProxy.severe("Malformed URL", ex);
         }
     }
-    
+
+    /**
+     * Copies the file denoted by its pathname to another file.
+     * @param src Name of the file to copy.
+     * @param destination File where to put the copy.
+     */
+    private void copyFile(File src, File destination) {
+        try {
+            driver.copy(src, destination);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     /**
      * Gets the path to a resource of the application.
      * @param name Name of the resource to find.
@@ -297,5 +355,15 @@ public class FileSystemDriverProxy implements Proxy {
      */
     public String getResource(String name) {
         return DahuApp.getResource(name);
+    }
+
+    /**
+     * Move src file to destDirPath.
+     * @param src Name of the file to move
+     * @param destDirPath Destination directory.
+     * @return True only if the move succeed.
+     */
+    public void move(String src, String destDirPath) {
+        driver.move(new File(src), destDirPath);
     }
 }
