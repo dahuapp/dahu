@@ -18,9 +18,11 @@ define([
 
         initialize: function () {
             // define a is{Type} function.
-            this["is"+this.get("type").charAt(0).toUpperCase() + this.get("type").substring(1)] = function() {
-                return true;
-            };
+            if (this.get("type") != undefined) {
+                this["is" + this.get("type").charAt(0).toUpperCase() + this.get("type").substring(1)] = function () {
+                    return true;
+                };
+            }
         }
     });
 
