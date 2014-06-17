@@ -62,14 +62,14 @@
                 {{#if isTooltip }}
                 <div class="slide">
                     <div class="tooltip"
-                         style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posY}}; left: {{normalizedToPixel (screencastWidth) attributes.posX}};">
+                         style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
                         {{{attributes.text}}}
                     </div>
                 </div>
                 {{/if}}
                 {{#if isMouse}}
                 <img src="./img/cursor.png" class="mouse"
-                     style="top: {{normalizedToPixel (screencastHeight) attributes.posY}}; left:{{normalizedToPixel (screencastWidth) attributes.posX}};">
+                     style="top: {{normalizedToPixel (screencastHeight) attributes.posy}}; left:{{normalizedToPixel (screencastWidth) attributes.posx}};">
                 {{/if}}
                 {{/each}}
             </section>
