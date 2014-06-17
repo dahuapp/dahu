@@ -42,11 +42,15 @@ html, body {
   overflow-x: visible;
   overflow-y: scroll;
 
-  .image {
-    width: 150px;
+  .screen {
+    margin: 20px;
 
-    img {
-      width: 100%;
+    .image {
+      width: 150px;
+
+      img {
+        width: 100%;
+      }
     }
   }
 }
@@ -57,43 +61,89 @@ html, body {
   top: 35px;
   left: 220px;
   right: 0px;
-  bottom: 220px;
+  bottom: 0px;
 
-  .image {
-    width: 100%;
+  #workspace-screen {
+    @extend %panel;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    right: 220px;
+    bottom: 0px;
+  }
 
-    img {
-      max-width: 80%;
-      max-height: 80%;
-    }
+  #workspace-actions {
+    @extend %panel;
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    width: 220px;
+    padding-left: 15px;
+    border-left: 5px solid #e5e5e5;
+    overflow-x: visible;
+    overflow-y: scroll;
+  }
+
+  #workspace-note {
+    @extend %panel;
+    position: absolute;
+    height: 220px;
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-top: 5px solid #e5e5e5;
   }
 }
 
-#actions {
-  @extend %panel;
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  bottom: 0px;
-  width: 220px;
-  padding-left: 15px;
-  border-left: 5px solid #e5e5e5;
-  overflow-x: visible;
-  overflow-y: scroll;
-}
+// Workspace content style
 
-#note {
-  @extend %panel;
-  position: absolute;
-  height: 220px;
-  left: 220px;
-  right: 0px;
-  bottom: 0px;
-  border-top: 5px solid #e5e5e5;
-}
+#workspace-screen {
+  padding: 10px;
+  background-color: $dahu-workspace-screen-editor-background-color;
 
-// Filmstrip
+  .screen {
+    position: relative;
 
-#filmstrip .screen {
-  margin: 20px;
+    .objects {
+      position: relative;
+      width: 100%;
+      height: 100%;
+    }
+
+    // all objects have an absolute position
+    .object {
+      position: absolute;
+    }
+
+    // Image
+    .image.background {
+      width: 100%;
+      z-index: 0;
+
+      img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    // Mouse
+    .mouse {
+      z-index: 1000;
+
+      img {
+        border: 0px;
+        width: 10px;
+        height: 10px;
+      }
+    }
+
+    // Tooltip
+    .tooltip {
+      @include opacity(0.8);
+      min-height: 50px;
+      background-color: yellow;
+      padding: 10px;
+    }
+  }
 }

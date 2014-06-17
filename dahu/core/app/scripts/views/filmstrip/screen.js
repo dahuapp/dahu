@@ -16,6 +16,9 @@ define([
      */
     var ScreenView = Marionette.CompositeView.extend({
         template: Handlebars.default.compile(Filmstrip_screen_tpl),
+
+        id : function () { return this.model.get("id"); },
+        className: 'screen',
         itemViewContainer: '#objects',
 
         // Select the ItemView depending on the object type.
@@ -42,7 +45,7 @@ define([
 
         // Detect a click on the screen div
         events: {
-            "click .screen": "display"
+            "click": "display"
         },
 
         display: function(event){

@@ -20,6 +20,15 @@ define([
      */
     var ScreenView = Marionette.CompositeView.extend({
         template: Handlebars.default.compile(Filmstrip_screen_tpl),
+
+        id : function () { return this.model.get("id"); },
+        className: 'screen',
+        itemViewContainer: '#objects',
+
+        modelEvents: {
+            'change': 'onChanged'
+        },
+
         // We select the ItemView depending on the object type.
         getItemView: function(item){
             if(item instanceof ImageModel) {
@@ -31,9 +40,7 @@ define([
             }else{
                 return ObjectView;
             }
-
         },
-        itemViewContainer: '#objects',
 
         initialize : function () {
             // Specify that the collection we want to iterate, for the itemView, is
@@ -51,10 +58,6 @@ define([
 
         onChanged: function(){
             this.render();
-        },
-
-        modelEvents: {
-            'change': 'onChanged'
         }
     });
 

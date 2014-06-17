@@ -15,11 +15,13 @@ define([
      * Dahu workspace layout.
      */
     var WorkspaceLayout = Backbone.Marionette.Layout.extend({
+        className: 'layout-wrapper',
         template: Handlebars.default.compile(Workspace_tpl),
 
         regions: {
-            screenEditor: "#screen",
-            actionsEditor: "#actions"
+            screenEditor: "#workspace-screen",
+            actionsEditor: "#workspace-actions",
+            noteEditor: "#workspace-note"
         }
     });
 

@@ -13,8 +13,8 @@ define([
      * Mouse view
      */
     var mouseView = ObjectView.extend({
-        template: Handlebars.default.compile(Objetcs_mouse_tpl)
-
+        template: Handlebars.default.compile(Objetcs_mouse_tpl),
+        className: 'object mouse'
     });
 
     return mouseView;

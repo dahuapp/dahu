@@ -12,6 +12,8 @@ define([
      * Filmstrip screen view
      */
     var ScreensView = Marionette.CollectionView.extend({
+
+        id: 'filmstrip-screens',
         itemView: FilmstripScreenView,
 
         /**

@@ -13,6 +13,8 @@ define([
      * Dahu application layout.
      */
     var ApplicationLayout = Backbone.Marionette.Layout.extend({
+        id: 'dahuapp',
+        className: 'layout-wrapper',
         template: Handlebars.default.compile(Dahuapp_tpl),
 
         regions: {
