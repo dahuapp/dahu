@@ -11,14 +11,13 @@ define([
      * Model of move action
      */
     var MoveModel = ActionModel.extend({
-        defaults: {
-            type: 'move',
-            target:'mouse-cursor',
-            trigger: null,
-            finalAbs: null,
-            finalOrd: null
+        defaults: function() {
+            return _.extend({}, ActionModel.prototype.defaults(), {
+                type: 'move',
+                finalAbs: null,
+                finalOrd: null
+            });
         }
-
     });
 
     return MoveModel;

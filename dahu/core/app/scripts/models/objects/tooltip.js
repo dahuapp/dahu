@@ -13,16 +13,13 @@ define([
      *  Model of tooltip object
      */
     var TooltipModel = ObjectModel.extend({
-        defaults: function(){
-            return {
-                id: UUID.v4(),
+        defaults: function() {
+            return _.extend({}, ObjectModel.prototype.defaults(), {
                 type: 'tooltip',
                 text: "",
-                color: "#FFFFDD",
-                width: "240px",
-                posx: 0.3,
-                posy: 0.3
-            }
+                //@todo use only %, see #91
+                width: "240px"
+            });
         },
 
         modifyText: function(newText) {

@@ -12,13 +12,11 @@ define([
      * Model of Disappear action
      * */
     var DisappearModel = ActionModel.extend({
-        defaults: {
-            type: 'disappear',
-            target:null,
-            trigger: null,
-            duration: null
+        defaults: function() {
+            return _.extend({}, ActionModel.prototype.defaults(), {
+                type: 'disappear'
+            });
         }
-
     });
 
     return DisappearModel;

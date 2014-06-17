@@ -14,11 +14,10 @@ define([
      */
     var ImageModel = ObjectModel.extend({
         defaults: function() {
-            return {
-                id: UUID.v4(),
+            return _.extend({}, ObjectModel.prototype.defaults(), {
                 type: 'image',
                 img: null
-            }
+            });
         }
     });
 

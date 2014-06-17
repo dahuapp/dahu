@@ -4,8 +4,9 @@
 
 define([
     'underscore',
-    'backbone'
-], function(_, Backbone){
+    'backbone',
+    'uuid'
+], function(_, Backbone, UUID){
 
     /**
      * Base action model.
@@ -13,7 +14,10 @@ define([
     var ActionModel = Backbone.Model.extend({
         defaults: function() {
             return {
-                id: null
+                id: UUID.v4(),
+                target:null,
+                trigger: null,
+                duration: null
             }
         }
     });

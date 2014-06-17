@@ -11,6 +11,7 @@ define([
         defaults: function() {
             return {
                 id: UUID.v4(),
+                type: 'unknown',
                 posx: 0,
                 posy: 0
             }

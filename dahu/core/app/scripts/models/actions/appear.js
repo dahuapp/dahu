@@ -12,13 +12,11 @@ define([
      * Model of appear action
      */
     var AppearModel = ActionModel.extend({
-        defaults: {
-            type: 'appear',
-            target:null,
-            trigger: null,
-            duration: null
+        defaults: function() {
+            return _.extend({}, ActionModel.prototype.defaults(), {
+                type: 'appear'
+            });
         }
-
     });
 
     return AppearModel;

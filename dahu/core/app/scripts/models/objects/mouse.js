@@ -12,9 +12,10 @@ define([
      *  Model of mouse object
      */
     var MouseModel = ObjectModel.extend({
-        defaults: {
-            type: 'mouse',
-            id: "mouse-cursor"
+        defaults: function() {
+            return _.extend({}, ObjectModel.prototype.defaults(), {
+                type: 'mouse'
+            });
         }
     });
 
