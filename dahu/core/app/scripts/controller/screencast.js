@@ -170,8 +170,12 @@ define([
                     this.getProjectImgDirectory(), // origin
                     Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
                 );
+                //// copy the cursor
+                Kernel.module('filesystem').copyResourceDir(
+                    'classpath:///io/dahuapp/core/media/images/cursor.png', // origin
+                    Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
+                );
                 Kernel.console.info("done.");
-
                 // copy resources
                 Kernel.console.info("Copying resources");
                 //// copy deck.js folder to build/libs/deck.js
