@@ -168,6 +168,15 @@
                 <li><button class="btn" id="edit-action" disabled><i class="icon-wrench"></i></button></li>
 				<li class="divider-vertical"></li>
 				<li><button class="btn" id="add-tooltip" disabled><i class="icon-comment"></i></button></li>
+                <li class="divider-vertical"></li>
+                <li>
+                    <div class="centre">
+                        <select class="select" id="edit-slide-trigger" disabled>
+                            <option value="onClick">onClick</option>
+                            <option value="afterPrevious">afterPrevious</option>
+                        </select>
+                    </div>
+                </li>
             </ul>
         </div>
     </div>
@@ -307,6 +316,10 @@
                 <button id="edit-tooltip-ok" name="edit-tooltip-ok" class="btn btn-primary" style="text-align: left">OK</button>
                 <button id="edit-tooltip-cancel" name="edit-tooltip-cancel" class="btn btn-danger" style="text-align: left">Cancel</button>
             </div>
+            <select id="edit-tooltip-trigger" style="text-align:left">
+                <option value="onClick">onClick</option>
+                <option value="afterPrevious">afterPrevious</option>
+            </select>
             <button id="edit-tooltip-delete-button" name="edit-tooltip-delete-button" class="btn btn-danger">Delete tooltip</button>
         </div>
     </div>

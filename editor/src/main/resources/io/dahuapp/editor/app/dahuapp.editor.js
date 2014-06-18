@@ -239,6 +239,7 @@ var dahuapp = (function(dahuapp, $) {
                 setElementDisabled('#this-slide-up', false);
                 setElementDisabled('#this-slide-down', false);
                 setElementDisabled('#throw-this-slide', false);
+                setElementDisabled('#edit-slide-trigger', false);
             }
             if (selectedObjectOnSlide !== -1) {
                 setElementDisabled('#edit-action');
@@ -382,6 +383,7 @@ var dahuapp = (function(dahuapp, $) {
             setElementDisabled('#visual-mode', captureMode);
             setElementDisabled('#set-capture-key', captureMode);
             setElementDisabled('#set-output-image-size', captureMode);
+            setElementDisabled('#edit-slide-trigger', captureMode);
             actualiseObjectButtonsState();
             if (captureMode) {
                 dahuapp.drivers.logger.JSconfig("dahuap.editor.js", "switchCaptureMode", "capture mode on");
@@ -483,6 +485,12 @@ var dahuapp = (function(dahuapp, $) {
                 var tooltip = $('#'+tooltipId);
                 $('#tooltip-id-container').text(tooltipId);
                 $('#edit-tooltip-input').val(tooltip.html());
+                for(var j =0; j < jsonModel.getActionList(idSlide).length; j++){
+                    if(jsonModel.getActionList(idSlide)[j].target == tooltipId){
+                        $('#edit-tooltip-trigger').val(jsonModel.getActionList(idSlide)[j].trigger || "onClick");
+                        break;
+                    }
+                }
                 showPopup("#edit-tooltip-popup");
             });
         };
@@ -525,7 +533,7 @@ var dahuapp = (function(dahuapp, $) {
          * This only affects the appearance.
          */
         var setElementDisabled = function(selector, boolean) {
-            if ($(selector).is('button')) {
+            if ($(selector).is('button') || $(selector).is('select')) {
                 $(selector).prop('disabled', boolean);
             } else {
                 if (boolean) {
@@ -761,6 +769,20 @@ var dahuapp = (function(dahuapp, $) {
             }
         };
 
+        var actualiseSelectTrigger = function() {
+            if (selectedSlide == -1){
+                return;
+            }
+            var actionList = jsonModel.getSlide(selectedSlide).action;
+            for ( var k= 0; k < actionList.length; k++) {
+                // Retrieve the action matching the mouse in the jsonModel
+                if (actionList[k].target == 'mouse-cursor'){
+                    $('#edit-slide-trigger').val(actionList[k].trigger);
+                    break;
+                }
+            }
+        };
+
         /* UUID generation */
         function s4() {
             return Math.floor((1 + Math.random()) * 0x10000)
@@ -881,12 +903,14 @@ var dahuapp = (function(dahuapp, $) {
             events.onSelectedImageChanged.subscribe(actualiseSlideButtonsState);
             events.onSelectedImageChanged.subscribe(actualiseObjectButtonsState);
             events.onSelectedImageChanged.subscribe(setSelectedOnImageList);
+            events.onSelectedImageChanged.subscribe(actualiseSelectTrigger);
             events.onNewImageTaken.subscribe(updateImageList);
             events.onNewProjectCreated.subscribe(cleanImageList);
             events.onNewProjectCreated.subscribe(cleanPreview);
             events.onNewProjectCreated.subscribe(enableProjectButtons);
             events.onNewProjectCreated.subscribe(actualiseSlideButtonsState);
             events.onNewProjectCreated.subscribe(actualiseObjectButtonsState);
+            events.onNewProjectCreated.subscribe(actualiseSelectTrigger);
             events.onSelectedObjectChanged.subscribe(setSelectedObjectOnSlide);
             events.onSelectedObjectChanged.subscribe(actualiseObjectButtonsState);
             events.onPopupClosed.subscribe(closePopup);
@@ -1071,6 +1095,17 @@ var dahuapp = (function(dahuapp, $) {
 					updatePreview(selectedSlide);
 				}
 			});
+            $("#edit-slide-trigger").change(function () {
+                var actionList = jsonModel.getSlide(selectedSlide).action;
+                for ( var k= 0; k < actionList.length; k++) {
+                    // Retrieve the action matching the mouse in the jsonModel
+                    if (actionList[k].target == 'mouse-cursor'){
+                        actionList[k].trigger = $("#edit-slide-trigger").val();
+                        break;
+                    }
+                }
+            });
+
             $('#throw-this-slide').click(removeSelectedSlide);
             $('#this-slide-up').click(moveSelectedSlideUp);
             $('#this-slide-down').click(moveSelectedSlideDown);
@@ -1112,11 +1147,19 @@ var dahuapp = (function(dahuapp, $) {
                 var tooltipId = $("#tooltip-id-container").text();
                 var idSlide = selectedSlide;
                 var userInput =  $('#edit-tooltip-input').val();
+                var triggerInput = $('#edit-tooltip-trigger').val();
                 // Update jsonModel
                 for ( var k= 0; k < jsonModel.getSlide(idSlide).object.length; k++) {
                     // Retrieve the tooltip in the jsonModel
                     if (jsonModel.getSlide(idSlide).object[k].id == tooltipId){
                         jsonModel.getSlide(idSlide).object[k].text = userInput;
+                        break;
+                    }
+                }
+                for(var j =0; j < jsonModel.getActionList(idSlide).length; j++){
+                    if(jsonModel.getActionList(idSlide)[j].target == tooltipId){
+                        jsonModel.getActionList(idSlide)[j].trigger = triggerInput;
+                        break;
                     }
                 }
                 updatePreview(selectedSlide);
