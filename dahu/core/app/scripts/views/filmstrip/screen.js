@@ -19,24 +19,24 @@ define([
 
         id : function () { return this.model.get("id"); },
         className: 'screen',
-        itemViewContainer: '#objects',
+        childViewContainer: '#objects',
 
         // Select the ItemView depending on the object type.
-        getItemView: function(item){
+        getChildView: function(item){
             if(item instanceof ImageModel) {
                 return  ImageView;
             }
         },
 
         // Only show object of type 'image'
-        addItemView: function(item, ItemView, index){
+        addChild: function(item, ItemView, index){
             if ( item instanceof ImageModel ) {
-                Backbone.Marionette.CollectionView.prototype.addItemView.apply(this, arguments);
+                Backbone.Marionette.CollectionView.prototype.addChild.apply(this, arguments);
             }
         },
 
         initialize : function () {
-            // Specify that the collection we want to iterate, for the itemView, is
+            // Specify that the collection we want to iterate, for the childView, is
             // given by the attribute objects.
             if (this.model != null) {
                 this.collection = this.model.get('objects');

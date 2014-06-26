@@ -23,14 +23,14 @@ define([
 
         id : function () { return this.model.get("id"); },
         className: 'screen',
-        itemViewContainer: '#objects',
+        childViewContainer: '#objects',
 
         modelEvents: {
             'change': 'onChanged'
         },
 
         // We select the ItemView depending on the object type.
-        getItemView: function(item){
+        getChildView: function(item){
             if(item instanceof ImageModel) {
                 return ImageView;
             }else if(item instanceof MouseModel){
@@ -43,7 +43,7 @@ define([
         },
 
         initialize : function () {
-            // Specify that the collection we want to iterate, for the itemView, is
+            // Specify that the collection we want to iterate, for the childView, is
             // given by the attribute objects.
             if (this.model != null && this.model != undefined) {
                 this.collection = this.model.get('objects');

@@ -39,7 +39,7 @@ require.config({
         text: '../components/requirejs-text/text',
         jquery: '../components/jquery/dist/jquery',
         backbone: '../components/backbone/backbone',
-        'backbone.marionette' : '../components/backbone.marionette/lib/core/amd/backbone.marionette',
+        'backbone.marionette' : '../components/backbone.marionette/lib/core/backbone.marionette',
         'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
         'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
         underscore: '../components/underscore/underscore',
@@ -103,7 +103,7 @@ define('dahuapp', [
     /**
      * Start the application.
      */
-    app.on("initialize:before", function(options){
+    app.on("before:start", function(options){
         Kernel.start();
         initBackbone();
         initEvent();
