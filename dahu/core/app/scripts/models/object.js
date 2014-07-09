@@ -6,14 +6,17 @@ define([
 
     /**
      * Base object model.
+     *
+     * @important please prefer using *CSS property name* when object properties are related to CSS property.
+     * For instance instead of naming the x position of an object *posx* call it *left* instead...
      */
     var ObjectModel = Backbone.Model.extend({
         defaults: function() {
             return {
                 id: UUID.v4(),
                 type: 'unknown',
-                posx: 0,
-                posy: 0
+                /* @todo rename it to "left" */ posx: 0,
+                /* @todo rename it to "top" */ posy: 0
             }
         },
 

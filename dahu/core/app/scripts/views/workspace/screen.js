@@ -5,6 +5,7 @@
 define([
     'handlebars',
     'backbone.marionette',
+    'fit',
     // modules
     'modules/events',
     'modules/requestResponse',
@@ -21,6 +22,7 @@ define([
 ], function(
     Handlebars,
     Marionette,
+    fit,
     // modules
     events,
     reqres,
@@ -63,22 +65,34 @@ define([
             }
         },
 
-        initialize : function () {
-            // Specify that the collection we want to iterate, for the childView, is
-            // given by the attribute objects.
-            if (this.model != null && this.model != undefined) {
-                this.collection = this.model.get('objects');
-                // Tell the view to render itself when the
-                // model/collection is changed.
-                this.model.on('change', this.onChanged(), this);
-                if (this.collection != null) {
-                    this.collection.on('change', this.onChanged(), this);
-                }
-            }
+        onShow: function() {
+            // setup UI
+            var ctrl = reqres.request('app:screencast:controller');
+
+            this.$('.container').css({
+                width: ctrl.getScreencastWidth(),
+                height: ctrl.getScreencastHeight()
+            });
+
+            this.watching = fit(this.$('.container')[0], this.$el[0], {
+                hAlign: fit.CENTER,
+                vAlign: fit.TOP,
+                watch: true,     // refresh on resize
+                cover: false     // fit within, do not cover
+            }, function( transform, element ) {
+                // scale the workspace
+                fit.cssTransform(transform, element);
+                // notify listener that workspace was scaled
+                events.trigger('app:workspace:onScaleChanged', transform.scale);
+            });
         },
 
-        onChanged: function(){
-            this.render();
+        onDestroy: function() {
+            // turn off watching before destroying the view
+            // otherwise the watcher keeps on being notified.
+            if( this.watching ) {
+                this.watching.off();
+            }
         }
     });
 });

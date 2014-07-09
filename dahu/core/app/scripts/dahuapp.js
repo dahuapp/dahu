@@ -26,18 +26,22 @@ require.config({
             exports : 'Babysitter'
         },
         bootstrap: {
-            deps: ['jquery']
+            deps: ['jquery', 'jquery-ui']
         },
         handlebars: {
             exports: 'Handlebars'
         },
         uuid: {
             exports: 'uuid'
+        },
+        fit: {
+            exports: 'fit'
         }
     },
     paths: {
         text: '../components/requirejs-text/text',
         jquery: '../components/jquery/dist/jquery',
+        'jquery-ui': '../components/jqueryui/ui/jquery-ui',
         backbone: '../components/backbone/backbone',
         'backbone.marionette' : '../components/backbone.marionette/lib/core/backbone.marionette',
         'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
@@ -45,7 +49,8 @@ require.config({
         underscore: '../components/underscore/underscore',
         bootstrap: '../components/sass-bootstrap/dist/js/bootstrap',
         handlebars: '../components/handlebars/handlebars.amd',
-        uuid: '../components/node-uuid/uuid'
+        uuid: '../components/node-uuid/uuid',
+        fit: '../components/fit.js/fit'
     }
 });
 

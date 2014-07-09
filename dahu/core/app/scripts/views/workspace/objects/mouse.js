@@ -5,17 +5,39 @@
 define([
     'handlebars',
     'backbone.marionette',
+    // views
     'views/common/objects/object',
+    // behaviors
+    'behaviors/workspace/objects/draggable',
+    // templates
     'text!templates/views/workspace/mouse.html'
-], function(Handlebars, Marionette, ObjectView, Objetcs_mouse_tpl){
+], function(
+    Handlebars,
+    Marionette,
+    // views
+    ObjectView,
+    // behaviors
+    DraggableBehavior,
+    // templates
+    mouseTemplate){
 
     /**
      * Mouse view
      */
-    var mouseView = ObjectView.extend({
-        template: Handlebars.default.compile(Objetcs_mouse_tpl),
-        className: 'object mouse'
-    });
+    return ObjectView.extend({
+        template: Handlebars.default.compile(mouseTemplate),
 
-    return mouseView;
+        className: 'object mouse',
+
+        behaviors: {
+            DraggableBehavior: {
+                behaviorClass: DraggableBehavior
+            }
+        },
+
+        onDragCompleted: function(position) {
+            this.model.set('posx', position.x);
+            this.model.set('posy', position.y);
+        }
+    });
 });

@@ -4,57 +4,65 @@
 define([
     'handlebars',
     'backbone.marionette',
+    // modules
     'modules/events',
+    // views
     'views/common/objects/object',
+    // behaviors
+    'behaviors/workspace/objects/resizable',
+    'behaviors/workspace/objects/draggable',
+    // templates
     'text!templates/views/workspace/tooltip.html'
-], function(Handlebars, Marionette, events, ObjectView, Objetcs_tooltip_tpl){
+], function(
+    Handlebars,
+    Marionette,
+    // modules
+    events,
+    // models
+    ObjectView,
+    // behaviors
+    ResizableBehavior,
+    DraggableBehavior,
+    // templates
+    tooltipTemplate){
 
     /**
      * Tooltip view
      */
-    var tooltipView = ObjectView.extend({
-        template: Handlebars.default.compile(Objetcs_tooltip_tpl),
+    return ObjectView.extend({
+        template: Handlebars.default.compile(tooltipTemplate),
 
-        draggable: true,
-        className: 'object tooltip',
-
-        templateHelpers: {
-            getText: function () {
-                return this.text;
-            }
-        },
+        className: 'object tooltip ui-widget-content',
 
         events: {
-            "click": "edit"
+            "dblclick": "edit"
         },
 
         modelEvents: {
-            'change': 'fieldsChanged'
+            'change': 'render'
         },
 
-        updateCSS: function() {
-            // call super onRender
-            ObjectView.prototype.updateCSS.call(this);
+        behaviors: {
+            ResizableBehavior: {
+                behaviorClass: ResizableBehavior
+            },
+            DraggableBehavior: {
+                behaviorClass: DraggableBehavior
+            }
+        },
 
-            // set position of the object every time it is rendered.
-            // @todo handle the case where we are dragging this object.
-            // @todo move width and height in % (see #91)
-            this.$el.css({
-                'width': this.model.get('width'),
-                'height': this.model.get('height') || 'auto',
-                // @todo remove this and put it as a property in model.
-                'z-index': 10
-            });
+        onResizeCompleted: function(size) {
+            this.model.set('width', size.width);
+            this.model.set('height', size.height);
+        },
+
+        onDragCompleted: function(position) {
+            this.model.set('posx', position.x);
+            this.model.set('posy', position.y);
         },
 
         edit: function(event) {
             events.trigger('app:workspace:tooltips:edit', this.model);
-        },
-
-        fieldsChanged: function() {
-            this.render();
         }
     });
-
-    return tooltipView;
 });

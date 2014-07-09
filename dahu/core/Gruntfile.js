@@ -182,6 +182,7 @@ module.exports = function (grunt) {
             },
             options: {
                 almond: true,
+                wrapShim: true,
                 optimize: 'uglify2',
                 preserveLicenseComments: false,
                 uglify2: {
@@ -233,7 +234,8 @@ module.exports = function (grunt) {
                 files: {
                     '<%= yeoman.dist %>/styles/main.css': [
                         '.tmp/styles/{,*/}*.css',
-                        '<%= yeoman.app %>/styles/{,*/}*.css'
+                        '<%= yeoman.app %>/styles/{,*/}*.css',
+                        '<%= yeoman.app %>/<%= yeoman.bower %>/jqueryui/themes/base/jquery-ui.css'
                     ]
                 }
             }
@@ -271,7 +273,8 @@ module.exports = function (grunt) {
                         '.htaccess',
                         'media/images/{,*/}*.{webp,gif}',
                         'styles/fonts/{,*/}*.*',
-                        '<%= yeoman.bower %>/sass-bootstrap/fonts/*.*'
+                        '<%= yeoman.bower %>/sass-bootstrap/fonts/*.*',
+                        '<%= yeoman.bower %>/jqueryui/themes/base/images/*.*'
                     ]
                 }]
             },
@@ -381,7 +384,6 @@ module.exports = function (grunt) {
         'requirejs',
         'imagemin',
         'htmlmin',
-        'concat',
         'cssmin',
         'copy',
         'usemin',
