@@ -5,15 +5,18 @@
 define([
     'handlebars',
     'backbone.marionette',
+    // templates
     'text!templates/views/workspace/actions/appear.html'
-], function(Handlebars, Marionette, Actions_appear_tpl){
+], function(
+    Handlebars,
+    Marionette,
+    // templates
+    appearTemplate){
 
     /**
      * Appear action view
      */
-    var appearView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(Actions_appear_tpl)
+    return Marionette.ItemView.extend({
+        template: Handlebars.default.compile(appearTemplate)
     });
-
-    return appearView;
 });

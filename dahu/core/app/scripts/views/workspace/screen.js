@@ -5,61 +5,94 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/screen.html',
+    'fit',
+    // modules
+    'modules/events',
+    'modules/requestResponse',
+    // models
     'models/objects/image',
     'models/objects/mouse',
     'models/objects/tooltip',
-    'views/objects/image',
-    'views/objects/mouse',
-    'views/objects/tooltip',
-    'views/objects/object'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, MouseModel, TooltipModel, ImageView, MouseView, TooltipView, ObjectView){
+    // views
+    'views/common/objects/image',
+    'views/workspace/objects/mouse',
+    'views/workspace/objects/tooltip',
+    // templates
+    'text!templates/views/screen.html'
+], function(
+    Handlebars,
+    Marionette,
+    fit,
+    // modules
+    events,
+    reqres,
+    // models
+    ImageModel,
+    MouseModel,
+    TooltipModel,
+    // view
+    ImageView,
+    MouseView,
+    TooltipView,
+    // templates
+    screenTemplate){
 
     /**
      * Workspace screen view
      */
-    var ScreenView = Marionette.CompositeView.extend({
-        template: Handlebars.default.compile(Filmstrip_screen_tpl),
+    return Marionette.CompositeView.extend({
+        template: Handlebars.default.compile(screenTemplate),
 
         id : function () { return this.model.get("id"); },
         className: 'screen',
-        itemViewContainer: '#objects',
+        childViewContainer: '.container',
 
-        modelEvents: {
-            'change': 'onChanged'
+        initialize : function () {
+            // grab the child collection from the parent model
+            // so that we can render the collection as children
+            // of this parent node
+            this.collection = this.model.get('objects');
         },
 
-        // We select the ItemView depending on the object type.
-        getItemView: function(item){
+        // We select the ChildView depending on the object type.
+        getChildView: function(item){
             if(item instanceof ImageModel) {
                 return ImageView;
             }else if(item instanceof MouseModel){
                 return MouseView;
             }else if(item instanceof TooltipModel){
                 return TooltipView;
-            }else{
-                return ObjectView;
             }
         },
 
-        initialize : function () {
-            // Specify that the collection we want to iterate, for the itemView, is
-            // given by the attribute objects.
-            if (this.model != null && this.model != undefined) {
-                this.collection = this.model.get('objects');
-                // Tell the view to render itself when the
-                // model/collection is changed.
-                this.model.on('change', this.onChanged(), this);
-                if (this.collection != null) {
-                    this.collection.on('change', this.onChanged(), this);
-                }
-            }
+        onShow: function() {
+            // setup UI
+            var ctrl = reqres.request('app:screencast:controller');
+
+            this.$('.container').css({
+                width: ctrl.getScreencastWidth(),
+                height: ctrl.getScreencastHeight()
+            });
+
+            this.watching = fit(this.$('.container')[0], this.$el[0], {
+                hAlign: fit.CENTER,
+                vAlign: fit.TOP,
+                watch: true,     // refresh on resize
+                cover: false     // fit within, do not cover
+            }, function( transform, element ) {
+                // scale the workspace
+                fit.cssTransform(transform, element);
+                // notify listener that workspace was scaled
+                events.trigger('app:workspace:onScaleChanged', transform.scale);
+            });
         },
 
-        onChanged: function(){
-            this.render();
+        onDestroy: function() {
+            // turn off watching before destroying the view
+            // otherwise the watcher keeps on being notified.
+            if( this.watching ) {
+                this.watching.off();
+            }
         }
     });
-
-    return ScreenView;
 });

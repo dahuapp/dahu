@@ -5,15 +5,18 @@
 define([
     'handlebars',
     'backbone.marionette',
+    // templates
     'text!templates/views/workspace/actions/move.html'
-], function(Handlebars, Marionette, Actions_move_tpl){
+], function(
+    Handlebars,
+    Marionette,
+    // templates
+    moveTemplate){
 
     /**
      * Move action view
      */
-    var moveView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(Actions_move_tpl)
+    return Marionette.ItemView.extend({
+        template: Handlebars.default.compile(moveTemplate)
     });
-
-    return moveView;
 });

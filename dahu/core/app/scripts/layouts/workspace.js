@@ -14,7 +14,7 @@ define([
     /**
      * Dahu workspace layout.
      */
-    var WorkspaceLayout = Backbone.Marionette.Layout.extend({
+    var WorkspaceLayout = Backbone.Marionette.LayoutView.extend({
         className: 'layout-wrapper',
         template: Handlebars.default.compile(Workspace_tpl),
 

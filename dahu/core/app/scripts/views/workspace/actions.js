@@ -5,37 +5,41 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/workspace/actions.html',
+    // models
     'models/actions/appear',
     'models/actions/disappear',
     'models/actions/move',
-    'views/actions/appear',
-    'views/actions/disappear',
-    'views/actions/move'
-], function(Handlebars, Marionette, Workspace_actions_tpl,
-            AppearModel, DisappearModel, MoveModel,
-            AppearView, DisappearView, MoveView
-    ){
+    // views
+    'views/workspace/actions/appear',
+    'views/workspace/actions/disappear',
+    'views/workspace/actions/move',
+    // templates
+    'text!templates/views/workspace/actions.html'
+], function(
+    Handlebars,
+    Marionette,
+    // models
+    AppearModel,
+    DisappearModel,
+    MoveModel,
+    // views
+    AppearView,
+    DisappearView,
+    MoveView,
+    // templates
+    actionTemplates){
 
     /**
      * Workspace actions view
      */
-    var ActionsView = Marionette.CompositeView.extend({
-        template: Handlebars.default.compile(Workspace_actions_tpl),
-        // We select the ItemView depending on the object type.
-        getItemView: function(item){
-            if(item instanceof AppearModel) {
-                return AppearView;
-            }else if(item instanceof DisappearModel){
-                return DisappearView;
-            }else if(item instanceof MoveModel){
-                return MoveView;
-            }
-        },
-        itemViewContainer: '#myActions',
+    return Marionette.CompositeView.extend({
+
+        template: Handlebars.default.compile(actionTemplates),
+
+        childViewContainer: '#myActions',
 
         initialize : function () {
-            // Specify that the collection we want to iterate, for the itemView, is
+            // Specify that the collection we want to iterate, for the childView, is
             // given by the attribute actions.
             if (this.model != null) {
                 this.collection = this.model.get('actions');
@@ -48,6 +52,17 @@ define([
             }
         },
 
+        // We select the ItemView depending on the object type.
+        getChildView: function(item){
+            if(item instanceof AppearModel) {
+                return AppearView;
+            }else if(item instanceof DisappearModel){
+                return DisappearView;
+            }else if(item instanceof MoveModel){
+                return MoveView;
+            }
+        },
+
         onChanged: function(){
             this.render();
         },
@@ -56,6 +71,4 @@ define([
             'change': 'onChanged'
         }
     });
-
-    return ActionsView;
 });

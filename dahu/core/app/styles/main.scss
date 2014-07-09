@@ -1,6 +1,6 @@
-$icon-font-path: "/bower_components/sass-bootstrap/fonts/";
+$icon-font-path: "/components/sass-bootstrap/fonts/";
 
-@import 'sass-bootstrap/lib/bootstrap';
+@import 'sass-bootstrap/lib/bootstrap.scss';
 
 // Reset
 @import 'compass/reset';
@@ -69,7 +69,7 @@ html, body {
     top: 0px;
     left: 0px;
     right: 220px;
-    bottom: 0px;
+    bottom: 220px;
   }
 
   #workspace-actions {
@@ -99,26 +99,20 @@ html, body {
 // Workspace content style
 
 #workspace-screen {
-  padding: 10px;
+  padding: 40px;
   background-color: $dahu-workspace-screen-editor-background-color;
 
   .screen {
     position: relative;
+    width: 100%;
+    height: 100%;
 
-    .objects {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-
-    // all objects have an absolute position
-    .object {
+    .mouse, .image, .tooltip {
       position: absolute;
     }
 
     // Image
     .image.background {
-      width: 100%;
       z-index: 0;
 
       img {
@@ -129,6 +123,7 @@ html, body {
 
     // Mouse
     .mouse {
+      //@todo move it to model
       z-index: 1000;
 
       img {
@@ -141,6 +136,7 @@ html, body {
     // Tooltip
     .tooltip {
       @include opacity(0.8);
+      min-width: 200px;
       min-height: 50px;
       background-color: yellow;
       padding: 10px;

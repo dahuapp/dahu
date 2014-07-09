@@ -24,6 +24,14 @@ define([
         },
 
         initialize: function () {
+            // wrap up metadata around Metadata model unless it already is
+            if( ! (this.get('metadata') instanceof Metadata) ) {
+                this.set('metadata', new Metadata(this.get('metadata')));
+            }
+            // wrap up settings around Settings model unless it already is
+            if( ! (this.get('settings') instanceof Settings) ) {
+                this.set('settings', new Settings(this.get('settings')));
+            }
             // wrap up screens around ScreenCollection unless it already is
             if ( ! (this.get('screens') instanceof ScreenCollection) ) {
                 this.set('screens', new ScreenCollection(this.get('screens')));
@@ -103,11 +111,13 @@ define([
                 if( version === 1 ) {
                     // import settings (old metaData)
                     var settings = screencast.get('settings');
-                    settings.screenWidth = jsonData.metaData.imageWidth;
-                    settings.screenHeight = jsonData.metaData.imageHeight;
+                    settings.set('screenWidth', jsonData.metaData.imageWidth);
+                    settings.set('screenHeight', jsonData.metaData.imageHeight);
+
                     //Memorize the last mouse coordinates
                     var lastMouseX = 0;
                     var lastMouseY = 0;
+
                     // import screens (old data)
                     var screens = screencast.get('screens');
                     _.each(jsonData.data, function (oldScreenCur, index, data) {
