@@ -5,7 +5,7 @@ define([
     'handlebars',
     'backbone.marionette',
     'modules/events',
-    'views/objects/object',
+    'views/common/objects/object',
     'text!templates/views/workspace/tooltip.html'
 ], function(Handlebars, Marionette, events, ObjectView, Objetcs_tooltip_tpl){
 

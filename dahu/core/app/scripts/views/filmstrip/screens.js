@@ -5,13 +5,14 @@
 define([
     'handlebars',
     'backbone.marionette',
+    // views
     'views/filmstrip/screen'
 ], function(Handlebars, Marionette, FilmstripScreenView){
 
     /**
      * Filmstrip screen view
      */
-    var ScreensView = Marionette.CollectionView.extend({
+    return Marionette.CollectionView.extend({
 
         id: 'filmstrip-screens',
         childView: FilmstripScreenView,
@@ -35,6 +36,4 @@ define([
         }
 
     });
-
-    return ScreensView;
 });

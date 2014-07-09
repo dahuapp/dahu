@@ -5,31 +5,54 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/screen.html',
+    // modules
+    'modules/events',
+    'modules/requestResponse',
+    // models
     'models/objects/image',
     'models/objects/mouse',
     'models/objects/tooltip',
-    'views/objects/image',
-    'views/objects/mouse',
-    'views/objects/tooltip',
-    'views/objects/object'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, MouseModel, TooltipModel, ImageView, MouseView, TooltipView, ObjectView){
+    // views
+    'views/common/objects/image',
+    'views/workspace/objects/mouse',
+    'views/workspace/objects/tooltip',
+    // templates
+    'text!templates/views/screen.html'
+], function(
+    Handlebars,
+    Marionette,
+    // modules
+    events,
+    reqres,
+    // models
+    ImageModel,
+    MouseModel,
+    TooltipModel,
+    // view
+    ImageView,
+    MouseView,
+    TooltipView,
+    // templates
+    screenTemplate){
 
     /**
      * Workspace screen view
      */
-    var ScreenView = Marionette.CompositeView.extend({
-        template: Handlebars.default.compile(Filmstrip_screen_tpl),
+    return Marionette.CompositeView.extend({
+        template: Handlebars.default.compile(screenTemplate),
 
         id : function () { return this.model.get("id"); },
         className: 'screen',
-        childViewContainer: '#objects',
+        childViewContainer: '.container',
 
-        modelEvents: {
-            'change': 'onChanged'
+        initialize : function () {
+            // grab the child collection from the parent model
+            // so that we can render the collection as children
+            // of this parent node
+            this.collection = this.model.get('objects');
         },
 
-        // We select the ItemView depending on the object type.
+        // We select the ChildView depending on the object type.
         getChildView: function(item){
             if(item instanceof ImageModel) {
                 return ImageView;
@@ -37,8 +60,6 @@ define([
                 return MouseView;
             }else if(item instanceof TooltipModel){
                 return TooltipView;
-            }else{
-                return ObjectView;
             }
         },
 
@@ -60,6 +81,4 @@ define([
             this.render();
         }
     });
-
-    return ScreenView;
 });

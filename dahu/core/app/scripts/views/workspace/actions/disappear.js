@@ -5,15 +5,18 @@
 define([
     'handlebars',
     'backbone.marionette',
+    // templates
     'text!templates/views/workspace/actions/disappear.html'
-], function(Handlebars, Marionette, Actions_disappear_tpl){
+], function(
+    Handlebars,
+    Marionette,
+    // templates
+    disappearTemplate){
 
     /**
      * Disappear action view
      */
-    var disappearView = Marionette.ItemView.extend({
-        template: Handlebars.default.compile(Actions_disappear_tpl)
+    return Marionette.ItemView.extend({
+        template: Handlebars.default.compile(disappearTemplate)
     });
-
-    return disappearView;
 });

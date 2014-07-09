@@ -5,21 +5,46 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'text!templates/views/screen.html',
+    // modules
+    'modules/events',
+    // models
     'models/objects/image',
-    'views/objects/image',
-    'modules/events'
-], function(Handlebars, Marionette, Filmstrip_screen_tpl, ImageModel, ImageView, events){
+    // views
+    'views/common/objects/image',
+    // templates
+    'text!templates/views/screen.html'
+], function(
+    Handlebars,
+    Marionette,
+    // modules
+    events,
+    // models
+    ImageModel,
+    ImageView,
+    // templates
+    screenTemplate){
 
     /**
      * Filmstrip screen view
      */
     var ScreenView = Marionette.CompositeView.extend({
-        template: Handlebars.default.compile(Filmstrip_screen_tpl),
+        template: Handlebars.default.compile(screenTemplate),
 
         id : function () { return this.model.get("id"); },
         className: 'screen',
-        childViewContainer: '#objects',
+        childViewContainer: '.container',
+
+        events: {
+            "click": "display"
+        },
+
+        initialize : function () {
+            // Specify that the collection we want to iterate, for the childView, is
+            // given by the attribute objects.
+            if (this.model != null) {
+                this.collection = this.model.get('objects');
+            }
+        },
 
         // Select the ItemView depending on the object type.
         getChildView: function(item){
@@ -33,19 +58,6 @@ define([
             if ( item instanceof ImageModel ) {
                 Backbone.Marionette.CollectionView.prototype.addChild.apply(this, arguments);
             }
-        },
-
-        initialize : function () {
-            // Specify that the collection we want to iterate, for the childView, is
-            // given by the attribute objects.
-            if (this.model != null) {
-                this.collection = this.model.get('objects');
-            }
-        },
-
-        // Detect a click on the screen div
-        events: {
-            "click": "display"
         },
 
         display: function(event){

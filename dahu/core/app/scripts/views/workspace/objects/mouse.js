@@ -5,7 +5,7 @@
 define([
     'handlebars',
     'backbone.marionette',
-    'views/objects/object',
+    'views/common/objects/object',
     'text!templates/views/workspace/mouse.html'
 ], function(Handlebars, Marionette, ObjectView, Objetcs_mouse_tpl){
 
