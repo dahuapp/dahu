@@ -31,11 +31,11 @@ define([
      * @todo optimize a bit
      */
     function updateHandlebars(controller) {
-        var width = controller.getScreencastModel().get('settings').screenWidth;
+        var width = controller.getScreencastWidth();
         Handlebars.default.registerHelper('screencastWidth', function () {
             return width;
         });
-        var height = controller.getScreencastModel().get('settings').screenHeight;
+        var height = controller.getScreencastHeight();
         Handlebars.default.registerHelper('screencastHeight', function () {
             return height;
         });
@@ -192,6 +192,20 @@ define([
 
         getScreencastModel: function() {
             return this.screencastModel;
+        },
+
+        /**
+         * Return the current screencast width.
+         */
+        getScreencastWidth: function() {
+            return this.screencastModel.get('settings').get('screenWidth');
+        },
+
+        /**
+         * Return the current screencast height.
+         */
+        getScreencastHeight: function() {
+            return this.screencastModel.get('settings').get('screenHeight');
         },
 
         /**
