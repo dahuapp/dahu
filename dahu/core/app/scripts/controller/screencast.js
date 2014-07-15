@@ -24,27 +24,9 @@ define([
     });
 
     /**
-     * Update Handlebars with last information
-     * from the current screencast controller.
-     *
-     * @param controller
-     * @todo optimize a bit
-     */
-    function updateHandlebars(controller) {
-        var width = controller.getScreencastWidth();
-        Handlebars.default.registerHelper('screencastWidth', function () {
-            return width;
-        });
-        var height = controller.getScreencastHeight();
-        Handlebars.default.registerHelper('screencastHeight', function () {
-            return height;
-        });
-    }
-
-    /**
      * Screencast controller
      */
-    var ScreencastController = Marionette.Controller.extend({
+    return Marionette.Controller.extend({
 
         /**
          * Load a screencast project.
@@ -84,9 +66,6 @@ define([
             // we are loaded
             this.loaded = true;
 
-            // update handlebars
-            updateHandlebars(this);
-
             // save it if it was an upgrade
             if( needAnUpgrade ) {
                 this.save();
@@ -109,9 +88,6 @@ define([
 
             // we are loaded
             this.loaded = true;
-
-            // update handlebars
-            updateHandlebars(this);
 
             // save it
             this.save();
@@ -284,7 +260,4 @@ define([
             return Paths.join(['img', img]);
         }
     });
-
-    return ScreencastController;
-
 });

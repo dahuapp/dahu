@@ -24,7 +24,20 @@ define([
         try {
             Kernel.console.info("Starting compilation...");
             var template = Handlebars.default.compile(presentation_tpl);
-            output = template({screencast: screencastModel});
+            output = template(
+                { // context
+                    screencast: screencastModel
+                },
+                { // options
+                    helpers: {
+                        screencastWidth: function() {
+                            return screencastModel.get("settings").get('screenWidth');
+                        },
+                        screencastHeight: function() {
+                            return screencastModel.get("settings").get('screenHeight');
+                        }
+                    }
+                });
             Kernel.console.info("Compilation done!");
         } catch(e) {
             Kernel.console.error("Compilation failed. {}", e.stack);
