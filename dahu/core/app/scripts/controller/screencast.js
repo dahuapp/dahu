@@ -9,27 +9,23 @@ define([
     'modules/kernel/SCI',
     'modules/utils/paths',
     'modules/compiler',
-    'modules/requestResponse',
-    // models
-    'models/screencast'
+    'modules/screencast'
 ], function (Handlebars, Marionette,
-    Kernel, Paths, Compiler, ReqResponse,
-    ScreencastModel) {
+    Kernel, Paths, Compiler, Screencast) {
 
     /**
-     * Handlebars setup.
-     */
-    Handlebars.default.registerHelper('normalizedToPixel', function (prop, taille) {
-        return prop * taille;
-    });
-
-    /**
-     * Screencast controller
+     * Screencast controller.
+     *
+     * The screencast controller provides convenient methods to manage screencasts from
+     * Backbone.Marionette application and views.
+     *
+     * The controller relies on the Screencast module which provide core functionalities shared
+     * between dahuapp (Editpr) and dahubridge (CLI).
      */
     return Marionette.Controller.extend({
 
         /**
-         * Load a screencast project.
+         * Load a screencast.
          *
          * @param projectFilename
          */
@@ -41,37 +37,19 @@ define([
             // keep track of screencast project filename
             this.projectFilename = projectFilename;
 
-            // read project file content
-            var projectFileContent = Kernel.module('filesystem').readFromFile(projectFilename);
-
-            // return if content is null
-            if( projectFileContent == null ) {
-                return;
-            }
-
-            // check if an upgrade is needed.
-            var needAnUpgrade = ScreencastModel.needToUpgradeVersion(projectFileContent);
-
-            // if an update is needed create a backup of old version
-            if( needAnUpgrade ) {
-                Kernel.module('filesystem').copyFile(projectFilename, projectFilename+'.old')
-            }
-
-            // load the screencast
-            this.screencastModel = ScreencastModel.newFromString(projectFileContent);
-
-            // grant access to project
-            Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
-
-            // we are loaded
-            this.loaded = true;
-
-            // save it if it was an upgrade
-            if( needAnUpgrade ) {
-                this.save();
+            try {
+                this.screencastModel = Screencast.load(projectFilename);
+                this.loaded = true;
+            } catch(e) {
+                Kernel.console.error(e);
             }
         },
 
+        /**
+         * Create a screencast.
+         *
+         * @param projectFilename
+         */
         create: function (projectFilename) {
             if( this.loaded ) {
                 throw "A Dahu project ("+this.projectFilename+") is already loaded."
@@ -80,17 +58,12 @@ define([
             // keep track of screencast project filename
             this.projectFilename = projectFilename;
 
-            // create the screencast
-            this.screencastModel = new ScreencastModel();
-
-            // grant access to project
-            Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
-
-            // we are loaded
-            this.loaded = true;
-
-            // save it
-            this.save();
+            try {
+                this.screencastModel = Screencast.create(projectFilename);
+                this.loaded = true;
+            } catch(e) {
+                Kernel.console.error(e);
+            }
         },
 
         /**
@@ -102,6 +75,7 @@ define([
             this.projectFilename = null;
             this.projectDirectory = null;
             this.projectBuildDirectory = null;
+            this.projectImageDirectory = null;
         },
 
         /**
@@ -109,7 +83,7 @@ define([
          */
         save: function() {
             if( this.loaded && this.screencastModel ) {
-                this.screencastModel.save();
+                Screencast.save(this.screencastModel);
             } else {
                 throw "No Dahu project loaded."
             }
@@ -128,39 +102,14 @@ define([
             }
         },
 
+        /**
+         * Generate a screencast.
+         *
+         * @see ScreencastModel.generate
+         */
         generate: function() {
             if( this.loaded ) {
-                // compile the current screencast model
-                var generatedHTML = Compiler.compile(this.screencastModel);
-
-                // write to disk
-                var path = Paths.join([this.getProjectBuildDirectory(), 'presentation.html']);
-                Kernel.console.info("Writing generated screencast to {}", path);
-                Kernel.module('filesystem').writeToFile(path, generatedHTML);
-                Kernel.console.info("done.");
-
-                // copy media
-                Kernel.console.info("Copying images");
-                //// copy the image folder to the build/img
-                Kernel.module('filesystem').copyDir(
-                    this.getProjectImgDirectory(), // origin
-                    Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
-                );
-                //// copy the cursor
-                Kernel.module('filesystem').copyResourceDir(
-                    'classpath:///io/dahuapp/core/media/images/cursor.png', // origin
-                    Paths.join([this.getProjectBuildDirectory(), 'img']) // destination
-                );
-                Kernel.console.info("done.");
-                // copy resources
-                Kernel.console.info("Copying resources");
-                //// copy deck.js folder to build/libs/deck.js
-                Kernel.module('filesystem').copyResourceDir(
-                    'classpath:///io/dahuapp/core/components/deck.js', // origin
-                    Paths.join([this.getProjectBuildDirectory(), 'libs']) // destination
-                );
-                Kernel.console.info("done.");
-
+                Screencast.generate(this.screencastModel, this.projectFilename);
             } else {
                 throw "No Dahu project loaded."
             }
@@ -199,7 +148,7 @@ define([
          */
         getProjectDirectory: function(){
             if( ! this.projectDirectory) {
-                this.projectDirectory = Paths.dirname(this.projectFilename);
+                this.projectDirectory = Screencast.getProjectDirectory(this.projectFilename);
             }
 
             return this.projectDirectory;
@@ -212,7 +161,7 @@ define([
          */
         getProjectBuildDirectory: function() {
             if( ! this.projectBuildDirectory ) {
-                this.projectBuildDirectory = Paths.join([this.getProjectDirectory(), 'build']);
+                this.projectBuildDirectory = Screencast.getProjectBuildDirectory(this.projectFilename);
             }
 
             return this.projectBuildDirectory;
@@ -249,7 +198,11 @@ define([
          * Gets the full path of the img directory of the current project
          */
         getProjectImgDirectory: function () {
-            return Paths.join([this.getProjectDirectory(), 'img']);
+            if( ! this.projectImageDirectory ) {
+                this.projectImageDirectory = Screencast.getImageDirectory(this.projectFilename);
+            }
+
+            return this.projectImageDirectory
         },
 
         /**
