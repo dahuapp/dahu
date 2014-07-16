@@ -26,6 +26,18 @@ require.config({
             deps: ['underscore', 'jquery'],
             exports: 'Backbone'
         },
+        'backbone.marionette' : {
+            deps : [ 'backbone', 'underscore' ],
+            exports : 'Marionette'
+        },
+        'backbone.wreqr': {
+            deps : [ 'backbone', 'underscore' ],
+            exports : 'Wreqr'
+        },
+        'backbone.babysitter': {
+            deps : [ 'backbone', 'underscore' ],
+            exports : 'Babysitter'
+        },
         handlebars: {
             exports: 'Handlebars'
         },
@@ -36,6 +48,9 @@ require.config({
     paths: {
         text: '../components/requirejs-text/text',
         backbone: '../components/backbone/backbone',
+        'backbone.marionette' : '../components/backbone.marionette/lib/core/backbone.marionette',
+        'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
+        'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
         underscore: '../components/underscore/underscore',
         handlebars: '../components/handlebars/handlebars.amd',
         uuid: '../components/node-uuid/uuid',
@@ -48,15 +63,64 @@ require.config({
 
 // Define bridge
 define('dahubridge', [
-    'modules/compiler',
-    'modules/kernel/SCI'
-], function(Compiler, Kernel) {
+    'backbone',
+    // modules
+    'modules/kernel/SCI',
+    'modules/screencast',
+    // models
+    'models/screencast'
+], function(
+    Backbone,
+    Kernel,
+    Screencast,
+    ScreencastModel
+) {
+
+    var screencastController;
 
     /**
      * Start bridge
      */
     function start() {
         Kernel.start();
+        initBackbone();
+    }
+
+    /**
+     * Initialize Backbone
+     */
+    function initBackbone() {
+        // don't use history since it requires a DOM
+        //Backbone.history.start();
+
+        // override global sync method
+        Backbone.sync = function (method, model, options) {
+            if (model instanceof ScreencastModel) {
+                Kernel.console.debug("Sync screencast model for method {}", method);
+                if( method === 'create' ) {
+                    // define the indentation value to write the updated dahu file
+                    var indentation = 4;
+                    Kernel.module('filesystem').writeToFile(screencastController.getProjectFilename(), model.toJSON(indentation));
+                }
+                //@todo handle other methods
+            } else {
+                Kernel.console.debug("ignore sync for method {} on model {}", method, JSON.stringify(model));
+            }
+        };
+    }
+
+    /**
+     * Generate a screencast.
+     *
+     * @param projectFilename
+     */
+    function generate(projectFilename) {
+        try {
+            var screencastModel = Screencast.load(projectFilename);
+            Screencast.generate(screencastModel, projectFilename);
+        } catch(e) {
+            Kernel.console.error(e.stack);
+        }
     }
 
     /**
@@ -69,10 +133,7 @@ define('dahubridge', [
 
     return {
         start: start,
-        stop: stop,
-
-        // @todo remove this, this is only a sample
-        hello: Compiler.hello,
-        createScreencast: Compiler.createScreencast
+        generate: generate,
+        stop: stop
     }
 });

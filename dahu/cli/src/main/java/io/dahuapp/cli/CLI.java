@@ -1,26 +1,32 @@
 package io.dahuapp.cli;
 
 import io.dahuapp.cli.kernel.DahuCLIKernel;
+import io.dahuapp.common.net.DahuFileAccessManager;
+import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
+import org.apache.commons.io.IOUtils;
 import org.docopt.clj;
 
-import javax.script.*;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Map;
-
-import org.apache.commons.io.IOUtils;
 
 /**
  * Command-line Interface main class
  */
 public class CLI {
 
+    private DahuFileAccessManager dahuFileAccessManager;
+
     /**
      * Command-Line Interface proxy.
      * This proxy is used on the JavaScript side.
      */
     public class CLIProxy {
-        Map<String, Object> arguments;
+        public Map<String, Object> arguments;
 
         public CLIProxy(Map<String, Object> arguments) {
             this.arguments = arguments;
@@ -42,10 +48,9 @@ public class CLI {
             String docstring = IOUtils.toString(CLI.class.getResourceAsStream("docstring"), "UTF-8");
             Map<String, Object> arguments = clj.docopt(docstring, args);
 
-            if (arguments.get("--help").toString() == "true") {
+            if (arguments == null ) {
                 System.out.println(docstring);
-            }
-            else {
+            } else {
                 final ScriptEngineManager manager = new ScriptEngineManager();
                 ScriptEngine engine  = manager.getEngineByName("nashorn");
 
@@ -62,8 +67,14 @@ public class CLI {
                 // Load CLI Proxy
                 engine.put("CLI", new CLIProxy(arguments));
 
+                // Setup file access manager and url stream factory
+                dahuFileAccessManager = new DahuFileAccessManager();
+                URL.setURLStreamHandlerFactory(new DahuURLStreamHandlerFactory(
+                        getClass().getClassLoader(),
+                        dahuFileAccessManager));
+
                 // Load CLI Kernel
-                engine.put("kernel", new DahuCLIKernel());
+                engine.put("kernel", new DahuCLIKernel(dahuFileAccessManager));
 
                 // Load CLI
                 engine.eval(new InputStreamReader(CLI.class.getResourceAsStream("/io/dahuapp/cli/CLI.js")));

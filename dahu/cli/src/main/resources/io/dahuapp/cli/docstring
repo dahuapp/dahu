@@ -1,4 +1,5 @@
-Usage: dahu [options]
+Usage:
+    dahu generate <project>
 
 Options:
     -h, --help  Print help.
