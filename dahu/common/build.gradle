@@ -4,4 +4,7 @@ apply plugin: 'java'
 dependencies {
     // common-io for easy IO
     compile group: 'commons-io', name: 'commons-io', version: '2.4'
+
+    // dahu modules
+    compile project(':dahu:driver')
 }
