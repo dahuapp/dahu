@@ -38,7 +38,7 @@ define([
                         }
                     }
                 });
-            Kernel.console.info("Compilation done!");
+            Kernel.console.info("done.");
         } catch(e) {
             Kernel.console.error("Compilation failed. {}", e.stack);
         }
