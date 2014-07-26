@@ -1,12 +1,12 @@
 package io.dahuapp.driver;
 
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.joran.JoranConfigurator;
 import ch.qos.logback.core.joran.spi.JoranException;
 import ch.qos.logback.core.util.StatusPrinter;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.LoggerContext;
 import org.slf4j.Marker;
 
 import java.net.URL;
@@ -21,7 +21,7 @@ import java.net.URL;
  * nice logger outputs alternative: please check the doc.
  */
 public class LoggerDriver {
-    static Logger logger = LoggerFactory.getLogger(LoggerDriver.class);
+    static Logger logger = (Logger) LoggerFactory.getLogger(LoggerDriver.class);
     static LoggerContext lc = (LoggerContext) LoggerFactory.getILoggerFactory();
 
     public static void configure(URL config) {
@@ -34,6 +34,10 @@ public class LoggerDriver {
             // StatusPrinter will handle this
         }
         StatusPrinter.printInCaseOfErrorsOrWarnings(lc);
+    }
+    public static void setLevel(String level) {
+        // set log level to *level*, if *level* is not found then DEBUG is used by default.
+        logger.setLevel(Level.toLevel(level, Level.DEBUG));
     }
 
     public static void trace(String msg) {
