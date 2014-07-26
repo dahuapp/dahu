@@ -12,6 +12,11 @@
 
 require.config({
     baseUrl: 'scripts/',
+    map: {
+        '*': {
+            underscore: 'lodash'
+        }
+    },
     shim: {
         cheerio: {
             exports: 'cheerio'
@@ -19,23 +24,23 @@ require.config({
         jquery: {
             exports: '$'
         },
-        underscore: {
+        lodash: {
             exports: '_'
         },
         backbone: {
-            deps: ['underscore', 'jquery'],
+            deps: ['lodash', 'jquery'],
             exports: 'Backbone'
         },
         'backbone.marionette' : {
-            deps : [ 'backbone', 'underscore' ],
+            deps : [ 'backbone', 'lodash' ],
             exports : 'Marionette'
         },
         'backbone.wreqr': {
-            deps : [ 'backbone', 'underscore' ],
+            deps : [ 'backbone', 'lodash' ],
             exports : 'Wreqr'
         },
         'backbone.babysitter': {
-            deps : [ 'backbone', 'underscore' ],
+            deps : [ 'backbone', 'lodash' ],
             exports : 'Babysitter'
         },
         handlebars: {
@@ -51,7 +56,7 @@ require.config({
         'backbone.marionette' : '../components/backbone.marionette/lib/core/backbone.marionette',
         'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
         'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
-        underscore: '../components/underscore/underscore',
+        lodash: '../components/lodash/dist/lodash',
         handlebars: '../components/handlebars/handlebars.amd',
         uuid: '../components/node-uuid/uuid',
 
