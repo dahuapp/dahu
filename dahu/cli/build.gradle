@@ -12,6 +12,13 @@ repositories {
 mainClassName = "io.dahuapp.cli.CLI"
 applicationName = "DahuCLI"
 
+run {
+    //debug true
+    if(project.hasProperty('args')){
+        args project.args.split('\\s+')
+    }
+}
+
 // Dependencies
 dependencies {
     // docopt for CLI parser generator
