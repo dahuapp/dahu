@@ -33,6 +33,11 @@ define([
      * @throws Exceptions.IOError
      */
     function load(projectFilename) {
+        if (Kernel.module('filesystem').exists(projectFilename)) {
+            throw new Exceptions.IOError("File #{project} does not exist.", {
+                project: projectFilename
+            });
+        }
 
         // read project file content
         var projectFileContent = Kernel.module('filesystem').readFromFile(projectFilename);
