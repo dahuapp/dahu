@@ -5,69 +5,85 @@
 /**
  * Exceptions wrapper module.
  *
- * This module exposes various Exception type.
- * Hierarchy of exceptions is inspired from Python exceptions.
+ * This module exposes various Error types.
+ * The error hierarchy is the following:
  *
- * {@see https://docs.python.org/3/library/exceptions.html#exception-hierarchy}
+ * - Error
+ *   - ExtendedError
+ *     - IOError
+ *     - NotImplementedError
+ *
+ * Usage:
+ * throw new Exceptions.IOError("some message with argument: #{param}", { param: "toto"});
+ * throw new Exceptions.IOError("some message without argument");
  */
 define(['underscore'], function (_) {
 
-    // Helpers to extend "class" taken from CoffeeScript.
-    var __hasProp = {}.hasOwnProperty;
-    var __extends = function (child, parent) {
-        for (var key in parent) {
-            if (__hasProp.call(parent, key)) child[key] = parent[key];
-        }
-        function ctor() {
-            this.constructor = child;
+    var Exceptions = {};
+
+    /**
+     * Base class for extensible Error.
+     *
+     * Contrary to Error, this error will be correctly derivable.
+     *
+     * new ExtendedError(someError);
+     * new ExtenderError(someMessage, someArgs...);
+     */
+    var ExtendedError = function() {
+        var error, message,
+            name = 'ExtendedError',
+            params = Array.prototype.slice.call(arguments);
+
+        if (params.length == 1 && params[0] instanceof Error) {
+            error = params[0];
+            message = error.message;
+            name = error.name || name;
+        } else {
+            var msg = params.length > 0 ? params.shift() : '';
+            var args = params.length > 0 ? params.shift() : {};
+            message = _.template(msg, args, { interpolate: /\#\{(.+?)\}/g });
+            // we must create an error to have an up-to-date stack trace
+            error = new Error(message);
         }
 
-        ctor.prototype = parent.prototype;
-        child.prototype = new ctor();
-        child.__super__ = parent.prototype;
-        return child;
+        // setup object
+        this.message = message;
+        this.stack = error.stack;
+        this.name = name;
     };
 
-    /**
-     * Base Exception class
-     */
-    var Exception = (function(_super) {
-        __extends(Exception, _super);
-
-        function Exception(type, message, args) {
-            Exception.__super__.constructor.call(this);
-
-            this.type = type;
-            this.message = message;
-            this.args = args;
-        }
-
-        Exception.prototype.toString = function () {
-            var formattedMessage = _.template(
-                this.message, this.args,
-                { interpolate: /\{(.+?)\}/g });
-
-            return "[" + this.type + "] " + formattedMessage + "\n\n" + this.stack;
-        };
-
-        return Exception;
-    })(Error);
+    ExtendedError.prototype = Object.create(Error.prototype);
+    ExtendedError.prototype.constructor = ExtendedError;
 
     /**
-     * Input/Output exceptions.
+     * ExtendedError factory.
+     *
+     * @param name Name of the extended error.
+     * @param parentErrorClass
+     * @returns {CustomExtendedErrorClass}
+     * @constructor
      */
-    var IOError = (function(_super) {
-        __extends(IOError, _super);
-
-        function IOError(message, args) {
-            IOError.__super__.constructor.call(this, this.constructor.name, message, args);
+    var ExtendedErrorFactory = function(name, parentErrorClass) {
+        if (typeof parentErrorClass === 'undefined') {
+            parentErrorClass = ExtendedError;
         }
 
-        return IOError;
+        function CustomExtendedErrorClass() {
+            parentErrorClass.prototype.constructor.apply(this, arguments);
+            this.name = name;
+        }
+        CustomExtendedErrorClass.prototype = Object.create(parentErrorClass.prototype);
+        CustomExtendedErrorClass.prototype.constructor = CustomExtendedErrorClass;
 
-    })(Exception);
+        return CustomExtendedErrorClass;
+    };
 
-    return {
-        IOError: IOError
-    }
+    // setup Error hierarchy
+    Exceptions.create = ExtendedErrorFactory;
+    Exceptions.ExtendedError = ExtendedError;
+    Exceptions.IOError = ExtendedErrorFactory('IOError', ExtendedError);
+    Exceptions.NotImplementedError = ExtendedErrorFactory('NotImplementedError', ExtendedError);
+
+    // export it
+    return Exceptions;
 });
