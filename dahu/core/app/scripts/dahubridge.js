@@ -124,7 +124,7 @@ define('dahubridge', [
             var screencastModel = Screencast.load(projectFilename);
             Screencast.generate(screencastModel, projectFilename);
         } catch(e) {
-            Kernel.console.error(e.stack);
+            Kernel.console.error(e);
         }
     }
 
