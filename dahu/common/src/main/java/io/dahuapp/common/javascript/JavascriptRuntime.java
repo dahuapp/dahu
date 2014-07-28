@@ -7,6 +7,7 @@ package io.dahuapp.common.javascript;
  * @param <JSObject>
  */
 public interface JavascriptRuntime<JSObject> {
-    Object executeScript(String command);
-    JSObject getJSObject(String name);
+    Object executeScriptFile(String path);
+    Object executeScriptCommand(String command);
+    JSObject get(String name);
 }

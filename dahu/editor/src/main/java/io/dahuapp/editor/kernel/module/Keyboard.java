@@ -51,8 +51,8 @@ public class Keyboard implements Module {
                 public void run() {
                     // We trigger the event specified by eventToTrigger with
                     // the keyCode and keyName as arguments.
-                    webEngineRuntime.executeScript("dahuapp.events.trigger('"+eventToTrigger+"', "+
-                            keyCode +", \""+ keyName +"\");");
+                    webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('" + eventToTrigger + "', " +
+                            keyCode + ", \"" + keyName + "\");");
                 }
             });
         }

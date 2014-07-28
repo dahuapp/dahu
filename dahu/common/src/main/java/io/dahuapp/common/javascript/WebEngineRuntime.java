@@ -2,8 +2,11 @@ package io.dahuapp.common.javascript;
 
 import javafx.scene.web.WebEngine;
 import netscape.javascript.JSObject;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
-import java.net.URL;
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Implementation of JavascriptRuntime for WebEngine.
@@ -26,7 +29,12 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
     }
 
     @Override
-    public Object executeScript(String command) {
+    public Object executeScriptFile(String path) {
+        return executeScriptCommand(slurp(path));
+    }
+
+    @Override
+    public Object executeScriptCommand(String command) {
         Object returnValue = engine.executeScript(command);
 
         if (returnValue instanceof String && returnValue.equals("undefined")) {
@@ -37,8 +45,8 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
     }
 
     @Override
-    public JSObject getJSObject(String name) {
-        Object returnValue = engine.executeScript(name);
+    public JSObject get(String key) {
+        Object returnValue = engine.executeScript(key);
 
         if (returnValue instanceof JSObject) {
             return (JSObject) returnValue;
@@ -69,8 +77,8 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
 
         if(localVersion) {
             // try to load it locally
-            executeScript("var firebug = document.createElement('script');\n" +
-                    "firebug.setAttribute('src', 'components/firebug-lite/build/firebug-lite.js"+(startOpened?"#startOpened":"")+"');\n" +
+            executeScriptCommand("var firebug = document.createElement('script');\n" +
+                    "firebug.setAttribute('src', 'components/firebug-lite/build/firebug-lite.js" + (startOpened ? "#startOpened" : "") + "');\n" +
                     "document.body.appendChild(firebug);\n" +
                     "(function () {\n" +
                     "    if (window.firebug.version) {\n" +
@@ -81,7 +89,7 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
                     "})();\n" +
                     "void(firebug);");
         } else {
-            executeScript("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/'"+(startOpened? "+ '#startOpened'":"")+");}");
+            executeScriptCommand("if (!document.getElementById('FirebugLite')){E = document['createElement' + 'NS'] && document.documentElement.namespaceURI;E = E ? document['createElement' + 'NS'](E, 'script') : document['createElement']('script');E['setAttribute']('id', 'FirebugLite');E['setAttribute']('src', 'https://getfirebug.com/' + 'firebug-lite.js' + '#startOpened');E['setAttribute']('FirebugLite', '4');(document['getElementsByTagName']('head')[0] || document['getElementsByTagName']('body')[0]).appendChild(E);E = new Image;E['setAttribute']('src', 'https://getfirebug.com/'" + (startOpened ? "+ '#startOpened'" : "") + ");}");
         }
 
         return isFirebugLiteLoaded = true;
@@ -100,5 +108,22 @@ public class WebEngineRuntime implements JavascriptRuntime<JSObject> {
 
     public void loadURL(String url) {
         engine.load(url);
+    }
+
+    /**
+     * Read file content and return its content.
+     *
+     * @param filename
+     * @return
+     */
+    private static String slurp(String filename) {
+        InputStream in = WebEngineRuntime.class.getResourceAsStream(filename);
+        try {
+            return IOUtils.toString(in, "UTF-8");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            IOUtils.closeQuietly(in);
+        }
     }
 }
