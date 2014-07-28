@@ -6,11 +6,7 @@ import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
 import org.apache.commons.io.IOUtils;
 import org.docopt.clj;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
 
@@ -51,18 +47,14 @@ public class CLI {
             if (arguments == null ) {
                 System.out.println(docstring);
             } else {
-                final ScriptEngineManager manager = new ScriptEngineManager();
-                ScriptEngine engine  = manager.getEngineByName("nashorn");
+                final ScriptEngineRuntime engine = new ScriptEngineRuntime();
 
                 if (engine == null) {
                     throw new RuntimeException("Unable to load Nashorn JavaScript engine.");
                 }
 
-                // Load utility functions
-                engine.eval(new InputStreamReader(CLI.class.getResourceAsStream("/io/dahuapp/cli/boot.js")));
-
                 // Load DahuBridge
-                engine.eval(new InputStreamReader(CLI.class.getResourceAsStream("/io/dahuapp/core/scripts/dahubridge.js")));
+                engine.executeScriptFile("/io/dahuapp/core/scripts/dahubridge.js");
 
                 // Load CLI Proxy
                 engine.put("CLI", new CLIProxy(arguments));
@@ -77,12 +69,15 @@ public class CLI {
                 engine.put("kernel", new DahuCLIKernel(dahuFileAccessManager));
 
                 // Load CLI
-                engine.eval(new InputStreamReader(CLI.class.getResourceAsStream("/io/dahuapp/cli/CLI.js")));
+                engine.executeScriptFile("/io/dahuapp/cli/CLI.js");
+
+                // exit
+                engine.shutdown();
             }
         } catch (IOException e) {
             System.err.println("Error while loading CLI.");
             e.printStackTrace();
-        } catch (ScriptException e) {
+        } catch (RuntimeException e) {
             System.err.println("Error while running CLI script.");
             e.printStackTrace();
         }
