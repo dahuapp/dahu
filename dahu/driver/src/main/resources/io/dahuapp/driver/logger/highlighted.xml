@@ -1,5 +1,14 @@
+<configuration debug="false">
 
-<configuration debug="true">
+    <!-- FILE -->
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>dahuapp.log</file>
+        <encoder>
+            <pattern>%date %level [%thread] %logger{10} [%file:%line] %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- STDOUT -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <!-- On Windows machines setting withJansi to true enables ANSI
              color code interpretation by the Jansi library. This requires
@@ -8,10 +17,12 @@
              support ANSI color codes by default. -->
         <withJansi>true</withJansi>
         <encoder>
-            <pattern>[%thread] %highlight(%-5level) %cyan(%logger{15}) - %msg %n</pattern>
+            <pattern>[%thread] %highlight(%-5level) %msg %n</pattern>
         </encoder>
     </appender>
-    <root level="DEBUG">
-        <appender-ref ref="STDOUT" />
+
+    <!-- ROOT default -->
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
