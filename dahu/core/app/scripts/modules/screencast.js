@@ -44,7 +44,7 @@ define([
 
         // return if content is null
         if( projectFileContent == null ) {
-            throw new Exceptions.IOError("Unable to read {project}.", {
+            throw new Exceptions.IOError("Unable to read #{project}.", {
                 project: projectFilename
             });
         }
