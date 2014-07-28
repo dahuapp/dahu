@@ -1,5 +1,8 @@
 Usage:
-    dahu generate <project>
+    dahu [options] generate <project>
 
 Options:
-    -h, --help  Print help.
+    -v, --verbose        Verbose mode
+    --verbosity=<level>  Verbosity level [default: debug]
+    --quiet              Quit mode
+    -h, --help           Print help.
