@@ -22,12 +22,10 @@ task npm(type: Exec) {
 /**
  * Install all Bower dependencies defined in bower.json
  */
-task bower(type: Exec, dependsOn: npm) {
+task bower(type: GruntTask) {
     group = "Build"
     description = "Installs all Bower dependencies defined in bower.json"
-    commandLine = ["bower", "install"]
-    inputs.file "bower.json"
-    outputs.dir "app/components"
+    gruntArgs = "bower:install"
 }
 
 /**

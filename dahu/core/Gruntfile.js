@@ -113,6 +113,9 @@ module.exports = function (grunt) {
             dist: ['.tmp', '<%= yeoman.dist %>/*'],
             server: '.tmp'
         },
+        bower: {
+            install: { /* no options required, it just run bower install */}
+        },
         jshint: {
             options: {
                 jshintrc: '.jshintrc',
@@ -376,6 +379,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('build', [
+        'bower:install',
         'clean:dist',
         'createDefaultTemplate',
         'handlebars',
