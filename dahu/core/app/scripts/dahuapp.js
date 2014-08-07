@@ -50,7 +50,7 @@ require.config({
         bootstrap: '../components/sass-bootstrap/dist/js/bootstrap',
         handlebars: '../components/handlebars/handlebars.amd',
         uuid: '../components/node-uuid/uuid',
-        fit: '../components/fit.js/fit'
+        fit: '../components/fit/lib/fit'
     }
 });
 
