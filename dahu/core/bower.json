@@ -18,7 +18,8 @@
     "summernote": "~0.5.1",
     "deck.js": "~1.1.0",
     "jqueryui": "~1.10.4",
-    "lodash": "~2.4.1"
+    "lodash": "~2.4.1",
+    "fit": "~0.1.0"
   },
   "devDependencies": {}
 }
