@@ -14,7 +14,7 @@ sourceSets {
 task npm(type: Exec) {
     group = "Build"
     description = "Installs all Node/Grunt dependencies defined in package.json"
-    commandLine = ["npm", "install", "--save-dev"]
+    commandLine = ["npm", "install"]
     inputs.file "package.json"
     outputs.dir "node_modules"
 }
@@ -22,7 +22,7 @@ task npm(type: Exec) {
 /**
  * Install all Bower dependencies defined in bower.json
  */
-task bower(type: GruntTask) {
+task bower(type: GruntTask, dependsOn: npm) {
     group = "Build"
     description = "Installs all Bower dependencies defined in bower.json"
     gruntArgs = "bower:install"
@@ -31,7 +31,7 @@ task bower(type: GruntTask) {
 /**
  * Build JavaScript, equivalent of 'grunt build'.
  */
-task buildjs(type: GruntTask, dependsOn: bower) {
+task buildjs(type: GruntTask, dependsOn: [bower, npm]) {
     group = "Build"
     description = "Assembles and tests JS of this project."
     gruntArgs = "build"
@@ -62,9 +62,8 @@ import org.apache.tools.ant.taskdefs.condition.Os
  */
 class GruntTask extends Exec {
 
-    private String gruntExecutable = Os.isFamily(Os.FAMILY_WINDOWS) ? "grunt.cmd" : "grunt"
-
-    def gruntArgs = ""
+    private String gruntPath = 'node_modules/grunt-cli/bin/'
+    private String gruntExecutable = Os.isFamily(Os.FAMILY_WINDOWS) ? gruntPath + 'grunt.cmd' : gruntPath + 'grunt'
 
     public GruntTask() {
         super()
