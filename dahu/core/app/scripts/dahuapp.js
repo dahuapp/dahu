@@ -190,10 +190,6 @@ define('dahuapp', [
         reqResponse.setHandler("app:screencast:controller", function(){
             return screencastController;
         });
-        // Prepare a response that gives the workspace layout controller
-        reqResponse.setHandler("app:workspace:layout:controller", function(){
-            return workspaceLayoutController;
-        });
     }
 
     /**
