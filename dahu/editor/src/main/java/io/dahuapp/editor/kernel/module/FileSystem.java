@@ -3,6 +3,7 @@ package io.dahuapp.editor.kernel.module;
 
 import io.dahuapp.common.kernel.module.DefaultFileSystem;
 import io.dahuapp.common.net.DahuFileAccessManager;
+import io.dahuapp.common.net.RegexURLRewriter;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -34,8 +35,8 @@ public class FileSystem extends DefaultFileSystem {
      * Constructor.
      * @param primaryStage Main stage of the app (for modal dialogs).
      */
-    public FileSystem(Stage primaryStage, DahuFileAccessManager fileAccessManager) {
-        super(fileAccessManager);
+    public FileSystem(Stage primaryStage, DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
+        super(fileAccessManager, rewriter);
         this.primaryStage = primaryStage;
     }
 

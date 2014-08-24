@@ -4,6 +4,7 @@ package io.dahuapp.editor;
 import io.dahuapp.common.javascript.WebEngineRuntime;
 import io.dahuapp.common.net.DahuFileAccessManager;
 import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
+import io.dahuapp.common.net.RegexURLRewriter;
 import io.dahuapp.editor.helper.OSCheck;
 import io.dahuapp.editor.kernel.DahuAppKernel;
 import javafx.application.Application;
@@ -46,6 +47,7 @@ public class DahuApp extends Application {
     private WebView webView;
     private WebEngineRuntime webEngineRuntime;
     private DahuFileAccessManager dahuFileAccessManager;
+    private RegexURLRewriter dahuRegexURLRewriter;
     private MenuBar menuBar;
     private ToolBar toolBar;
 
@@ -92,6 +94,7 @@ public class DahuApp extends Application {
 
         // ready
         primaryStage.setTitle(TITLE);
+        //primaryStage.setFullScreen(true);
         primaryStage.show();
     }
 
@@ -112,10 +115,14 @@ public class DahuApp extends Application {
         // init dahu file acess manager
         dahuFileAccessManager = new DahuFileAccessManager();
 
+        // init dahu URL rewriter
+        dahuRegexURLRewriter = new RegexURLRewriter();
+
         // set custom URL stream factory
         URL.setURLStreamHandlerFactory(new DahuURLStreamHandlerFactory(
                 getClass().getClassLoader(),
-                dahuFileAccessManager));
+                dahuFileAccessManager,
+                dahuRegexURLRewriter));
 
         webView.getEngine().load("classpath:///io/dahuapp/core/app.html");
 
@@ -136,7 +143,8 @@ public class DahuApp extends Application {
                     window.setMember("kernel", new DahuAppKernel(
                             primaryStage,
                             webEngineRuntime,
-                            dahuFileAccessManager));
+                            dahuFileAccessManager,
+                            dahuRegexURLRewriter));
 
                     // start application
                     webEngineRuntime.executeScriptCommand("dahuapp.start();");

@@ -3,6 +3,7 @@ package io.dahuapp.cli;
 import io.dahuapp.cli.kernel.DahuCLIKernel;
 import io.dahuapp.common.net.DahuFileAccessManager;
 import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
+import io.dahuapp.common.net.RegexURLRewriter;
 import org.apache.commons.io.IOUtils;
 import org.docopt.clj;
 
@@ -16,6 +17,7 @@ import java.util.Map;
 public class CLI {
 
     private DahuFileAccessManager dahuFileAccessManager;
+    private RegexURLRewriter dahuRegexURLRewriter;
 
     /**
      * Command-Line Interface proxy.
@@ -61,12 +63,14 @@ public class CLI {
 
                 // Setup file access manager and url stream factory
                 dahuFileAccessManager = new DahuFileAccessManager();
+                dahuRegexURLRewriter = new RegexURLRewriter();
                 URL.setURLStreamHandlerFactory(new DahuURLStreamHandlerFactory(
                         getClass().getClassLoader(),
-                        dahuFileAccessManager));
+                        dahuFileAccessManager,
+                        dahuRegexURLRewriter));
 
                 // Load CLI Kernel
-                engine.put("kernel", new DahuCLIKernel(dahuFileAccessManager));
+                engine.put("kernel", new DahuCLIKernel(dahuFileAccessManager, dahuRegexURLRewriter));
 
                 // Load CLI
                 engine.executeScriptFile("/io/dahuapp/cli/CLI.js");

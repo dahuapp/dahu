@@ -22,14 +22,16 @@ import java.nio.file.Paths;
 public class DahuFileURLStreamHandler extends URLStreamHandler {
 
     DahuFileAccessManager dahuFileAccessManager;
+    URLRewriter dahuURLRewriter;
 
-    public DahuFileURLStreamHandler(DahuFileAccessManager manager) {
+    public DahuFileURLStreamHandler(DahuFileAccessManager manager, URLRewriter rewriter) {
         dahuFileAccessManager = manager;
+        dahuURLRewriter = rewriter;
     }
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
-        return new DahuFileURLConnection(url);
+        return new DahuFileURLConnection(dahuURLRewriter.rewriteIfPossible(url));
     }
 
     private class DahuFileURLConnection extends URLConnection {

@@ -2,6 +2,7 @@ package io.dahuapp.common.kernel.module;
 
 import io.dahuapp.common.kernel.Module;
 import io.dahuapp.common.net.DahuFileAccessManager;
+import io.dahuapp.common.net.RegexURLRewriter;
 import io.dahuapp.driver.FileSystemDriver;
 import io.dahuapp.driver.LoggerDriver;
 
@@ -15,16 +16,19 @@ import java.nio.file.Paths;
 public class DefaultFileSystem implements Module {
 
     private DahuFileAccessManager dahuFileAccessManager;
+    private RegexURLRewriter dahuRegexURLRewriter;
 
     public final String FILE_SEPARATOR = FileSystemDriver.FILE_SEPARATOR;
+    public final String SCREENCAST_URLREWRITE_PATTERN = "@screencast";
 
     /**
      * Constructor
      *
      * @param fileAccessManager
      */
-    public DefaultFileSystem(DahuFileAccessManager fileAccessManager) {
-        this.dahuFileAccessManager = fileAccessManager;
+    public DefaultFileSystem(DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
+        dahuFileAccessManager = fileAccessManager;
+        dahuRegexURLRewriter = rewriter;
     }
 
     public boolean exists(String pathname) {
@@ -91,25 +95,25 @@ public class DefaultFileSystem implements Module {
      *  - is not the access to permissive? (e.g. /home/project.dahu will grant access to all /home/ !
      *  - maybe only grant access to img directory inside dahu project is better!
      *
-     * @param dahuProjectFilePathName
+     * @param screencastPath Path to a Screencast file (i.e. presentation.dahu).
      */
-    public void grantAccessToDahuProject(String dahuProjectFilePathName) {
-        Path dahuProjectFilePath = Paths.get(dahuProjectFilePathName);
-        Path dahuProjectDirPath = dahuProjectFilePath.getParent();
-        LoggerDriver.info("Granting access to directory {}", dahuProjectDirPath.toAbsolutePath());
-        dahuFileAccessManager.addAllowedDirectory(dahuProjectDirPath);
+    public void grantAccessToDahuProject(String screencastPath) {
+        Path screencastProjectPath = Paths.get(screencastPath).getParent();
+        LoggerDriver.info("Granting access to directory {}", screencastProjectPath.toAbsolutePath());
+        dahuFileAccessManager.addAllowedDirectory(screencastProjectPath);
+        dahuRegexURLRewriter.addMatcher(SCREENCAST_URLREWRITE_PATTERN, screencastProjectPath.toString());
     }
 
     /**
      * Revoke access to Dahu project.
      *
-     * @param dahuProjectFilePathName
+     * @param dahuScreencastPath
      */
-    public void revokeAccessToDahuProject(String dahuProjectFilePathName) {
-        Path dahuProjectFilePath = Paths.get(dahuProjectFilePathName);
-        Path dahuProjectDirPath = dahuProjectFilePath.getParent();
-        LoggerDriver.info("Revoking access to directory {}", dahuProjectDirPath.toAbsolutePath());
-        dahuFileAccessManager.removeAllowedDirectory(dahuProjectDirPath);
+    public void revokeAccessToDahuProject(String dahuScreencastPath) {
+        Path screencastProjectPath = Paths.get(dahuScreencastPath).getParent();
+        LoggerDriver.info("Revoking access to directory {}", screencastProjectPath.toAbsolutePath());
+        dahuFileAccessManager.removeAllowedDirectory(screencastProjectPath);
+        dahuRegexURLRewriter.removeMatcher(SCREENCAST_URLREWRITE_PATTERN);
     }
 
     /**

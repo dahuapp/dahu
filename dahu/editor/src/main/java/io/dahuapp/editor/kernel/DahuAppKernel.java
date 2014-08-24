@@ -3,6 +3,7 @@ package io.dahuapp.editor.kernel;
 import io.dahuapp.common.javascript.WebEngineRuntime;
 import io.dahuapp.common.kernel.Kernel;
 import io.dahuapp.common.net.DahuFileAccessManager;
+import io.dahuapp.common.net.RegexURLRewriter;
 import io.dahuapp.editor.kernel.module.*;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -24,14 +25,14 @@ public class DahuAppKernel implements Kernel {
     private Stage primaryStage;
     private WebEngineRuntime webEngineRuntime;
 
-    public DahuAppKernel(Stage stage, WebEngineRuntime webEngineRuntime, DahuFileAccessManager fileAccessManager) {
+    public DahuAppKernel(Stage stage, WebEngineRuntime webEngineRuntime, DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
         this.primaryStage = stage;
         this.webEngineRuntime = webEngineRuntime;
 
         media = new Media();
         console = new Logger();
         keyboard = new Keyboard(webEngineRuntime);
-        filesystem = new FileSystem(primaryStage, fileAccessManager);
+        filesystem = new FileSystem(primaryStage, fileAccessManager, rewriter);
         browser = new Browser();
     }
 
