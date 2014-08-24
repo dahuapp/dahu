@@ -1,9 +1,17 @@
+# NPM
 node_modules
+
+# Distribution
 dist
-test/temp
-.sass-cache
-app/components
+
+# Build
 .tmp
-test/components
+
+# Bower
+app/components
+lib
+
+# Compass
+.sass-cache
 *.css
 
