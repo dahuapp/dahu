@@ -8,5 +8,8 @@
 # Build
 build
 
+# Logger
+**.log
+
 # MacOS
 *.DS_Store
