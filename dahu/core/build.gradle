@@ -12,11 +12,21 @@ sourceSets {
  * Install all Node/Grunt dependencies defined in package.json
  */
 task npm(type: Exec) {
+    // be Gradle-like and suppress boilerplate logging
+    logging.captureStandardOutput LogLevel.INFO
+    // but we do always want to see downloads in the log
+    logging.captureStandardError LogLevel.LIFECYCLE
+
     group = "Build"
     description = "Installs all Node/Grunt dependencies defined in package.json"
-    commandLine = ["npm", "install"]
+
     inputs.file "package.json"
     outputs.dir "node_modules"
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        commandLine = ["cmd", "/c", "npm", "install"]
+    } else {
+        commandLine = ["npm", "install"]
+    }
 }
 
 /**
@@ -62,15 +72,18 @@ import org.apache.tools.ant.taskdefs.condition.Os
  */
 class GruntTask extends Exec {
 
-    private String gruntPath = 'node_modules/grunt-cli/bin/'
-    private String gruntExecutable = Os.isFamily(Os.FAMILY_WINDOWS) ? gruntPath + 'grunt.cmd' : gruntPath + 'grunt'
+    private String gruntPath = "node_modules/grunt-cli/bin/grunt"
 
     public GruntTask() {
         super()
-        this.setExecutable(gruntExecutable)
+        if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+            this.setExecutable("node.exe")
+        } else {
+            this.setExecutable("node")
+        }
     }
 
     public void setGruntArgs(String gruntArgs) {
-        this.args = "$gruntArgs".trim().split(" ") as List
+        this.args = [gruntPath] + ("$gruntArgs".trim().split(" ") as List)
     }
 }
