@@ -1,6 +1,7 @@
 package io.dahuapp.driver;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -209,5 +210,13 @@ public class FileSystemDriver {
         return false;
     }
 
-    static public final String FILE_SEPARATOR = System.getProperty("file.separator");
+    /**
+     * Normalize a `filename` using Unix Separator.
+     *
+     * @param filename Filename to normalize.
+     * @return Normalized filename.
+     */
+    static public String normalize(String filename) {
+        return FilenameUtils.normalize(filename, /* unixSeparator */ true);
+    }
 }

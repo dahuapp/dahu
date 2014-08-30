@@ -18,8 +18,7 @@ public class DefaultFileSystem implements Module {
     private DahuFileAccessManager dahuFileAccessManager;
     private RegexURLRewriter dahuRegexURLRewriter;
 
-    public final String FILE_SEPARATOR = FileSystemDriver.FILE_SEPARATOR;
-    public final String SCREENCAST_URLREWRITE_PATTERN = "@screencast";
+    public final String SCREENCAST_URLREWRITE_PATTERN = "__SCREENCAST__";
 
     /**
      * Constructor
@@ -34,6 +33,8 @@ public class DefaultFileSystem implements Module {
     public boolean exists(String pathname) {
         return FileSystemDriver.exists(pathname);
     }
+
+    public String normalized(String filename) { return FileSystemDriver.normalize(filename); }
 
     public boolean writeToFile(String filename, String content) {
         return FileSystemDriver.writeToFile(filename, content);
@@ -101,7 +102,9 @@ public class DefaultFileSystem implements Module {
         Path screencastProjectPath = Paths.get(screencastPath).getParent();
         LoggerDriver.info("Granting access to directory {}", screencastProjectPath.toAbsolutePath());
         dahuFileAccessManager.addAllowedDirectory(screencastProjectPath);
-        dahuRegexURLRewriter.addMatcher(SCREENCAST_URLREWRITE_PATTERN, screencastProjectPath.toString());
+		// we must provide the RegexURLRewriter with a Unix like normalized path otherwise it will
+		// return malformed URLs.
+        dahuRegexURLRewriter.addMatcher(SCREENCAST_URLREWRITE_PATTERN, normalized(screencastProjectPath.toString()));
     }
 
     /**

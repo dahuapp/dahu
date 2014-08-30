@@ -1,5 +1,7 @@
 package io.dahuapp.common.net;
 
+import org.apache.commons.io.FilenameUtils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,7 +9,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.nio.file.Paths;
-
+import java.nio.file.Path;
 
 /**
  * URLStreamHandler for dahufile URL protocol.
@@ -47,11 +49,25 @@ public class DahuFileURLStreamHandler extends URLStreamHandler {
 
         @Override
         public InputStream getInputStream() throws IOException {
-            if (dahuFileAccessManager.getAllowedDirectories().stream().anyMatch(path -> Paths.get(getURL().getPath()).startsWith(path))) {
-                return new FileInputStream(getURL().getPath());
+
+            if (dahuFileAccessManager.getAllowedDirectories().stream().anyMatch(path -> getPath().startsWith(FilenameUtils.normalize(path.toString())))) {
+                // @warning String.startsWith != Path.startsWith, here we must use Path.startsWith
+                return new FileInputStream(getPath().toFile());
             } else {
-                throw new SecurityException("Not allowed to access file " + getURL().getPath());
+                throw new SecurityException("Not allowed to access file " + getPath());
             }
+        }
+
+        /**
+         * Return a path from URL.
+         * 
+         * We don't use getURL().getPath() since our URL is kind of not standard and therefore
+         * calling getPath() on an URL will not return what we need.
+         *
+         * @return path for from URL.
+         */
+        protected Path getPath() {
+            return Paths.get(getURL().toExternalForm().replaceFirst("^dahufile(://|:)", ""));
         }
     }
 }

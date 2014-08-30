@@ -64,7 +64,7 @@ public class FileSystem extends DefaultFileSystem {
 
         File selectedFile = fileChooser.showOpenDialog(primaryStage);
         if (selectedFile != null) {
-            return selectedFile.getAbsolutePath();
+            return normalized(selectedFile.getAbsolutePath());
         }
 
         // otherwise return null
@@ -83,7 +83,7 @@ public class FileSystem extends DefaultFileSystem {
 
         File selectedDir = directoryChooser.showDialog(primaryStage);
         if (selectedDir != null) {
-            return selectedDir.getAbsolutePath();
+            return normalized(selectedDir.getAbsolutePath());
         }
 
         // otherwise return null

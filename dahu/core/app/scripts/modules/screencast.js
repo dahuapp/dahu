@@ -9,21 +9,16 @@ define([
     'modules/utils/paths',
     'modules/utils/exceptions',
     'modules/compiler',
+    'modules/helpers/template',
     // models
     'models/screencast'
 ], function (Handlebars,
-    Kernel, Paths, Exceptions, Compiler,
+    Kernel, Paths, Exceptions, Compiler, TemplateHelper,
     ScreencastModel) {
 
-    /**
-     * Handlebars *global* setup.
-     *
-     * Here we define global helpers.
-     * Global helpers must not depend on any modules.
-     */
-    Handlebars.default.registerHelper('normalizedToPixel', function (prop, taille) {
-        return prop * taille;
-    });
+
+    // setup template helper
+    TemplateHelper.setup();
 
     /**
      * Load a screencast from a file and return a model of the screencast.
