@@ -1,5 +1,5 @@
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.12'
+    gradleVersion = '2.0'
 }
 
 buildscript {
@@ -9,8 +9,13 @@ buildscript {
 }
   
 allprojects {
-    project.sourceCompatibility = JavaVersion.VERSION_1_8
-    project.targetCompatibility = JavaVersion.VERSION_1_8
+    apply plugin: 'java'
+
+    compileJava {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
     project.version = '0.0.4'
 
     repositories {  
