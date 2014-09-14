@@ -2,9 +2,15 @@ define([
     'underscore',
     'backbone',
     'uuid',
+    // models
+    'models/objects/tooltip',
+    // collections
     'collections/objects',
     'collections/actions'
-], function(_, Backbone, UUID, ObjectCollection, ActionsCollection){
+], function(_, Backbone, UUID, // libraries
+            TooltipModel, // models
+            ObjectCollection, ActionsCollection // collections
+){
 
     /**
      * Base Screen model.
@@ -26,6 +32,63 @@ define([
             // wrap up actions around ActionsCollection unless it already is
             if ( ! (this.get('actions') instanceof ActionsCollection) ) {
                 this.set('actions', new ActionsCollection(this.get('actions')));
+            }
+        },
+
+        /**
+         * Get an object model by its `id`.
+         *
+         * @param objectId
+         * @returns {*} Returns the model associated to the `id` if found, else undefined.
+         */
+        getObjectById: function(objectId) {
+            return this.get('objects').findWhere({ id: objectId});
+        },
+
+        /**
+         * Get a tooltip model by its `id`.
+         *
+         * @param tooltipId
+         * @returns {*} Returns the TooltipModel if found, else undefined.
+         */
+        getTooltipById: function(tooltipId) {
+            var object = this.getObjectById(tooltipId);
+            if (object instanceof  TooltipModel) {
+                return object;
+            } else {
+                return undefined;
+            }
+        },
+
+        /**
+         * Add `tooltip`.
+         *
+         * @param tooltip Tooltip model to add.
+         */
+        addTooltip: function(tooltip) {
+            if (tooltip instanceof TooltipModel) {
+                this.get('objects').add(tooltip);
+            }
+        },
+
+        /**
+         * Create a new tooltip from a given `text` and add it to the screen.
+         */
+        createAndAddTooltipFromText: function(text) {
+            this.addTooltip(new TooltipModel({text : text}));
+        },
+
+        /**
+         * Update tooltip of if `tooltipId` with given `attributes`.
+         *
+         * @param tooltipId
+         * @param attributes Key,value map of attributes to update.
+         */
+        updateTooltip: function(tooltipId, attributes) {
+            var tooltip = this.getTooltipById(tooltipId);
+            if (tooltip) {
+                // pick only specifi attributes (here only text)
+                tooltip.set(_.pick(attributes, ['text']));
             }
         }
     });

@@ -19,29 +19,14 @@ require.config({
     },
     shim: {
         cheerio: {
-            exports: 'cheerio'
-        },
-        jquery: {
             exports: '$'
         },
         lodash: {
             exports: '_'
         },
         backbone: {
-            deps: ['lodash', 'jquery'],
+            deps: ['cheerio', 'lodash'],
             exports: 'Backbone'
-        },
-        'backbone.marionette' : {
-            deps : [ 'backbone', 'lodash' ],
-            exports : 'Marionette'
-        },
-        'backbone.wreqr': {
-            deps : [ 'backbone', 'lodash' ],
-            exports : 'Wreqr'
-        },
-        'backbone.babysitter': {
-            deps : [ 'backbone', 'lodash' ],
-            exports : 'Babysitter'
         },
         handlebars: {
             exports: 'Handlebars'
@@ -51,23 +36,31 @@ require.config({
         }
     },
     paths: {
-        text: '../components/requirejs-text/text',
-        backbone: '../components/backbone/backbone',
-        'backbone.marionette' : '../components/backbone.marionette/lib/core/backbone.marionette',
-        'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
-        'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
-        lodash: '../components/lodash/dist/lodash',
-        handlebars: '../components/handlebars/handlebars.amd',
-        uuid: '../components/node-uuid/uuid',
+        'text': '../components/requirejs-text/text',
+        'backbone': '../components/backbone/backbone',
+        'lodash': '../components/lodash/dist/lodash',
+        'handlebars': '../components/handlebars/handlebars.amd',
+        'uuid': '../components/node-uuid/uuid',
 
-        // JQuery cannot be used in Nashorn
-        jquery: 'empty:',
-        cheerio: '../components/cheerio/lib/cheerio'
+        // JQuery cannot be used in Nashorn, use `cheerio` instead
+        'jquery': 'empty:',
+        'cheerio': '../components/cheerio/lib/cheerio'
+    }
+});
+
+// Define patcher
+define('patcher', ['modules/patches/backbone'], function(Backbone) {
+    return {
+        patch: function() {
+            Backbone.patch();
+        }
     }
 });
 
 // Define bridge
 define('dahubridge', [
+    'patcher',
+    // libraries
     'backbone',
     // modules
     'modules/kernel/SCI',
@@ -75,13 +68,15 @@ define('dahubridge', [
     // models
     'models/screencast'
 ], function(
+    Patcher,
     Backbone,
-    Kernel,
-    Screencast,
+    Kernel, Screencast,
     ScreencastModel
 ) {
-
-    var screencastController;
+    //
+    // Patch JavaScript-lang and libraries
+    //
+    Patcher.patch();
 
     /**
      * Start bridge
@@ -98,14 +93,18 @@ define('dahubridge', [
         // don't use history since it requires a DOM
         //Backbone.history.start();
 
-        // override global sync method
+        // override global sync method @todo migrate to bootstrap (require to rewrite most of the function)
         Backbone.sync = function (method, model, options) {
             if (model instanceof ScreencastModel) {
                 Kernel.console.debug("Sync screencast model for method {}", method);
                 if( method === 'create' ) {
-                    // define the indentation value to write the updated dahu file
-                    var indentation = 4;
-                    Kernel.module('filesystem').writeToFile(screencastController.getProjectFilename(), model.toJSON(indentation));
+                    Kernel.module('filesystem').writeToFile(
+                        model.getProjectFilename(),
+                        model.stringify(
+                            null,  // no replacer
+                            4      // 4 spaces for indentation
+                        )
+                    );
                 }
                 //@todo handle other methods
             } else {
@@ -121,8 +120,8 @@ define('dahubridge', [
      */
     function generate(projectFilename) {
         try {
-            var screencastModel = Screencast.load(projectFilename);
-            Screencast.generate(screencastModel, projectFilename);
+            var screencast = Screencast.load(projectFilename);
+            screencast.generate();
         } catch(e) {
             Kernel.console.error(e);
         }

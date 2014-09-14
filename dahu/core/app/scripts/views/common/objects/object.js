@@ -16,14 +16,8 @@ define([
      */
     return Marionette.ItemView.extend({
 
-        initialize: function() {
-            var ctrl = reqres.request('app:screencast:controller');
-
-            // get screencast with and height
-            // if those values change the view will be recreated therefore we don't need to listen for changes
-            this.screencastWidth = ctrl.getScreencastWidth();
-            this.screencastHeight = ctrl.getScreencastHeight();
-        },
+        // default object containment.
+        containment: 'parent',
 
         /**
          * Automatically set CSS properties when the DOM is refreshed.
@@ -33,14 +27,22 @@ define([
             var self = this;
             var style = {};
 
+            // set containment
+            switch (this.getOption('containment')) {
+                case 'window': this.$containment = $(window); break;
+                case 'parent': this.$containment = this.$el.parent(); break;
+                case 'document': this.$containment = $(document); break;
+                default: this.$containment = $(this.getOption('containment')); break;
+            }
+
             // handle posx (@todo rename property in left)
             if( this.model.has('posx')) {
-                style['left'] = (this.model.get('posx') * this.screencastWidth) + "px";
+                style['left'] = (this.model.get('posx') * this.$containment.width()) + "px";
             }
 
             // handle posy (@todo rename propety in top)
             if( this.model.has('posy')) {
-                style['top'] = (this.model.get('posy') * this.screencastHeight) + "px";
+                style['top'] = (this.model.get('posy') * this.$containment.height()) + "px";
             }
 
             // handle all CSS properties

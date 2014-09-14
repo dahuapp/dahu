@@ -43,15 +43,19 @@ define([
     return Marionette.CompositeView.extend({
         template: Handlebars.default.compile(screenTemplate),
 
-        id : function () { return this.model.get("id"); },
+        //@remove id : function () { return this.model.get("id"); },
+        id : function () { return this.screenId; },
         className: 'screen',
         childViewContainer: '.container',
 
-        initialize : function () {
+        initialize : function (options) {
+            // mandatory arguments
+            _.extend(this, _.pick(options, ['screencast', 'screenId']));
+
             // grab the child collection from the parent model
             // so that we can render the collection as children
             // of this parent node
-            this.collection = this.model.get('objects');
+            this.collection = this.screencast.model.getScreenById(this.screenId).get('objects');
         },
 
         // We select the ChildView depending on the object type.
@@ -67,11 +71,13 @@ define([
 
         onShow: function() {
             // setup UI
-            var ctrl = reqres.request('app:screencast:controller');
+            //@remove var ctrl = reqres.request('app:screencast:controller');
 
             this.$('.container').css({
-                width: ctrl.getScreencastWidth(),
-                height: ctrl.getScreencastHeight()
+                //@remove width: ctrl.getScreencastWidth(),
+                //@remove height: ctrl.getScreencastHeight()
+                width: this.screencast.model.getScreenWidth(),
+                height: this.screencast.model.getScreenHeight()
             });
 
             this.watching = fit(this.$('.container')[0], this.$el[0], {

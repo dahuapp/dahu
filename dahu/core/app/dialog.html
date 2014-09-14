@@ -1,0 +1,9 @@
+<script type="text/javascript">
+    // self executing function that request the content to display
+    // into this window from its opener's window (i.e. dahuapp).
+    (function () {
+        window.opener.dahuapp.events.trigger('app:modals:ready', function (content) {
+            document.write(content);
+        });
+    })();
+</script>

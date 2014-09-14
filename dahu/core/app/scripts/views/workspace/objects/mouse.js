@@ -29,11 +29,12 @@ define([
 
         className: 'object mouse',
 
+        /*
         behaviors: {
             DraggableBehavior: {
                 behaviorClass: DraggableBehavior
             }
-        },
+        },*/
 
         onDragCompleted: function(position) {
             this.model.set('posx', position.x);

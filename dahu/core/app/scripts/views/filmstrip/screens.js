@@ -7,7 +7,10 @@ define([
     'backbone.marionette',
     // views
     'views/filmstrip/screen'
-], function(Handlebars, Marionette, FilmstripScreenView){
+], function(
+    Handlebars, Marionette,
+    // views
+    FilmstripScreenView){
 
     /**
      * Filmstrip screen view
@@ -16,6 +19,13 @@ define([
 
         id: 'filmstrip-screens',
         childView: FilmstripScreenView,
+
+        initialize: function(options) {
+            _.extend(this, _.pick(options, ['screencast']));
+
+            // we render screens collection from screencast model.
+            this.collection = this.screencast.model.get('screens');
+        },
 
         /**
          * Redefinition of methods to take into consideration the new parameter
@@ -28,12 +38,11 @@ define([
         },
 
         showCollection: function(){
-            var that = this;
+            var self = this;
             this.collection.each(function(item, index){
-                var ChildView = that.getChildView(item);
-                that.addChild(item, ChildView, index);
+                var ChildView = self.getChildView(item);
+                self.addChild(item, ChildView, index);
             });
         }
-
     });
 });

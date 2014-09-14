@@ -144,6 +144,7 @@ module.exports = function (grunt) {
                 javascriptsDir: '<%= yeoman.app %>/scripts',
                 fontsDir: '<%= yeoman.app %>/styles/fonts',
                 importPath: '<%= yeoman.app %>/<%= yeoman.bower %>',
+                httpPath: 'classpath:///io/dahuapp/core/',
                 relativeAssets: true
             },
             dist: {},
@@ -267,18 +268,68 @@ module.exports = function (grunt) {
         copy: {
             dist: {
                 files: [{
+                    // copy images
                     expand: true,
                     dot: true,
                     cwd: '<%= yeoman.app %>',
                     dest: '<%= yeoman.dist %>',
                     src: [
-                        '*.{ico,txt}',
-                        '.htaccess',
                         'media/images/{,*/}*.{webp,gif}',
-                        'styles/fonts/{,*/}*.*',
-                        '<%= yeoman.bower %>/sass-bootstrap/fonts/*.*',
                         '<%= yeoman.bower %>/jqueryui/themes/base/images/*.*'
                     ]
+                },{
+                    // copy fonts
+                    expand: true,
+                    flatten: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: [
+                        '<%= yeoman.bower %>/fontawesome/fonts/*.*',
+                        '<%= yeoman.bower %>/sass-bootstrap/fonts/*.*'
+                    ],
+                    dest: '<%= yeoman.dist %>/fonts'
+                },{
+                    // copy bootstrap for modal
+                    expand: true,
+                    flatten: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: [
+                        '<%= yeoman.bower %>/bootstrap/dist/js/bootstrap.min.js',
+                        '<%= yeoman.bower %>/bootstrap/dist/css/bootstrap.min.css'
+                    ],
+                    dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/bootstrap/'
+                },{
+                    // copy fontawesome for modal
+                    expand: true,
+                    flatten: false,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: [
+                        '<%= yeoman.bower %>/fontawesome/css/*',
+                        '<%= yeoman.bower %>/fontawesome/fonts/*'
+                    ],
+                    dest: '<%= yeoman.dist %>'
+                },{
+                    // copy jquery for modal
+                    expand: true,
+                    flatten: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: [
+                        '<%= yeoman.bower %>/jquery/dist/jquery.min.js'
+                    ],
+                    dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/jquery/'
+                },{
+                    // copy summmernote for modal
+                    expand: true,
+                    flatten: true,
+                    dot: true,
+                    cwd: '<%= yeoman.app %>',
+                    src: [
+                        '<%= yeoman.bower %>/summernote/dist/*'
+                    ],
+                    dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/summernote/'
                 }]
             },
             firebuglite: {

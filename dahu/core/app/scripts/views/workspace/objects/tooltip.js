@@ -34,8 +34,11 @@ define([
 
         className: 'object tooltip ui-widget-content',
 
-        events: {
-            "dblclick": "edit"
+        triggers: {
+            "dblclick": {
+                event: 'app:workspace:tooltip:edit',
+                stopPropagation: false
+            }
         },
 
         modelEvents: {
@@ -61,8 +64,8 @@ define([
             this.model.set('posy', position.y);
         },
 
-        edit: function(event) {
-            events.trigger('app:workspace:tooltips:edit', this.model);
+        onAppWorkspaceTooltipEdit: function() {
+            console.log("TooltipView clicked");
         }
     });
 });

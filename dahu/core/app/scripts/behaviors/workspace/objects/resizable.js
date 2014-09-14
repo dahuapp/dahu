@@ -16,26 +16,33 @@ define([
      */
     return Marionette.Behavior.extend({
 
+        defaults: {
+            'initialScale': 1.0,
+            'containment': 'parent'
+        },
+
         initialize: function() {
             var self = this;
-            var ctrl = reqres.request('app:screencast:controller');
 
             // set default scale
-            self.scale = 1.0;
+            self.scale = this.getOption('initialScale');
 
             // listen to workspace scale change events
             events.on('app:workspace:onScaleChanged', function(scale) {
                 self.scale = scale;
             });
-
-            // get screencast with and height
-            // if those values change everything will be recreated therefore we don't need to listen for changes
-            self.screencastWidth = ctrl.getScreencastWidth();
-            self.screencastHeight = ctrl.getScreencastHeight();
         },
 
         onDomRefresh: function() {
             var self = this;
+
+            // set containment
+            switch (this.options.containment) {
+                case 'window': this.$containment = $(window); break;
+                case 'parent': this.$containment = this.$el.parent(); break;
+                case 'document': this.$containment = $(document); break;
+                default: this.$containment = $(this.options.containment); break;
+            }
 
             // remove previous
             if( self.$el.resizable() ){
@@ -46,8 +53,8 @@ define([
             self.$el.resizable({
                 stop: function( event, ui ) {
                     // workout final size (@todo translate it to %)
-                    var width = Math.min(Math.max(0, ui.size.width), self.screencastWidth);
-                    var height = Math.min(Math.max(0, ui.size.height), self.screencastHeight);
+                    var width = Math.min(Math.max(0, ui.size.width), self.$containment.width());
+                    var height = Math.min(Math.max(0, ui.size.height), self.$containment.height());
 
                     // notify that resize is completed
                     self.view.triggerMethod('resize:completed', {

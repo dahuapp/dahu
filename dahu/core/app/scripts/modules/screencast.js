@@ -16,15 +16,20 @@ define([
     Kernel, Paths, Exceptions, Compiler, TemplateHelper,
     ScreencastModel) {
 
+    var IMAGES_DIRECTORY_NAME = 'img';
+    var LIBRARIES_DIRECTORY_NAME = 'libs';
+    var BUILD_DIRECTORY_NAME = 'build';
+    var SCREENCAST_PREVIEW_FILENAME = 'presentation.html';
+    var SCREENCAST_FILENAME = 'presentation.dahu';
 
     // setup template helper
     TemplateHelper.setup();
 
     /**
-     * Load a screencast from a file and return a model of the screencast.
+     * Load a screencast.
      *
      * @param projectFilename
-     * @return {ScreencastModel}
+     * @return {ScreencastProject}
      * @throws Exceptions.IOError
      */
     function load(projectFilename) {
@@ -54,27 +59,29 @@ define([
 
         // load the screencast
         var screencastModel = ScreencastModel.newFromString(projectFileContent);
+        screencastModel.setProjectFilename(projectFilename);
 
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
 
         // save it if it was an upgrade
         if( needAnUpgrade ) {
-            save(screencastModel);
+            screencastModel.save();
         }
 
-        return screencastModel;
+        return new ScreencastProject(projectFilename, screencastModel);
     }
 
     /**
      * Create a new screencast.
      *
      * @param projectFilename
-     * @returns {ScreencastModel}
+     * @returns {ScreencastProject}
      */
     function create(projectFilename) {
         // create the screencast
         var screencastModel = new ScreencastModel();
+        screencastModel.setProjectFilename(projectFilename);
 
         // grant access to project
         Kernel.module('filesystem').grantAccessToDahuProject(projectFilename);
@@ -82,91 +89,157 @@ define([
         // save it
         screencastModel.save();
 
-        return screencastModel;
-    }
-
-    function generate(screencastModel, projectFilename) {
-        var BUILD_DIR = getBuildDirectory(projectFilename);
-        var IMAGE_DIR = getImageDirectory(projectFilename);
-
-        // compile the current screencast model
-        var generatedHTML = Compiler.compile(screencastModel);
-
-        // write to disk
-        var path = Paths.join([BUILD_DIR, 'presentation.html']);
-        Kernel.console.info("Writing generated screencast to {}", path);
-        Kernel.module('filesystem').writeToFile(path, generatedHTML);
-        Kernel.console.info("done.");
-
-        // copy media
-        Kernel.console.info("Copying images");
-        //// copy the image folder to the build/img
-        Kernel.module('filesystem').copyDir(
-            IMAGE_DIR, // origin
-            Paths.join([BUILD_DIR, 'img']) // destination
-        );
-        //// copy the cursor
-        Kernel.module('filesystem').copyResourceDir(
-            'classpath:///io/dahuapp/core/media/images/cursor.png', // origin
-            Paths.join([BUILD_DIR, 'img']) // destination
-        );
-        Kernel.console.info("done.");
-        // copy resources
-        Kernel.console.info("Copying resources");
-        //// copy deck.js folder to build/libs/deck.js
-        Kernel.module('filesystem').copyResourceDir(
-            'classpath:///io/dahuapp/core/components/deck.js', // origin
-            Paths.join([BUILD_DIR, 'libs']) // destination
-        );
-        Kernel.console.info("done.");
+        return new ScreencastProject(projectFilename, screencastModel);
     }
 
     /**
-     * Save a screencast.
-     *
-     * @param screencastModel The screencast model to save.
+     * Get screencast filename from `directory`.
+     * @param directory Root directory of the screencast project.
+     * @returns {string} Path to screencast filename.
      */
-    function save(screencastModel) {
-        screencastModel.save();
+    function getScreencastFilenameFromDirectory(directory) {
+        return Paths.join([directoryPath, SCREENCAST_FILENAME]);
     }
 
     /**
-     * Get screencast project's directory from project filename.
+     * ScreencastProject holder.
      *
-     * @param projectFilename
-     * @returns String path to the project directory.
+     * @param projectFilename filename of the screencast project.
+     * @param screencastModel backbone model of this screencast.
+     * @constructor
      */
-    function getProjectDirectory(projectFilename){
-        return Paths.dirname(projectFilename);
-    }
+    var ScreencastProject = function(projectFilename, screencastModel) {
+        this.projectFilename = projectFilename;
+        this.model = screencastModel;
+    };
 
-    /**
-     * Get screencast project's build directory from project filename.
-     *
-     * @param projectFilename
-     * @returns {String} path to the build directory.
-     */
-    function getBuildDirectory(projectFilename) {
-        return Paths.join([getProjectDirectory(projectFilename), 'build']);
-    }
+    _.extend(ScreencastProject.prototype, {
 
-    /**
-     * Get screencast project's image directory from a project filename.
-     *
-     * @param projectFilename
-     * @returns {String} path to the image directory.
-     */
-    function getImageDirectory(projectFilename) {
-        return Paths.join([getProjectDirectory(projectFilename), 'img']);
-    }
+        /**
+         * Save a screencast.
+         *
+         * @param screencastModel The screencast model to save.
+         */
+        save: function() {
+            this.model.save();
+        },
+
+        /**
+         * Generate the screencast.
+         */
+        generate: function() {
+            // compile the current screencast model
+            var generatedHTML = Compiler.compile(this.model);
+
+            // write to disk
+            var previewPath = this.getGeneratedScreencastPreviewAbsPath();
+            Kernel.console.info("Writing generated screencast to {}", previewPath);
+            Kernel.module('filesystem').writeToFile(previewPath, generatedHTML);
+            Kernel.console.info("done.");
+
+            // copy media
+            Kernel.console.info("Copying images");
+            //// copy the image folder to the build/img
+            Kernel.module('filesystem').copyDir(
+                this.getImagesDirectoryAbsPath, // origin
+                Paths.join([this.getBuildDirectoryAbsPath(), IMAGES_DIRECTORY_NAME]) // destination
+            );
+            //// copy the cursor
+            Kernel.module('filesystem').copyResourceDir(
+                'classpath:///io/dahuapp/core/media/images/cursor.png', // origin
+                Paths.join([this.getBuildDirectoryAbsPath(), IMAGES_DIRECTORY_NAME]) // destination
+            );
+            Kernel.console.info("done.");
+            // copy resources
+            Kernel.console.info("Copying resources");
+            //// copy deck.js folder to build/libs/deck.js
+            Kernel.module('filesystem').copyResourceDir(
+                'classpath:///io/dahuapp/core/components/deck.js', // origin
+                Paths.join([this.getBuildDirectoryAbsPath(), LIBRARIES_DIRECTORY_NAME]) // destination
+            );
+            Kernel.console.info("done.");
+        },
+
+        /**
+         * Clean a screencast
+         */
+        clean: function() {
+            Kernel.module('filesystem').removeDir(this.getBuildDirectoryAbsPath());
+        },
+
+        /**
+         * Get generated project's screencast preview absolute path.
+         *
+         *@returns {String} path to generated screencast preview.
+         */
+        getGeneratedScreencastPreviewAbsPath: function() {
+            return Paths.join([this.getBuildDirectoryAbsPath(), SCREENCAST_PREVIEW_FILENAME]);
+        },
+
+        /**
+         * Get screencast project's directory absolute path.
+         *
+         * @returns String path to the project directory.
+         */
+        getProjectDirectoryAbsPath: function() {
+            return Paths.dirname(this.projectFilename);
+        },
+
+        /**
+         * Get screencast project's build directory absolute path.
+         *
+         * @returns {String} path to the build directory.
+         */
+        getBuildDirectoryAbsPath: function() {
+            return Paths.join([this.getProjectDirectoryAbsPath(), BUILD_DIRECTORY_NAME]);
+        },
+
+        /**
+         * Get absolute path for `image`.
+         *
+         * @returns {String} path to the image directory.
+         */
+        getImageURLFor: function(image) {
+            return Paths.join([
+                'dahufile:',
+                this.getProjectDirectoryAbsPath(),
+                IMAGES_DIRECTORY_NAME,
+                image.replace(/^images\//, '')      // be sure to remove `images/` if already present.
+            ]);
+        },
+
+        /**
+         * Get screencast project's images directory absolute path.
+         *
+         * @returns {String} path to the image directory.
+         */
+        getImagesDirectoryAbsPath: function() {
+            return Paths.join([this.getProjectDirectoryAbsPath(), IMAGES_DIRECTORY_NAME]);
+        },
+
+        /**
+         * Get screencast project's relative images path.
+         *
+         * @returns {string} path to the image directory.
+         */
+        getImagesDirectoryRelPath: function() {
+            return IMAGES_DIRECTORY_NAME;
+        },
+
+        /**
+         * Get relative path for `image`.
+         *
+         * @param image
+         * @returns {string}
+         */
+        getImageRelPathFor: function(image) {
+            return Paths.join([IMAGES_DIRECTORY_NAME, image]);
+        }
+    });
 
     return {
         load: load,
         create: create,
-        generate: generate,
-        save: save,
-        getProjectDirectory: getProjectDirectory,
-        getBuildDirectory: getBuildDirectory,
-        getImageDirectory: getImageDirectory
+        getScreencastFilenameFromDirectory: getScreencastFilenameFromDirectory
     }
 });

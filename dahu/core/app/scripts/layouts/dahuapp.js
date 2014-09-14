@@ -7,7 +7,7 @@ define([
     'handlebars',
     'backbone.marionette',
     'text!templates/layouts/dahuapp.html'
-], function(_, Handlebars, Marionette, Dahuapp_tpl){
+], function(_, Handlebars, Marionette, dahuappTemplate){
 
     /**
      * Dahu application layout.
@@ -15,9 +15,10 @@ define([
     var ApplicationLayout = Backbone.Marionette.LayoutView.extend({
         id: 'dahuapp',
         className: 'layout-wrapper',
-        template: Handlebars.default.compile(Dahuapp_tpl),
+        template: Handlebars.default.compile(dahuappTemplate),
 
         regions: {
+            toolbar: "#main-toolbar",
             filmstrip: "#filmstrip",
             workspace: "#workspace",
             note: "#note"

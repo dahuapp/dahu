@@ -27,7 +27,7 @@ define([
     /**
      * Filmstrip screen view
      */
-    var ScreenView = Marionette.CompositeView.extend({
+    return Marionette.CompositeView.extend({
         template: Handlebars.default.compile(screenTemplate),
 
         id : function () { return this.model.get("id"); },
@@ -39,11 +39,7 @@ define([
         },
 
         initialize : function () {
-            // Specify that the collection we want to iterate, for the childView, is
-            // given by the attribute objects.
-            if (this.model != null) {
-                this.collection = this.model.get('objects');
-            }
+            this.collection = this.model.get('objects');
         },
 
         // Select the ItemView depending on the object type.
@@ -56,14 +52,12 @@ define([
         // Only show object of type 'image'
         addChild: function(item, ItemView, index){
             if ( item instanceof ImageModel ) {
-                Backbone.Marionette.CollectionView.prototype.addChild.apply(this, arguments);
+                Marionette.CompositeView.prototype.addChild.apply(this, arguments);
             }
         },
 
         display: function(event){
-            events.trigger('app:filmstrip:onScreenSelected', this.model);
+            events.trigger('app:filmstrip:onScreenSelected', this.model.get('id'));
         }
     });
-
-    return ScreenView;
 });

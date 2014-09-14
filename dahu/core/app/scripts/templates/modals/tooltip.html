@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <link rel="stylesheet" href="styles/main.css" />
+    <script type="text/javascript" src="components/jquery/jquery.min.js"></script>
+    <link rel="stylesheet" href="components/bootstrap/bootstrap.min.css" />
+    <script type="text/javascript" src="components/bootstrap/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="components/fontawesome/css/font-awesome.min.css" />
+    <!-- include summernote css/js-->
+    <link rel="stylesheet" href="components/summernote/summernote.css" />
+    <script type="text/javascript" src="components/summernote/summernote.min.js"></script>
+</head>
+<body>
+<div id="summernote"></div>
+<script type="text/javascript">
+    var title = "{{title}}";
+    var width = parseInt("{{width}}");
+    var height = parseInt("{{height}}");
+
+    /**
+     * Init function.
+     * Here `modal` is provided by the Java side in order
+     * to setup and configure the modal.
+     */
+    function init() {
+        // initialize the modal
+        modal.setTitle(title);
+        modal.setSize(width, height);
+        modal.centerOnParent();
+        modal.addActionBarButton('Ok', 'submit()');
+        modal.addActionBarButton('Cancel', 'exit()');
+
+        // display it
+        // note: we must display it before initializing summernote otherwise the height returned by
+        // stage.getInnerHeight() will be 0.
+        modal.show();
+
+        // summernote setup
+        $(document).ready(function() {
+            $('#summernote').summernote({
+                // set `height` of summernote textarea, here we subtract 43 which is the height
+                // of the summernote toolbar... 41 + 2 px for borders.
+                height: (modal.getInnerHeight()-43)+"px",
+                // activate subset of summernote actions
+                toolbar: [
+                    //[groupname, [button list]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough']],
+                    ['color', ['color']],
+                    ['fontsize', ['fontsize']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    // note: hyperlinks does not render well because it uses Bootstrap.Modal.
+                    // Until this https://github.com/HackerWins/summernote/issues/592 is addressed
+                    // the hyperlink editing will not look nice.
+                    ['insert', ['link', 'hr']]
+                ]
+            }).code('{{{text}}}');
+        });
+    }
+
+    /**
+     * Submit content to opener's window.
+     */
+    function submit() {
+        window.opener.dahuapp.commands.execute('{{command}}', '{{screenId}}', '{{tooltipId}}', $('#summernote').code());
+        window.close();
+    }
+
+    /**
+     * Exit without submitting any content
+     */
+    function exit() {
+        window.close();
+    }
+</script>
+</body>
+</html>

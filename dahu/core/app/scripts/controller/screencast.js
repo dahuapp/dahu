@@ -1,17 +1,13 @@
-/**
- * Created by mouad on 06/06/14.
- */
-
 define([
     'handlebars',
     'backbone.marionette',
     // modules
     'modules/kernel/SCI',
-    'modules/utils/paths',
-    'modules/compiler',
+    'modules/events',
+    'modules/commands',
     'modules/screencast'
 ], function (Handlebars, Marionette,
-    Kernel, Paths, Compiler, Screencast) {
+    Kernel, events, commands, Screencast) {
 
     /**
      * Screencast controller.
@@ -20,7 +16,7 @@ define([
      * Backbone.Marionette application and views.
      *
      * The controller relies on the Screencast module which provide core functionalities shared
-     * between dahuapp (Editpr) and dahubridge (CLI).
+     * between dahuapp (Editor) and dahubridge (CLI).
      */
     return Marionette.Controller.extend({
 
@@ -30,18 +26,17 @@ define([
          * @param projectFilename
          */
         load: function(projectFilename) {
-            if( this.loaded ) {
-                throw "A Dahu project ("+this.projectFilename+") is already loaded."
+            if( this.screencast ) {
+                throw "A Dahu project ("+this.screencast.projectFilename+") is already loaded."
             }
 
-            // keep track of screencast project filename
-            this.projectFilename = projectFilename;
-
             try {
-                this.screencastModel = Screencast.load(projectFilename);
-                this.loaded = true;
+                this.screencast = Screencast.load(projectFilename);
+                this._registerToGlobalEvents();
+                this._registerToCommands();
             } catch(e) {
                 Kernel.console.error(e);
+                this.screencast = null;
             }
         },
 
@@ -51,39 +46,64 @@ define([
          * @param projectFilename
          */
         create: function (projectFilename) {
-            if( this.loaded ) {
-                throw "A Dahu project ("+this.projectFilename+") is already loaded."
+            if( this.screencast ) {
+                throw "A Dahu project ("+this.screencast.projectFilename+") is already loaded."
             }
 
-            // keep track of screencast project filename
-            this.projectFilename = projectFilename;
-
             try {
-                this.screencastModel = Screencast.create(projectFilename);
-                this.loaded = true;
+                this.screencast = Screencast.create(projectFilename);
+                this._registerToGlobalEvents();
+                this._registerToCommands();
             } catch(e) {
                 Kernel.console.error(e);
+                this.screencast = null;
             }
         },
 
+        onDestroy: function() {
+            this._unregisterFromGlobalEvents();
+        },
+
         /**
-         * Close the current screencast project.
+         * Register to application events
+         * @private
          */
-        close: function() {
-            this.loaded = false;
-            this.screencastModel = null;
-            this.projectFilename = null;
-            this.projectDirectory = null;
-            this.projectBuildDirectory = null;
-            this.projectImageDirectory = null;
+        _registerToGlobalEvents: function() {
+
+        },
+
+        /**
+         * Register to application commands
+         * @private
+         */
+        _registerToCommands: function() {
+            var self = this;
+
+            commands.setHandler('app:screencast:createTooltip', function(screenId, tooltipId, text) {
+                self.addTooltipToScreen(screenId, text);
+            });
+
+            commands.setHandler('app:screencast:editTooltip', function(screenId, tooltipId, text) {
+                self.updateTooltip(screenId, tooltipId, text);
+            });
+        },
+
+        /**
+         * Unregister from application events
+         * @private
+         */
+        _unregisterFromGlobalEvents: function() {
+
         },
 
         /**
          * Save the current screencast project.
+         *
+         * @see Screencast.save
          */
         save: function() {
-            if( this.loaded && this.screencastModel ) {
-                Screencast.save(this.screencastModel);
+            if( this.screencast ) {
+                this.screencast.save();
             } else {
                 throw "No Dahu project loaded."
             }
@@ -92,11 +112,11 @@ define([
         /**
          * Clean the current screencast project.
          *
-         * @param projectDirectory Path to the project directory
+         * @see Screencast.clean
          */
         clean: function() {
-            if( this.loaded ) {
-                Kernel.module('filesystem').removeDir(this.getProjectBuildDirectory());
+            if( this.screencast ) {
+                this.screencast.clean();
             } else {
                 throw "No Dahu project loaded."
             }
@@ -105,112 +125,41 @@ define([
         /**
          * Generate a screencast.
          *
-         * @see ScreencastModel.generate
+         * @see Screencast.generate
          */
         generate: function() {
-            if( this.loaded ) {
-                Screencast.generate(this.screencastModel, this.projectFilename);
+            if( this.screencast ) {
+                this.screencast.generate();
             } else {
                 throw "No Dahu project loaded."
             }
         },
 
-        getScreencastModel: function() {
-            return this.screencastModel;
-        },
-
         /**
-         * Return the current screencast width.
-         */
-        getScreencastWidth: function() {
-            return this.screencastModel.get('settings').get('screenWidth');
-        },
-
-        /**
-         * Return the current screencast height.
-         */
-        getScreencastHeight: function() {
-            return this.screencastModel.get('settings').get('screenHeight');
-        },
-
-        /**
-         * Gets the current screencast project's filename.
-         * @returns {*}
-         */
-        getProjectFilename: function() {
-            return this.projectFilename;
-        },
-
-        /**
-         * Gets the current screencast project's directory.
+         * Add a tooltip to screen of id `screenId` with the given `text`.
          *
-         * @returns String
+         * @param screenId
+         * @param text
          */
-        getProjectDirectory: function(){
-            if( ! this.projectDirectory) {
-                this.projectDirectory = Screencast.getProjectDirectory(this.projectFilename);
+        addTooltipToScreen: function(screenId, text) {
+            var screen = this.screencast.model.getScreenById(screenId);
+            if (screen) {
+                screen.createAndAddTooltipFromText(text);
             }
-
-            return this.projectDirectory;
         },
 
         /**
-         * Get the current screencast project's *build* directory.
+         * Update `text` of the tooltip of id `tooltipId` on the screen of id `screenId`.
          *
-         * @returns {String} path to the build directory.
+         * @param screenId
+         * @param tooltipId
+         * @param text
          */
-        getProjectBuildDirectory: function() {
-            if( ! this.projectBuildDirectory ) {
-                this.projectBuildDirectory = Screencast.getProjectBuildDirectory(this.projectFilename);
+        updateTooltip: function(screenId, tooltipId, text) {
+            var screen = this.screencast.model.getScreenById(screenId);
+            if (screen) {
+                screen.updateTooltip(tooltipId, {text: text});
             }
-
-            return this.projectBuildDirectory;
-        },
-
-        /**
-         * Gets the full path of a project picture
-         */
-        getImgFullPath: function(img) {
-            return Paths.join(['dahufile:', this.getProjectDirectory(), img]);
-        },
-
-        /**
-         * Gets path of a Dahu screencast project file according  to some *directory*.
-         *
-         * @param directory of the project
-         * @return {String} dahu screencast filename.
-         */
-        getDahuFileFromDirectory: function (directory) {
-            return Paths.join([directory, 'presentation.dahu']);
-        },
-
-        /**
-         * Gets path of a generated Dahu screencast according to some *directory*.
-         *
-         * @param directory of the project
-         * @return {String} dahu screencast filename.
-         */
-        getDahuFileGeneratedScreencastFromDirectory: function (directory) {
-            return Paths.join([directory, 'presentation.html']);
-        },
-
-        /**
-         * Gets the full path of the img directory of the current project
-         */
-        getProjectImgDirectory: function () {
-            if( ! this.projectImageDirectory ) {
-                this.projectImageDirectory = Screencast.getImageDirectory(this.projectFilename);
-            }
-
-            return this.projectImageDirectory
-        },
-
-        /**
-         * Gets the relative path of the img file of the current project
-         * i.e : 'img/nameOfImg.extension'
-         */
-        getRelativeImgPath: function (img) {
-            return Paths.join(['img', img]);
         }
     });
 });

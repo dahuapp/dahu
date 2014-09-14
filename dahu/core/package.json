@@ -22,6 +22,7 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-mocha": "~0.4.9",
     "grunt-open": "~0.2.3",
+    "grunt-preprocess": "^4.0.0",
     "grunt-processhtml": "^0.3.3",
     "grunt-remove-logging": "~0.2",
     "grunt-usemin": "^2.1.1",

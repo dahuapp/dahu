@@ -1,0 +1,99 @@
+$icon-font-path: "classpath:///io/dahuapp/core/fonts/";
+
+@import 'sass-bootstrap/lib/bootstrap.scss';
+
+.navbar {
+  border-radius: 0;
+  margin-bottom: 0;
+  background-color: $dahu-toolbar-background-color;
+  background-image: $dahu-toolbar-background-image;
+  border-color: $dahu-toolbar-border-color;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+  box-shadow: inset 0 1px 0 0 #fff;
+}
+
+.toolbar {
+  @extend .navbar;
+}
+
+/* */
+
+.navbar-main .navbar-title,
+.toolbar .navbar-title {
+  @extend .navbar-text;
+  float: none;
+  display: inline-block;
+}
+
+.navbar-main .navbar-btn,
+.toolbar .navbar-btn {
+  border: none;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background: transparent;
+}
+
+/* Create a medium height toolbar (for main toolbar) */
+.navbar-main {
+  height: 40px;
+  min-height: 40px;
+}
+
+.navbar-main .navbar-brand,
+.navbar-main .navbar-link,
+.navbar-main .navbar-btn,
+.navbar-main .navbar-nav > li > a {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.navbar-main .navbar-text {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.navbar-main .navbar-brand {
+  height: 40px
+}
+
+.navbar-main .navbar-toggle {
+  margin: 6px 12px 6px 0px;
+  padding: 6px 7px 6px 7px;
+}
+
+.navbar-main .navbar-toggle .icon-bar {
+  width: 19px;
+}
+
+/* Create a small height toolbar (for workspace toolbar) */
+.toolbar {
+  min-height: 30px
+}
+
+.toolbar .navbar-brand,
+.toolbar .navbar-link,
+.toolbar .navbar-btn,
+.toolbar .navbar-nav > li > a {
+  padding-top: 5px;
+  padding-bottom: 5px
+}
+
+.toolbar .navbar-text {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.toolbar .navbar-brand {
+  height: 30px;
+  min-height: 30px
+}
+
+.toolbar .navbar-toggle {
+  margin: 3px 9px 3px 0px;
+  padding: 4px 4px 4px 4px;
+}
+
+.toolbar .navbar-toggle .icon-bar {
+  width: 16px;
+}

@@ -38,7 +38,14 @@ define([
 
         childViewContainer: '#myActions',
 
-        initialize : function () {
+        initialize : function (options) {
+            // mandatory arguments
+            this.screencast = options.screencast;
+            this.screenId = options.screenId;
+
+            this.collection = this.screencast.model.getScreenById(this.screenId).get('actions');
+
+            /*@remove
             // Specify that the collection we want to iterate, for the childView, is
             // given by the attribute actions.
             if (this.model != null) {
@@ -49,7 +56,7 @@ define([
                 if (this.collection != null) {
                     this.collection.on('change', this.onChanged(), this);
                 }
-            }
+            }*/
         },
 
         // We select the ItemView depending on the object type.

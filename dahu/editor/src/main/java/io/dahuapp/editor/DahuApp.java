@@ -7,6 +7,7 @@ import io.dahuapp.common.net.DahuURLStreamHandlerFactory;
 import io.dahuapp.common.net.RegexURLRewriter;
 import io.dahuapp.editor.helper.OSCheck;
 import io.dahuapp.editor.kernel.DahuAppKernel;
+import io.dahuapp.editor.ui.Modal;
 import javafx.application.Application;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -16,8 +17,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.FontSmoothingType;
+import javafx.scene.web.PopupFeatures;
+import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import netscape.javascript.JSObject;
 
 import java.net.URL;
@@ -44,12 +48,12 @@ public class DahuApp extends Application {
     /**
      * Application components
      */
+    private Stage primaryStage;
     private WebView webView;
     private WebEngineRuntime webEngineRuntime;
     private DahuFileAccessManager dahuFileAccessManager;
     private RegexURLRewriter dahuRegexURLRewriter;
     private MenuBar menuBar;
-    private ToolBar toolBar;
 
     /**
      * The main() method is ignored in correctly deployed JavaFX application.
@@ -80,14 +84,12 @@ public class DahuApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        this.primaryStage = primaryStage;
         // init dahu application
         initDahuApp(primaryStage);
 
         // init dahu menu
         initDahuMenu();
-
-        // init dahu toolbar
-        initDahuToolbar();
 
         // init layout
         initDahuLayout(primaryStage);
@@ -152,31 +154,15 @@ public class DahuApp extends Application {
             }
         });
 
-        //@todo clean that
-//        // adds a dialog alert handler
-//        webView.getEngine().setOnAlert(new EventHandler<WebEvent<String>>() {
-//            @Override
-//            public void handle(WebEvent<String> e) {
-//                Dialogs.showMessage(e.getData());
-//                e.consume();
-//            }
-//        });
-//
-//        // adds a confirm dialog handler
-//        webView.getEngine().setConfirmHandler(new Callback<String, Boolean>() {
-//            @Override
-//            public Boolean call(String p) {
-//                return Dialogs.showConfirm(p);
-//            }
-//        });
-//
-//        // adds a prompt dialog handler
-//        webView.getEngine().setPromptHandler(new Callback<PromptData, String>() {
-//            @Override
-//            public String call(PromptData p) {
-//                return Dialogs.showPrompt(p.getMessage(), p.getDefaultValue());
-//            }
-//        });
+        webView.getEngine().setCreatePopupHandler(
+                new Callback<PopupFeatures, WebEngine>() {
+                    @Override
+                    public WebEngine call(PopupFeatures config) {
+                        final Modal dialog = new Modal(primaryStage);
+                        return dialog.getWebEngine();
+                    }
+                }
+        );
     }
 
     /**
@@ -192,23 +178,29 @@ public class DahuApp extends Application {
         // File > New
         MenuItem menuFileCreate = new MenuItem("New");
         menuFileCreate.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onFileCreate');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:createScreencast');");
         });
 
         // File > Open
         MenuItem menuFileOpen = new MenuItem("Open");
         menuFileOpen.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onFileOpen');");
-            showToolbar();
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:loadScreencast');");
         });
 
-        // File Save
+        // File > Save
         MenuItem menuProjectSave = new MenuItem("Save");
         menuProjectSave.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onProjectSave');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:saveScreencast');");
         });
 
-        menuFile.getItems().addAll(menuFileCreate, menuFileOpen, new SeparatorMenuItem(), menuProjectSave);
+        // Exit @todo only put this button when there is not windows border: e.g in Awesome Window Manager.
+        // otherwise user can exit the application using the usual [x] button
+        MenuItem menuProjectExit = new MenuItem("Exit");
+        menuProjectExit.setOnAction((event) -> {
+            webEngineRuntime.executeScriptCommand("dahuapp.stop();");
+        });
+
+        menuFile.getItems().addAll(menuFileCreate, menuFileOpen, new SeparatorMenuItem(), menuProjectSave, new SeparatorMenuItem(), menuProjectExit);
 
         // Capture
         Menu menuCapture = new Menu("Capture");
@@ -216,13 +208,13 @@ public class DahuApp extends Application {
         // Capture > Start
         MenuItem menuCaptureStart = new MenuItem("Start");
         menuCaptureStart.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onCaptureStart');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:startCapture');");
         });
 
         // Capture > Stop
         MenuItem menuCaptureStop = new MenuItem("Stop");
         menuCaptureStop.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onCaptureStop');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:stopCapture');");
         });
 
         menuCapture.getItems().addAll(menuCaptureStart,new SeparatorMenuItem(),menuCaptureStop);
@@ -233,19 +225,19 @@ public class DahuApp extends Application {
         // Generation > Clean
         MenuItem menuGenerationClean = new MenuItem("Clean");
         menuGenerationClean.setOnAction((event) ->{
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onClean');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:cleanScreencast');");
         });
 
         // Generation > Generate
         MenuItem menuGenerationGenerate = new MenuItem("Clean and generate");
         menuGenerationGenerate.setOnAction((event) ->{
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onGenerate');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:generateScreencast');");
         });
 
         // Generation > Preview
         MenuItem menuGenerationPreview = new MenuItem("Preview");
         menuGenerationPreview.setOnAction((event) ->{
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onPreview');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:previewScreencast');");
         });
 
         menuGeneration.getItems().addAll(menuGenerationClean, menuGenerationGenerate, menuGenerationPreview);
@@ -256,13 +248,13 @@ public class DahuApp extends Application {
         // Help > Tip of the Day
         MenuItem menuHelpTips = new MenuItem("Tip of the Day");
         menuHelpTips.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onHelpTips');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:openTipsOfTheDay');");
         });
 
         // Help > Submit Feedback
         MenuItem menuHelpFeedback = new MenuItem("Submit Feedback");
         menuHelpFeedback.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:onHelpFeedback');");
+            webEngineRuntime.executeScriptCommand("dahuapp.commands.execute('app:submitFeedback');");
         });
 
         menuHelp.getItems().addAll(menuHelpTips, new SeparatorMenuItem(), menuHelpFeedback);
@@ -279,15 +271,10 @@ public class DahuApp extends Application {
         OSCheck.OSType OS = OSCheck.getOperatingSystemType();
 
         // pin the menu
-        BorderPane topPane = new BorderPane(menuBar);
+        borderPane.setTop(menuBar);
         if (OS == OSCheck.OSType.MacOS) {
             menuBar.setUseSystemMenuBar(true);
         }
-        // pin the toolBar
-        topPane.setBottom(toolBar);
-
-        // pin the menu + toolbar
-        borderPane.setTop(topPane);
 
         // pin the webView
         borderPane.setCenter(webView);
@@ -304,25 +291,5 @@ public class DahuApp extends Application {
         primaryStage.setOnCloseRequest((event) -> {
             webEngineRuntime.executeScriptCommand("dahuapp.stop();");
         });
-    }
-
-    private void initDahuToolbar () {
-        // create the toolbar
-        toolBar = new ToolBar();
-        toolBar.setPrefWidth(300);
-        toolBar.setPrefHeight(30);
-    }
-
-    private void showToolbar () {
-        // Fill in the toolbar when we need it
-        // create new tooltip button
-        Button newTooltip = new Button("New tooltip");
-        newTooltip.setOnAction((event) -> {
-            webEngineRuntime.executeScriptCommand("dahuapp.events.trigger('app:workspace:tooltips:new');");
-        });
-        // delete old buttons when we reshow the toolbar
-        toolBar.getItems().removeAll(toolBar.getItems());
-        toolBar.getItems().add(newTooltip);
-        toolBar.getItems().add(new Separator());
     }
 }

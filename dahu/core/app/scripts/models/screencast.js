@@ -1,12 +1,20 @@
 define([
     'underscore',
     'backbone',
+    // modules
     'modules/kernel/SCI',
+    // models
     'models/metadata',
     'models/settings',
+    'models/screen',
     'models/objects/tooltip',
+    // collections
     'collections/screens'
-], function(_, Backbone, Kernel, Metadata, Settings, TooltipModel, ScreenCollection){
+], function(
+    _, Backbone,
+    Kernel,
+    Metadata, Settings, ScreenModel,
+    TooltipModel, ScreenCollection){
 
     var VERSION = 2;
 
@@ -38,16 +46,58 @@ define([
             }
         },
 
-        toJSON: function(indentation) {
-            // indentation allows the proper indentation of the returned string.
-            indentation = indentation || undefined;
-            return JSON.stringify(this.attributes, undefined, indentation)
+        /**
+         * Set project `filename` from which this model was loaded.
+         *
+         * @param filename
+         * @warning used only to simplify model syncing. DO NOT ADD MORE PRIVATE PROPERTIES.
+         */
+        setProjectFilename: function(filename) {
+            this._projectFilename = filename;
         },
 
-        addTooltip: function(tooltipText, screenModel) {
-            var tooltip = new TooltipModel({text : tooltipText});
-            if (screenModel != undefined) {
-                screenModel.get('objects').add(tooltip);
+        /**
+         * Get project the filename from which this model was loaded.
+         *
+         * @returns {String} absolute path to the project filename.
+         * @warning used only to simplify model syncing. DO NOT ADD MORE PRIVATE PROPERTIES.
+         */
+        getProjectFilename: function() {
+            return this._projectFilename;
+        },
+
+        /**
+         * Get screen width
+         */
+        getScreenWidth: function() {
+            return this.get('settings').get('screenWidth');
+        },
+
+        /**
+         * Return the current screencast height.
+         */
+        getScreenHeight: function() {
+            return this.get('settings').get('screenHeight');
+        },
+
+        /**
+         * Get a screen model by its `id`.
+         *
+         * @param screenId
+         * @returns {*} Returns the ScreenModel if found, else undefined.
+         */
+        getScreenById: function(screenId) {
+            return this.get('screens').findWhere({ id: screenId});
+        },
+
+        /**
+         * Add a new screen to the screencast.
+         *
+         * @param screenModel
+         */
+        addScreen: function(screen) {
+            if (screen instanceof ScreenModel) {
+                this.get('screens').add(screen);
             }
         }
     }, { // class properties (static)
