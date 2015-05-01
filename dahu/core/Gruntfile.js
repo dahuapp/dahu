@@ -284,8 +284,8 @@ module.exports = function (grunt) {
                     dot: true,
                     cwd: '<%= yeoman.app %>',
                     src: [
-                        '<%= yeoman.bower %>/fontawesome/fonts/*.*',
-                        '<%= yeoman.bower %>/sass-bootstrap/fonts/*.*'
+                        '<%= yeoman.bower %>/font-awesome/fonts/*.*',
+                        '<%= yeoman.bower %>/bootstrap/fonts/*.*'
                     ],
                     dest: '<%= yeoman.dist %>/fonts'
                 },{
@@ -306,8 +306,8 @@ module.exports = function (grunt) {
                     dot: true,
                     cwd: '<%= yeoman.app %>',
                     src: [
-                        '<%= yeoman.bower %>/fontawesome/css/*',
-                        '<%= yeoman.bower %>/fontawesome/fonts/*'
+                        '<%= yeoman.bower %>/font-awesome/css/*',
+                        '<%= yeoman.bower %>/font-awesome/fonts/*'
                     ],
                     dest: '<%= yeoman.dist %>'
                 },{

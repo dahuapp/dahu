@@ -47,7 +47,7 @@ require.config({
         'backbone.wreqr' : '../components/backbone.wreqr/lib/backbone.wreqr',
         'backbone.babysitter' : '../components/backbone.babysitter/lib/backbone.babysitter',
         'underscore': '../components/underscore/underscore',
-        'bootstrap': '../components/sass-bootstrap/dist/js/bootstrap',
+        'bootstrap': '../components/bootstrap/dist/js/bootstrap',
         'handlebars': '../components/handlebars/handlebars.amd',
         'uuid': '../components/node-uuid/uuid',
         'fit': '../components/fit.js/fit'

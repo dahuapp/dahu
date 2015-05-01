@@ -38,7 +38,7 @@ require.config({
     paths: {
         'text': '../components/requirejs-text/text',
         'backbone': '../components/backbone/backbone',
-        'lodash': '../components/lodash/dist/lodash',
+        'lodash': '../components/lodash/lodash',
         'handlebars': '../components/handlebars/handlebars.amd',
         'uuid': '../components/node-uuid/uuid',
 
