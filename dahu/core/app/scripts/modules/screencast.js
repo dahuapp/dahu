@@ -98,7 +98,7 @@ define([
      * @returns {string} Path to screencast filename.
      */
     function getScreencastFilenameFromDirectory(directory) {
-        return Paths.join([directoryPath, SCREENCAST_FILENAME]);
+        return Paths.join([directory, SCREENCAST_FILENAME]);
     }
 
     /**
