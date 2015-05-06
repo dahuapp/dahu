@@ -18,7 +18,6 @@ public class Logger implements Module {
 
     @Override
     public void load() {
-        System.out.println(getClass().getResource("/io/dahuapp/driver/logger/highlighted_.xml"));
         LoggerDriver.configure(getClass().getResource("/io/dahuapp/driver/logger/highlighted.xml"));
     }
 

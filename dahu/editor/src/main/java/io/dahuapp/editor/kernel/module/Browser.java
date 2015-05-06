@@ -1,39 +1,31 @@
 package io.dahuapp.editor.kernel.module;
 
-import edu.stanford.ejalbert.BrowserLauncher;
-import edu.stanford.ejalbert.exception.BrowserLaunchingInitializingException;
-import edu.stanford.ejalbert.exception.UnsupportedOperatingSystemException;
 import io.dahuapp.common.kernel.Module;
 import io.dahuapp.driver.LoggerDriver;
-import javafx.concurrent.Task;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Proxy used when a web browser needs to be opened.
  */
 
 public class Browser implements Module {
-
+    
     /**
-     * Allows this proxy to open the default browser.
+     * Executor service to run the preview.
      */
-    private Desktop desktop;
-    /**
-     * Alternative way to open a browser (Desktop is not supported on many linux
-     * platforms).
-     */
-    private BrowserLauncher browserLauncher;
+    private ExecutorService runPreviewExecutor;
 
     /**
      * Runs the preview (opens the default web browser).
      *
-     * @param htmlFile The absolute path to the html file to display.
+     * @param htmlFile The absolute path to the HTML file to display.
      */
     public void runPreview(String htmlFile) {
         /*
@@ -41,75 +33,54 @@ public class Browser implements Module {
          * The URI seems not to support strings with '\' so we replace all
          * of them by '/' otherwise a malformed URI exception is thrown.
          */
-        final String urlString = "file://" + htmlFile.replaceAll("\\\\", "/");
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-
-        executorService.submit(new Task<Void>() {
-            @Override protected Void call() throws Exception {
-                openWebBrowser(urlString);
-                return null;
-            }
-        });
+        openURL("file://" + htmlFile.replaceAll("\\\\", "/"));
     }
 
     /**
-     * Open the default web browser and open the specified URL.
+     * Open the default web browser with the specified URL.
      *
-     * @param url Page to display on the browser.
+     * @param url URL to open in the browser.
      */
     public void openURL(final String url) {
-
-        // We launch a new task using an executor service
-
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-
-        executorService.submit(new Task<Void>() {
-            @Override protected Void call() throws Exception {
-                openWebBrowser(url);
-                return null;
-            }
-        });
+        runPreviewExecutor.submit(() -> openWebBrowser(url));
     }
-
+    
     /**
-     * This method opens a web browser and loads the given URL into it.
-     * Depending on the platform, a different method can be used to run the web
-     * browser.
-     *
-     * @param url The URL to open.
+     * Open the URL in the default web browser.
+     * This function must be called from a dedicated thread.
+     * 
+     * @param url URL to open in the browser.
      */
     private void openWebBrowser(String url) {
-        if (desktop != null) {
+        if (Desktop.isDesktopSupported()) {
             try {
-                desktop.browse(new URL(url).toURI());
+                Desktop.getDesktop().browse(new URL(url).toURI());
             } catch (URISyntaxException | IOException e) {
-                LoggerDriver.error("Browser couldn't be opened.", e);
+                LoggerDriver.error("Browser (with 'java.awt.Desktop') couldn't be opened.", e);
             }
-        } else if (browserLauncher != null) {
-            browserLauncher.openURLinBrowser(url);
         } else {
-            // Maybe add a message popup here
-            LoggerDriver.error("Browser driver not supported.");
+            LoggerDriver.error("No browser driver available.");
         }
+
     }
 
     @Override
     public void load() {
-        if (Desktop.isDesktopSupported()) {
-            desktop = Desktop.getDesktop();
-        } else {
-            try {
-                browserLauncher = new BrowserLauncher();
-            } catch (BrowserLaunchingInitializingException
-                    | UnsupportedOperatingSystemException e) {
-                LoggerDriver.error("BrowserLauncher couldn't be opened.", e);
-            }
+        runPreviewExecutor = Executors.newSingleThreadExecutor();
+        if (!Desktop.isDesktopSupported()) {
+            LoggerDriver.error("No browser driver available.");
         }
     }
 
     @Override
     public void unload() {
-
+        runPreviewExecutor.shutdownNow();
+        try {
+            if (!runPreviewExecutor.awaitTermination(1, TimeUnit.SECONDS)) {
+                LoggerDriver.error("<Run preview> thread may still be running.");
+            }
+        } catch (InterruptedException e) {
+            LoggerDriver.error("<Run preview> thread may still be running.");
+        }
     }
 }
