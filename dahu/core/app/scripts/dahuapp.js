@@ -250,7 +250,7 @@ define('dahuapp', [
      */
     function createScreencast() {
         // ask user for project destination
-        var projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
+        var projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Select the directory to store the new Dahu Project");
 
         // return if no given
         if( projectDirectoryName == null ) {
