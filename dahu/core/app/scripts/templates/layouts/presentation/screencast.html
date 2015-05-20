@@ -23,29 +23,30 @@
 
         <!-- Required Modernizr file -->
         <script src="./libs/deck.js/modernizr.custom.js"></script>
+        
+        <style>
+            /* temporary */
+            img.background {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+            }
+
+            .tooltip {
+                display: block;
+                position: absolute;
+                padding: 4px;
+                margin: 2px;
+                border: 2px black solid;
+                font-size: 14px;
+            }
+
+            .mouse{
+                position: absolute;
+                width: 15px;
+            }
+        </style>
     </head>
-    <style>
-        /* temporary */
-        img.background {
-            position: absolute;
-            left: 0px;
-            top: 0px;
-        }
-
-        .tooltip {
-            display: block;
-            position: absolute;
-            padding: 4px;
-            margin: 2px;
-            border: 2px black solid;
-            font-size: 14px;
-        }
-
-        .mouse{
-            position: absolute;
-            width: 15px;
-        }
-    </style>
     <body>
     <div class="deck-container">
         <div id="myPresentation">
