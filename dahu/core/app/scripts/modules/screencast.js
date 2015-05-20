@@ -141,7 +141,7 @@ define([
             Kernel.console.info("Copying images");
             //// copy the image folder to the build/img
             Kernel.module('filesystem').copyDir(
-                this.getImagesDirectoryAbsPath, // origin
+                this.getImagesDirectoryAbsPath(), // origin
                 Paths.join([this.getBuildDirectoryAbsPath(), IMAGES_DIRECTORY_NAME]) // destination
             );
             //// copy the cursor
