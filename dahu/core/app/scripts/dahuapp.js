@@ -57,7 +57,7 @@ require.config({
 // Define patcher
 define('patcher', [
     'modules/patches/backbone',
-    'modules/patches/backbone.marionette'
+    'modules/patches/backbone.marionette',
 ], function(
     Backbone, Marionette
 ) {
@@ -85,6 +85,7 @@ define('dahuapp', [
     'modules/commands',
     'modules/requestResponse',
     'modules/utils/paths',
+    'modules/utils/exceptions',
     // controllers
     'controller/screencast',
     'controller/layout',
@@ -99,7 +100,7 @@ define('dahuapp', [
 ], function(
     Patcher,
     $, _, Backbone, Marionette, Handlebars,
-    Kernel, Screencast, events, commands, reqResponse, Paths,
+    Kernel, Screencast, events, commands, reqResponse, Paths, Exceptions,
     ScreencastController, LayoutController,
     ScreencastModel, ScreenModel, ImageModel, MouseModel, TooltipModel,
     ScreensCollection) {
@@ -187,6 +188,13 @@ define('dahuapp', [
         });
         commands.setHandler('app:onCaptureStop', function() {
             captureStop();
+        });
+        commands.setHandler('app:openTipsOfTheDay', function() {
+            throw new Exceptions.NotImplementedError("There are no tips of the day yet.");
+        });
+        commands.setHandler('app:submitFeedback', function() {
+            // TODO : issue #139 : store this URL in the configuration file
+            Kernel.module('browser').openURL("https://github.com/dahuapp/dahu/issues");
         });
     }
 
