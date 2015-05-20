@@ -57,9 +57,7 @@ public class Browser implements Module {
     private void openWebBrowser(String url) {
         if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
-                LoggerDriver.info("Navigateur OK ?");
                 Desktop.getDesktop().browse(new URL(url).toURI());
-                LoggerDriver.info("Navigateur OK...");
             } catch (URISyntaxException | IOException e) {
                 LoggerDriver.error("Browser (with 'java.awt.Desktop') couldn't be opened.", e);
             } catch (Exception e) {
