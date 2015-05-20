@@ -4,12 +4,15 @@ import io.dahuapp.common.kernel.Module;
 import io.dahuapp.driver.LoggerDriver;
 
 import java.awt.Desktop;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Proxy used when a web browser needs to be opened.
@@ -52,11 +55,24 @@ public class Browser implements Module {
      * @param url URL to open in the browser.
      */
     private void openWebBrowser(String url) {
-        if (Desktop.isDesktopSupported()) {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
             try {
+                LoggerDriver.info("Navigateur OK ?");
                 Desktop.getDesktop().browse(new URL(url).toURI());
+                LoggerDriver.info("Navigateur OK...");
             } catch (URISyntaxException | IOException e) {
                 LoggerDriver.error("Browser (with 'java.awt.Desktop') couldn't be opened.", e);
+            } catch (Exception e) {
+                LoggerDriver.error("Something happenned : "+e.getClass()+e.getMessage());
+            }
+        } else if ((new File("/usr/bin/xdg-open").exists() || new File("/usr/local/bin/xdg-open").exists())) {
+        // Work-around to support non-GNOME Linux desktop environments with xdg-open installed,
+        // so we can get the default application o nthose systems.
+        // We should probably also check if the OS is an UNIX environment...
+            try {
+                new ProcessBuilder("xdg-open", url).start();
+            } catch (IOException ex) {
+                LoggerDriver.error("Runtime browser couldn't be opened.", ex);
             }
         } else {
             LoggerDriver.error("No browser driver available.");
