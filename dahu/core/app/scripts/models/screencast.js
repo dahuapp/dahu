@@ -67,6 +67,15 @@ define([
         },
 
         /**
+         *  Check the dimensions in the settings
+         * 
+         * @return {Boolean} true if dimension in settings are defined
+         */
+        hasScreenDimension: function() {
+            return this.get('settings').hasScreenDimension();
+        },
+
+        /**
          * Get screen width
          */
         getScreenWidth: function() {
@@ -74,10 +83,26 @@ define([
         },
 
         /**
+         * Set screen width
+         * @param width width of the screen
+         */
+        setScreenWidth: function(width) {
+            this.get('settings').set('screenWidth', width);
+        },
+
+        /**
          * Return the current screencast height.
          */
         getScreenHeight: function() {
             return this.get('settings').get('screenHeight');
+        },
+
+        /**
+         * Set the height of the screen in the settings
+         * @param height height of the screen
+         */
+        setScreenHeight: function(height) {
+            this.get('settings').set('screenHeight', height)
         },
 
         /**
