@@ -345,6 +345,7 @@ define('dahuapp', [
         var capture = Kernel.module('media').takeCapture(imgDir, image.get('id'));
         // set the img path in image
         image.set('img', screencastController.screencast.getImageRelPathFor(capture.screen));
+        image.set('kind', 'background');
         // set the coordinates of the mouse cursor
         mouse.set('posx', capture.getMouseX());
         mouse.set('posy', capture.getMouseY());
