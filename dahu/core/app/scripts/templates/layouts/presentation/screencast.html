@@ -23,57 +23,61 @@
 
         <!-- Required Modernizr file -->
         <script src="./libs/deck.js/modernizr.custom.js"></script>
+        
+        <style>
+            /* temporary */
+            img.background {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+            }
+
+            .tooltip {
+                display: block;
+                position: absolute;
+                padding: 4px;
+                margin: 2px;
+                border: 2px black solid;
+                font-size: 14px;
+            }
+
+            .mouse{
+                position: absolute;
+                width: 15px;
+            }
+        </style>
     </head>
-    <style>
-        /* temporary */
-        img.background {
-            position: absolute;
-            left: 0px;
-            top: 0px;
-        }
-
-        .tooltip {
-            display: block;
-            position: absolute;
-            padding: 4px;
-            margin: 2px;
-            border: 2px black solid;
-            font-size: 14px;
-        }
-
-        .mouse{
-            position: absolute;
-            width: 15px;
-        }
-    </style>
     <body>
     <div class="deck-container">
         <div id="myPresentation">
-            <!-- iterate on all the screens -->
-            <section class="slide">
-            </section>
-            {{#each this.screencast.attributes.screens.models}}
-            <section class="slide" id="screen_{{id}}">
-                <!-- iterate on all objects, show only images -->
-                {{#each attributes.objects.models}}
-                {{#if isImage }}
-                <img src="{{attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
-                {{/if}}
-                {{#if isTooltip }}
-                <div class="slide">
-                    <div class="tooltip"
-                         style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
-                        {{{attributes.text}}}
+            {{#if this.screencast.attributes.screens.models}}
+                <!-- iterate on all the screens -->
+                {{#each this.screencast.attributes.screens.models}}
+                <section class="slide" id="screen_{{id}}">
+                    <!-- iterate on all objects, show only images -->
+                    {{#each attributes.objects.models}}
+                    {{#if isImage }}
+                    <img src="{{attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
+                    {{/if}}
+                    {{#if isTooltip }}
+                    <div class="slide">
+                        <div class="tooltip"
+                             style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
+                            {{{attributes.text}}}
+                        </div>
                     </div>
-                </div>
-                {{/if}}
-                {{#if isMouse}}
-                <img src="./img/cursor.png" class="mouse"
-                     style="top: {{normalizedToPixel (screencastHeight) attributes.posy}}; left:{{normalizedToPixel (screencastWidth) attributes.posx}};">
-                {{/if}}
+                    {{/if}}
+                    {{#if isMouse}}
+                    <img src="./img/cursor.png" class="mouse"
+                         style="top: {{normalizedToPixel (screencastHeight) attributes.posy}}; left:{{normalizedToPixel (screencastWidth) attributes.posx}};">
+                    {{/if}}
+                    {{/each}}
+                </section>
                 {{/each}}
-            </section>
-            {{/each}}
+            {{else}}
+                <section class="slide">
+                </section>
+            {{/if}}
         </div>
     </div>
     <!-- Required JS files. -->
