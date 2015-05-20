@@ -12,8 +12,8 @@ define([
      */
     var SettingsModel = Backbone.Model.extend({
         defaults: {
-            screenWidth: 800,
-            screenHeight: 494 // golden ratio
+            screenWidth: 0,
+            screenHeight: 0 // golden ratio
         }
     });
 

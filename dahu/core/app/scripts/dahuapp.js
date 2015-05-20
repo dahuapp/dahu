@@ -353,6 +353,12 @@ define('dahuapp', [
         screen.get('objects').add(mouse);
         // Insert the screen in the screencast
         screencastController.screencast.model.addScreen(screen);
+        // Insert the dimension of the screencast 
+        // if it is the first
+        if (screencastController.screencast.model.getScreenWidth() == 0) {
+            screencastController.screencast.model.setScreenWidth(capture.screenSize.getWidth());
+            screencastController.screencast.model.setScreenHeight(capture.screenSize.getHeight());
+        };
         // Refresh the workspace
         onScreenSelect(screen);
     }
