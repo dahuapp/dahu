@@ -250,7 +250,7 @@ define('dahuapp', [
      */
     function createScreencast() {
         // ask user for project destination
-        var projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Open Dahu Project");
+        var projectDirectoryName = Kernel.module('filesystem').getDirectoryFromUser("Select the directory to store the new Dahu Project");
 
         // return if no given
         if( projectDirectoryName == null ) {
@@ -345,6 +345,7 @@ define('dahuapp', [
         var capture = Kernel.module('media').takeCapture(imgDir, image.get('id'));
         // set the img path in image
         image.set('img', screencastController.screencast.getImageRelPathFor(capture.screen));
+        image.set('kind', 'background');
         // set the coordinates of the mouse cursor
         mouse.set('posx', capture.getMouseX());
         mouse.set('posy', capture.getMouseY());
