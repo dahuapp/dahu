@@ -67,7 +67,7 @@ public class DefaultFileSystem implements Module {
                 String resourceName = resourceURL.getPath().startsWith("/") ? resourceURL.getPath().substring(1) : resourceURL.getPath();
                 String targetPath = Paths.get(
                         target,
-                        Paths.get(resource).getFileName().toString()).toString();
+                        Paths.get(resourceName).getFileName().toString()).toString();
 
                 // copy the resource *resourceName* from *jarFilePath* to *targetPath*.
                 return FileSystemDriver.copyResourceDir(jarFilePath, resourceName, targetPath);
