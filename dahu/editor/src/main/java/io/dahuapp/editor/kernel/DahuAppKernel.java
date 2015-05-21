@@ -20,6 +20,7 @@ public class DahuAppKernel implements Kernel {
     public FileSystem filesystem;
     public Keyboard keyboard;
     public Browser browser;
+    public ContextManager contextmanager;
 
     // shared objects
     private Stage primaryStage;
@@ -34,6 +35,7 @@ public class DahuAppKernel implements Kernel {
         keyboard = new Keyboard(webEngineRuntime);
         filesystem = new FileSystem(primaryStage, fileAccessManager, rewriter);
         browser = new Browser();
+        contextmanager = new ContextManager(stage);
     }
 
     @Override
@@ -43,6 +45,7 @@ public class DahuAppKernel implements Kernel {
         media.load();
         keyboard.load();
         browser.load();
+        contextmanager.load();
         // done loading
         console.info("Dahuapp kernel started!");
     }
@@ -57,6 +60,7 @@ public class DahuAppKernel implements Kernel {
         browser.unload();
         console.unload();
         browser.unload();
+        contextmanager.unload();
         // exit app
         Platform.exit();
     }
