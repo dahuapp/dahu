@@ -1,14 +1,16 @@
 define([
+    // librairies
     'underscore',
     'backbone',
     'uuid',
     // models
     'models/objects/tooltip',
+    'models/note',
     // collections
     'collections/objects',
     'collections/actions'
 ], function(_, Backbone, UUID, // libraries
-            TooltipModel, // models
+            TooltipModel, NoteModel,// models
             ObjectCollection, ActionsCollection // collections
 ){
 
@@ -20,8 +22,9 @@ define([
             return {
                 id: UUID.v4(),
                 objects: new ObjectCollection(),
-                actions : new ActionsCollection()
-            }
+                actions : new ActionsCollection(),
+                note : new NoteModel()
+            };
         },
 
         initialize: function () {
@@ -32,6 +35,9 @@ define([
             // wrap up actions around ActionsCollection unless it already is
             if ( ! (this.get('actions') instanceof ActionsCollection) ) {
                 this.set('actions', new ActionsCollection(this.get('actions')));
+            }
+            if ( ! (this.get('note') instanceof NoteModel) ) {
+                this.set('note', new NoteModel(this.get('note')));
             }
         },
 
