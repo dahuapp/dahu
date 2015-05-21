@@ -19,8 +19,9 @@ define([
     'modules/kernel/filesystem',
     'modules/kernel/media',
     'modules/kernel/keyboard',
-    'modules/kernel/browser'
-], function(_, Backbone, Console, Filesystem, Media, Keyboard, Browser) {
+    'modules/kernel/browser',
+    'modules/kernel/contextmanager'
+], function(_, Backbone, Console, Filesystem, Media, Keyboard, Browser, ContextManager) {
 
     var self = {};
 
@@ -51,6 +52,7 @@ define([
             expose('media', Media);
             expose('keyboard', Keyboard);
             expose('browser', Browser);
+            expose('contextmanager', ContextManager);
         } else {
             // we do not have an existing kernel
             // this case happen when we are running
@@ -61,6 +63,7 @@ define([
             expose('media', Media);
             expose('keyboard', Keyboard); // fallback Keyboard
             expose('browser', Browser);
+            expose('contextmanager', ContextManager);
         }
 
         // console is mandatory
