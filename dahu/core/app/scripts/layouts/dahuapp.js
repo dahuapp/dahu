@@ -20,8 +20,7 @@ define([
         regions: {
             toolbar: "#main-toolbar",
             filmstrip: "#filmstrip",
-            workspace: "#workspace",
-            note: "#note"
+            workspace: "#workspace"
         }
     });
 

@@ -345,6 +345,12 @@ module.exports = function (grunt) {
             },
             deckjs: {
                 files: [{
+                    // copy notes extension into the extensions directory of deck.js
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.ext.js/extensions/notes/',
+                    src: ['**'],
+                    dest: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.js/extensions/notes/'
+                }, {
                     expand: true,
                     cwd: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.js/',
                     src: ['**'],
