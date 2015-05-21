@@ -12,8 +12,18 @@ define([
      */
     var SettingsModel = Backbone.Model.extend({
         defaults: {
-            screenWidth: 800,
-            screenHeight: 494 // golden ratio
+            screenWidth: undefined,
+            screenHeight: undefined
+        },
+
+        /**
+         * Predicate to know if the dimensions were 
+         * previously set.
+         * 
+         * @return {Boolean} true if both screenWidth and screenHeigh are defined
+         */
+        hasScreenDimension: function() {
+            return !((this.screenWidth === undefined) || (this.screenHeight === undefined));
         }
     });
 
