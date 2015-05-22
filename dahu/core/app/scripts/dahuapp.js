@@ -157,6 +157,16 @@ define('dahuapp', [
         events.on('app:workspace:tooltips:edit', function(tooltip) {
             onTooltipEdit(tooltip);
         });
+        events.on('app:onPreview', function() {
+            previewScreencast();
+        });
+        events.on('app:activateFullscreenMode', function() {
+            Kernel.module('contextmanager').fullScreen();
+        });
+        events.on('app:openPropertyPane', function() {
+            // TODO : implement the configuration menu for the meta-data of the screencast
+            throw new Exceptions.NotImplementedError("There is no configuration menu for the meta-data of the screencast yet.");
+        });
     }
 
     /**
