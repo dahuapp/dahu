@@ -85,6 +85,7 @@ define('dahuapp', [
     'modules/commands',
     'modules/requestResponse',
     'modules/utils/paths',
+    'modules/utils/exceptions',
     // controllers
     'controller/screencast',
     'controller/layout',
@@ -99,7 +100,7 @@ define('dahuapp', [
 ], function(
     Patcher,
     $, _, Backbone, Marionette, Handlebars,
-    Kernel, Screencast, events, commands, reqResponse, Paths,
+    Kernel, Screencast, events, commands, reqResponse, Paths, Exceptions, 
     ScreencastController, LayoutController,
     ScreencastModel, ScreenModel, ImageModel, MouseModel, TooltipModel,
     ScreensCollection) {
@@ -262,8 +263,9 @@ define('dahuapp', [
 
         // test if the file exists, return if true
         if (Kernel.module('filesystem').exists(projectFilename)) {
-            //@todo throw an exception to the user!
-            return;
+            throw new Exceptions.RuntimeError("A Dahu project #{project} is already present in this directory : cannot create new project.", {
+                project: projectFilename
+            });
         }
 
         // load the screencast project
