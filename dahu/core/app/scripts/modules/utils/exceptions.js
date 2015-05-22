@@ -11,6 +11,7 @@
  * - Error
  *   - ExtendedError
  *     - IOError
+ *     - RuntimeError
  *     - NotImplementedError
  *
  * Usage:
@@ -82,6 +83,7 @@ define(['underscore'], function (_) {
     Exceptions.create = ExtendedErrorFactory;
     Exceptions.ExtendedError = ExtendedError;
     Exceptions.IOError = ExtendedErrorFactory('IOError', ExtendedError);
+    Exceptions.RuntimeError = ExtendedErrorFactory('RuntimeError', ExtendedError);
     Exceptions.NotImplementedError = ExtendedErrorFactory('NotImplementedError', ExtendedError);
 
     // export it
