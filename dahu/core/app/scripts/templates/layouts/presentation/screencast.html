@@ -1,7 +1,7 @@
 <html>
     <head lang="en">
         <meta charset="UTF-8">
-        <title>{{this.screencast.attributes.metadata.title}}</title>
+        <title>{{this.screencast.metadata.attributes.title}}</title>
         <!-- Required stylesheet -->
         <link rel="stylesheet" media="screen" href="./libs/deck.js/core/deck.core.css">
 
@@ -50,26 +50,26 @@
     <body>
     <div class="deck-container">
         <div id="myPresentation">
-            {{#if this.screencast.attributes.screens.models}}
+            {{#if this.screencast.screens.models}}
                 <!-- iterate on all the screens -->
-                {{#each this.screencast.attributes.screens.models}}
-                <section class="slide" id="screen_{{id}}">
+                {{#each this.screencast.screens.models}}
+                <section class="slide" id="screen_{{this.id}}">
                     <!-- iterate on all objects, show only images -->
-                    {{#each attributes.objects.models}}
+                    {{#each this.attributes.objects.models}}
                     {{#if isImage }}
-                    <img src="{{attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
+                    <img src="{{this.attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
                     {{/if}}
                     {{#if isTooltip }}
                     <div class="slide">
                         <div class="tooltip"
-                             style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
-                            {{{attributes.text}}}
+                             style="background-color: {{this.attributes.color}}; width: {{this.attributes.width}}; top:{{normalizedToPixel (screencastHeight) this.attributes.posy}}; left: {{normalizedToPixel (screencastWidth) this.attributes.posx}};">
+                            {{this.attributes.text}}
                         </div>
                     </div>
                     {{/if}}
                     {{#if isMouse}}
                     <img src="./img/cursor.png" class="mouse"
-                         style="top: {{normalizedToPixel (screencastHeight) attributes.posy}}; left:{{normalizedToPixel (screencastWidth) attributes.posx}};">
+                         style="top: {{normalizedToPixel (screencastHeight) this.attributes.posy}}; left:{{normalizedToPixel (screencastWidth) this.attributes.posx}};">
                     {{/if}}
                     {{/each}}
                 </section>

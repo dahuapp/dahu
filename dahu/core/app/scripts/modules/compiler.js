@@ -26,7 +26,7 @@ define([
             var template = Handlebars.default.compile(presentation_tpl);
             output = template(
                 { // context
-                    screencast: screencastModel
+                    screencast: screencastModel.toJSON()
                 },
                 { // options
                     helpers: {
