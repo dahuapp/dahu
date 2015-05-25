@@ -280,8 +280,9 @@ define('dahuapp', [
 
         // test if the file exists, return if true
         if (Kernel.module('filesystem').exists(projectFilename)) {
-            //@todo throw an exception to the user!
-            return;
+            throw new Exceptions.RuntimeError("A Dahu project #{project} is already present in this directory : cannot create new project.", {
+                project: projectFilename
+            });
         }
 
         // load the screencast project
