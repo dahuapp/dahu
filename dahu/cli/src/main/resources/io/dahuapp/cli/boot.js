@@ -6,6 +6,17 @@
 //
 // Copyright Ben Ripkens
 
+// Most AMD modules check if `global` is defined in order to detect if its is
+// loaded within the browser: if not defined they use `window` as global object.
+// The hypothesis made is that if `global`is defined then the code is
+// running inside NodeJS.
+//
+// Since in Nashorn both `global` and `window` are not defined, we have to
+// make that modules think we are in NodeJS like environment and therefore
+// we have to define a global object. This will prevent for instance
+// the `window is undefined` errors.
+var global = {};
+
 (function(context) {
     'use strict';
 
