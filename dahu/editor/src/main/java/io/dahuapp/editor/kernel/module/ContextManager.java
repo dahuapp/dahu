@@ -1,6 +1,9 @@
 package io.dahuapp.editor.kernel.module;
 
 import io.dahuapp.common.kernel.Module;
+import io.dahuapp.editor.DahuApp;
+import javafx.scene.control.MenuBar;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 /** 
@@ -14,6 +17,7 @@ public class ContextManager implements Module {
      * Stage of the javaFX application containing the web view
      */
     private Stage primaryStage;
+    private MenuBar menuBar;
     
     /**
      * 
@@ -31,5 +35,14 @@ public class ContextManager implements Module {
     public void fullScreen() {
         boolean maximized = this.primaryStage.isMaximized();
         this.primaryStage.setMaximized(!maximized);
+    }
+
+    /**
+     * Enable the menu items regarding the screencasting options (start/stop, generate, ...)
+     * This will be called after a presentation has been opened.
+     */
+    public void setDisableScreencastMenus(boolean val) {
+        this.primaryStage.getScene().lookup("#"+DahuApp.CAPTURE_MENU_ID).setDisable(val);
+        this.primaryStage.getScene().lookup("#"+DahuApp.GENERATION_MENU_ID).setDisable(val);
     }
 }
