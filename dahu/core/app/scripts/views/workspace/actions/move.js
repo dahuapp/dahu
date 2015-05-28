@@ -11,8 +11,9 @@ define([
     Handlebars,
     Marionette,
     // templates
-    moveTemplate){
-
+    moveTemplate
+) {
+    
     /**
      * Move action view
      */
