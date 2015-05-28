@@ -13,6 +13,7 @@ define([
     'views/workspace/actions/appear',
     'views/workspace/actions/disappear',
     'views/workspace/actions/move',
+    'views/workspace/actions/action',
     // templates
     'text!templates/views/workspace/actions.html'
 ], function(
@@ -26,17 +27,19 @@ define([
     AppearView,
     DisappearView,
     MoveView,
+    ActionView,
     // templates
-    actionTemplates){
+    actionsTemplate
+) {
 
     /**
      * Workspace actions view
      */
     return Marionette.CompositeView.extend({
 
-        template: Handlebars.default.compile(actionTemplates),
+        template: Handlebars.default.compile(actionsTemplate),
 
-        childViewContainer: '#myActions',
+        className: "ActionsList",
 
         initialize : function (options) {
             // mandatory arguments
@@ -59,15 +62,8 @@ define([
             }*/
         },
 
-        // We select the ItemView depending on the object type.
         getChildView: function(item){
-            if(item instanceof AppearModel) {
-                return AppearView;
-            }else if(item instanceof DisappearModel){
-                return DisappearView;
-            }else if(item instanceof MoveModel){
-                return MoveView;
-            }
+            return ActionView;
         },
 
         onChanged: function(){

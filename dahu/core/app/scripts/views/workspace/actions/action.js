@@ -1,23 +1,23 @@
 /**
- * Created by nabilbenabbou1 on 6/13/14.
+ * Created by obzota on 28/5/15.
  */
 
 define([
     'handlebars',
     'backbone.marionette',
     // templates
-    'text!templates/views/workspace/actions/appear.html'
+    'text!templates/views/workspace/actions/action.html'
 ], function(
     Handlebars,
     Marionette,
     // templates
-    appearTemplate
+    actionTemplate
 ) {
     
     /**
-     * Appear action view
+     * Generic action view
      */
     return Marionette.ItemView.extend({
-        template: Handlebars.default.compile(appearTemplate)
+        template: Handlebars.default.compile(actionTemplate)
     });
 });
