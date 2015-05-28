@@ -17,7 +17,19 @@ define([
     /**
      * Generic action view
      */
-    return Marionette.ItemView.extend({
-        template: Handlebars.default.compile(actionTemplate)
+    return Marionette.ItemView.extend({ 
+        
+        template: Handlebars.default.compile(actionTemplate),
+        
+        className: "action",
+
+        events: {
+            "click .actionDelete": "delete"
+        },
+        
+        delete: function() {
+            this.model.destroy();
+        }
+        
     });
 });
