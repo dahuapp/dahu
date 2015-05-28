@@ -11,6 +11,7 @@
         <link rel="stylesheet" media="screen" href="./libs/deck.js/extensions/navigation/deck.navigation.css">
         <link rel="stylesheet" media="screen" href="./libs/deck.js/extensions/status/deck.status.css">
         <link rel="stylesheet" media="screen" href="./libs/deck.js/extensions/scale/deck.scale.css">
+        <link rel="stylesheet" media="screen" href="./libs/deck.js/extensions/notes/deck.notes.css">
 
         <!-- Style theme. More available in /themes/style/ or create your own. -->
         <link rel="stylesheet" media="screen" href="./libs/deck.js/themes/style/web-2.0.css">
@@ -31,7 +32,6 @@
                 left: 0px;
                 top: 0px;
             }
-
             .tooltip {
                 display: block;
                 position: absolute;
@@ -40,7 +40,6 @@
                 border: 2px black solid;
                 font-size: 14px;
             }
-
             .mouse{
                 position: absolute;
                 width: 15px;
@@ -53,25 +52,29 @@
             {{#if this.screencast.attributes.screens.models}}
                 <!-- iterate on all the screens -->
                 {{#each this.screencast.attributes.screens.models}}
-                <section class="slide" id="screen_{{id}}">
+                <section class="slide" id="screen_{{this.id}}">
                     <!-- iterate on all objects, show only images -->
-                    {{#each attributes.objects.models}}
+                    {{#each this.attributes.objects.models}}
                     {{#if isImage }}
-                    <img src="{{attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
+                    <img src="{{this.attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
                     {{/if}}
                     {{#if isTooltip }}
                     <div class="slide">
                         <div class="tooltip"
-                             style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
-                            {{{attributes.text}}}
+                             style="background-color: {{this.attributes.color}}; width: {{this.attributes.width}}; top:{{normalizedToPixel (screencastHeight) this.attributes.posy}}; left: {{normalizedToPixel (screencastWidth) this.attributes.posx}};">
+                            {{this.attributes.text}}
                         </div>
                     </div>
                     {{/if}}
                     {{#if isMouse}}
                     <img src="./img/cursor.png" class="mouse"
-                         style="top: {{normalizedToPixel (screencastHeight) attributes.posy}}; left:{{normalizedToPixel (screencastWidth) attributes.posx}};">
+                         style="top: {{normalizedToPixel (screencastHeight) this.attributes.posy}}; left:{{normalizedToPixel (screencastWidth) this.attributes.posx}};">
                     {{/if}}
                     {{/each}}
+                    {{#if this.attributes.note}}
+                    <div class="deck-notes" style="white-space: pre;">{{this.attributes.note.attributes.text}}
+                    </div>
+                    {{/if}}
                 </section>
                 {{/each}}
             {{else}}
@@ -90,6 +93,7 @@
     <script src="./libs/deck.js/extensions/status/deck.status.js"></script>
     <script src="./libs/deck.js/extensions/navigation/deck.navigation.js"></script>
     <script src="./libs/deck.js/extensions/scale/deck.scale.js"></script>
+    <script src="./libs/deck.js/extensions/notes/deck.notes.js"></script>
 
     <!-- Initialize the deck. You can put this in an external file if desired. -->
     <script>
