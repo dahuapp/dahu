@@ -146,7 +146,7 @@ html, body {
         border-style: solid;
         border-bottom-width: 75%;
         width: 100%;
-        
+
         .actionDelete {
             display: none;
             z-index: 10;
@@ -155,17 +155,17 @@ html, body {
             position: absolute;
         }
     }
-        
+
     .action:hover .actionDelete {
         transition: all 1s;
         display: block;
     }
-    
+
     .action:hover {
         background-color: rgba(200,200,200,1);
         cursor: pointer;
     }
-    
+
     .action::after {
         content: '';
         position: absolute;
@@ -176,6 +176,36 @@ html, body {
     }
 
     .action:last-child::after {
-	border-bottom: none;
+        border-bottom: none;
+    }
+    
+    .actionsListContainer {
+        position: relative;
+        width: 100%;
+        height: 100%;
+
+        #actionsToolbar {
+           position: absolute;
+           bottom: 0;
+           left: 0;
+           width: 100%;
+           height: 50px;
+           z-index: 10;
+
+           #addActionChoice {
+               left:0;
+           }
+
+           #buttonAdd {
+               right:0;
+           }
+       }
+
+       #actionsList {
+           position: absolute;
+           width: 100%;
+           height: calc(100% - 50px);
+           overflow-y: auto;
+       }
     }
 }
