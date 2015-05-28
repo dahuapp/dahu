@@ -11,8 +11,9 @@ define([
     Handlebars,
     Marionette,
     // templates
-    disappearTemplate){
-
+    disappearTemplate
+) {
+    
     /**
      * Disappear action view
      */
