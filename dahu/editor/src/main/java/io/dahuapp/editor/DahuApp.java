@@ -44,6 +44,11 @@ public class DahuApp extends Application {
      * Minimum height of the editor window.
      */
     private static final int MIN_HEIGHT = 520;
+    /**
+     * ID Values for menu elements subject to changes
+     */
+    public static final String CAPTURE_MENU_ID = "menuCapture";
+    public static final String GENERATION_MENU_ID = "menuGeneration";
 
     /**
      * Application components
@@ -259,6 +264,11 @@ public class DahuApp extends Application {
 
         menuHelp.getItems().addAll(menuHelpTips, new SeparatorMenuItem(), menuHelpFeedback);
         
+        menuCapture.setDisable(true);
+        menuCapture.setId(CAPTURE_MENU_ID);
+        menuGeneration.setDisable(true);
+        menuGeneration.setId(GENERATION_MENU_ID);
+
         // Create the main menu bar
         menuBar = new MenuBar();
         menuBar.getMenus().addAll(menuFile, menuCapture, menuGeneration, menuHelp);

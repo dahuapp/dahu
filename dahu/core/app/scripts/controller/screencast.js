@@ -34,7 +34,9 @@ define([
                 this.screencast = Screencast.load(projectFilename);
                 this._registerToGlobalEvents();
                 this._registerToCommands();
+                Kernel.module('contextmanager').setDisableScreencastMenus(false);
             } catch(e) {
+                Kernel.module('contextmanager').setDisableScreencastMenus(true);
                 Kernel.console.error(e);
                 this.screencast = null;
             }
@@ -54,8 +56,10 @@ define([
                 this.screencast = Screencast.create(projectFilename);
                 this._registerToGlobalEvents();
                 this._registerToCommands();
+                Kernel.module('contextmanager').setDisableScreencastMenus(false);
             } catch(e) {
                 Kernel.console.error(e);
+                Kernel.module('contextmanager').setDisableScreencastMenus(true);
                 this.screencast = null;
             }
         },
