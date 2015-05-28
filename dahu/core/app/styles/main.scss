@@ -139,3 +139,43 @@ html, body {
         }
     }
 }
+
+#workspace-actions {
+    .action {
+        position: relative;
+        border-style: solid;
+        border-bottom-width: 75%;
+        width: 100%;
+        
+        .actionDelete {
+            display: none;
+            z-index: 10;
+            top:0;
+            right:0;
+            position: absolute;
+        }
+    }
+        
+    .action:hover .actionDelete {
+        transition: all 1s;
+        display: block;
+    }
+    
+    .action:hover {
+        background-color: rgba(200,200,200,1);
+        cursor: pointer;
+    }
+    
+    .action::after {
+        content: '';
+        position: absolute;
+        width: 50%;
+        left: 25%;
+        bottom: -5px;
+        border-bottom: 1px solid #666;
+    }
+
+    .action:last-child::after {
+	border-bottom: none;
+    }
+}
