@@ -3,7 +3,7 @@ apply plugin:'application'
 
 
 // Application
-mainClassName = "io.dahuapp.editor.DahuApp"
+mainClassName = "io.dahuapp.editor.DahuAppImpl"
 applicationName = "DahuEditor"
 
 // Dependencies

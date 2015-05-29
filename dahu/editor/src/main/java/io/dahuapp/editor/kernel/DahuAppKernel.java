@@ -4,6 +4,7 @@ import io.dahuapp.common.javascript.WebEngineRuntime;
 import io.dahuapp.common.kernel.Kernel;
 import io.dahuapp.common.net.DahuFileAccessManager;
 import io.dahuapp.common.net.RegexURLRewriter;
+import io.dahuapp.editor.DahuApp;
 import io.dahuapp.editor.kernel.module.*;
 import javafx.application.Platform;
 import javafx.stage.Stage;
@@ -23,19 +24,19 @@ public class DahuAppKernel implements Kernel {
     public ContextManager contextmanager;
 
     // shared objects
-    private Stage primaryStage;
+    private DahuApp dahuapp;
     private WebEngineRuntime webEngineRuntime;
 
-    public DahuAppKernel(Stage stage, WebEngineRuntime webEngineRuntime, DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
-        this.primaryStage = stage;
+    public DahuAppKernel(DahuApp app, WebEngineRuntime webEngineRuntime, DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
+        this.dahuapp = app;
         this.webEngineRuntime = webEngineRuntime;
 
         media = new Media();
         console = new Logger();
         keyboard = new Keyboard(webEngineRuntime);
-        filesystem = new FileSystem(primaryStage, fileAccessManager, rewriter);
+        filesystem = new FileSystem(dahuapp, fileAccessManager, rewriter);
         browser = new Browser();
-        contextmanager = new ContextManager(stage);
+        contextmanager = new ContextManager(dahuapp);
     }
 
     @Override
