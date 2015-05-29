@@ -4,6 +4,7 @@ package io.dahuapp.editor.kernel.module;
 import io.dahuapp.common.kernel.module.DefaultFileSystem;
 import io.dahuapp.common.net.DahuFileAccessManager;
 import io.dahuapp.common.net.RegexURLRewriter;
+import io.dahuapp.editor.DahuApp;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 public class FileSystem extends DefaultFileSystem {
 
-    private Stage primaryStage;
+    private DahuApp dahuapp;
 
     /**
      * Available extension filters for FileChooser.
@@ -33,11 +34,10 @@ public class FileSystem extends DefaultFileSystem {
     
     /**
      * Constructor.
-     * @param primaryStage Main stage of the app (for modal dialogs).
      */
-    public FileSystem(Stage primaryStage, DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
+    public FileSystem(DahuApp app, DahuFileAccessManager fileAccessManager, RegexURLRewriter rewriter) {
         super(fileAccessManager, rewriter);
-        this.primaryStage = primaryStage;
+        this.dahuapp = app;
     }
 
     /**
@@ -62,7 +62,7 @@ public class FileSystem extends DefaultFileSystem {
             }
         }
 
-        File selectedFile = fileChooser.showOpenDialog(primaryStage);
+        File selectedFile = fileChooser.showOpenDialog(this.dahuapp.getPrimaryStage());
         if (selectedFile != null) {
             return normalized(selectedFile.getAbsolutePath());
         }
@@ -81,7 +81,7 @@ public class FileSystem extends DefaultFileSystem {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle(actionTitle);
 
-        File selectedDir = directoryChooser.showDialog(primaryStage);
+        File selectedDir = directoryChooser.showDialog(this.dahuapp.getPrimaryStage());
         if (selectedDir != null) {
             return normalized(selectedDir.getAbsolutePath());
         }
