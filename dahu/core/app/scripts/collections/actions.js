@@ -31,11 +31,7 @@ define([
             }
         },
         getAvailableActions: function(){
-           var arrayActions=[];
-           arrayActions.push("move");
-           arrayActions.push("appear");
-           arrayActions.push("disappear");
-           return arrayActions;
+           return ["move","appear","disappear"];
 
         }
     });

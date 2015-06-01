@@ -13,7 +13,7 @@ define([
     var MoveModel = ActionModel.extend({
         defaults: function() {
             return _.extend({}, ActionModel.prototype.defaults(), {
-                type: 'Move',
+                type: 'move',
                 finalAbs: null,
                 finalOrd: null
             });

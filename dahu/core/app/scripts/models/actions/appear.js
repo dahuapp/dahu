@@ -14,7 +14,7 @@ define([
     var AppearModel = ActionModel.extend({
         defaults: function() {
             return _.extend({}, ActionModel.prototype.defaults(), {
-                type: 'Appear'
+                type: 'appear'
             });
         }
     });
