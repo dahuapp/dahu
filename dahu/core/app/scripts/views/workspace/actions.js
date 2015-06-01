@@ -10,12 +10,10 @@ define([
     'models/actions/disappear',
     'models/actions/move',
     // views
-    'views/workspace/actions/appear',
-    'views/workspace/actions/disappear',
-    'views/workspace/actions/move',
     'views/workspace/actions/action',
     // templates
-    'text!templates/views/workspace/actions.html'
+    'text!templates/views/workspace/actions.html',
+    'modules/kernel/SCI'
 ], function(
     Handlebars,
     Marionette,
@@ -24,12 +22,11 @@ define([
     DisappearModel,
     MoveModel,
     // views
-    AppearView,
-    DisappearView,
-    MoveView,
+
     ActionView,
     // templates
-    actionsTemplate
+    actionsTemplate,
+    Kernel
 ) {
 
     /**
@@ -38,8 +35,8 @@ define([
     return Marionette.CompositeView.extend({
 
         template: Handlebars.default.compile(actionsTemplate),
-
         className: "ActionsList",
+        childViewContainer : ".listActions",
 
         initialize : function (options) {
             // mandatory arguments
@@ -60,6 +57,36 @@ define([
                     this.collection.on('change', this.onChanged(), this);
                 }
             }*/
+        },
+        templateHelpers: function () {
+           return{
+               ActionsAvailable: this.collection.getAvailableActions(),
+           }
+        },
+        events: {
+          'click .buttonAdd': 'clickedButton',
+          'change .addAction': 'addActionChoice'
+        },
+
+        clickedButton: function() {
+            var type= $('#addActionChoice').val();
+            switch (type) {
+                case "move":{
+                    this.collection.add(new MoveModel());
+                    break;
+                }
+                case "appear":{
+                    this.collection.add(new AppearModel());
+                    break;
+                }
+                case "disappear":{
+                    this.collection.add(new DisappearModel());
+                    break;
+                }
+                default:
+                    this.collection.add(new AppearModel());
+            }
+            this.$childViewContainer[0].scrollTop=this.$childViewContainer[0].scrollHeight;
         },
 
         getChildView: function(item){

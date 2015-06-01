@@ -14,7 +14,7 @@ define([
     var DisappearModel = ActionModel.extend({
         defaults: function() {
             return _.extend({}, ActionModel.prototype.defaults(), {
-                type: 'disappear'
+                type: 'Disappear'
             });
         }
     });

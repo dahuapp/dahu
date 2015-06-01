@@ -29,6 +29,14 @@ define([
                 default:
                     return new ActionModel(attrs, options);
             }
+        },
+        getAvailableActions: function(){
+           var arrayActions=[];
+           arrayActions.push("move");
+           arrayActions.push("appear");
+           arrayActions.push("disappear");
+           return arrayActions;
+
         }
     });
 

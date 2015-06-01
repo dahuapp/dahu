@@ -1,3 +1,11 @@
-<!--	
-	Empty on purpose
--->
+<div class="listActions">
+<div class="emptyActionDiv"/>
+</div>
+<div id="ActionToolbar">
+    <select id="addActionChoice" class="addAction" >
+            {{#each ActionsAvailable}}
+                <option value="{{this}}">{{this}}</option>
+            {{/each}}
+    </select>
+    <button class="buttonAdd" ><i class="glyphicon glyphicon-plus"></i></button>
+</div>
