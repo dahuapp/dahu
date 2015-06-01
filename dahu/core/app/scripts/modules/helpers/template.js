@@ -59,6 +59,22 @@ define([
             // return URL
             return options.type + '://' + Paths.join(parts);
         });
+
+        /**
+         * allow a comparison with operator '===' in a template #if.
+         * branch depending on the result
+         * @param  {object} v1
+         * @param  {object} v2
+         * @param  {[type]} options
+         * @return {[type]}
+         */
+        Handlebars.registerHelper('ifEq', function(v1, v2, options) {
+            if(v1 === v2) {
+                return options.fn(this);
+            }
+            return options.inverse(this);
+        });
+
     }
 
     return {

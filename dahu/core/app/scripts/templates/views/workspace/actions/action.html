@@ -1,6 +1,33 @@
-<div id="actionDelete_{{id}}" class="actionDelete"><i class="glyphicon glyphicon-remove"></i></div>
-<ul>
-	<li><strong>{{type}}</strong></li>
-	<li>Target : {{target}}</li>
-	<li>Trigger : {{trigger}}</li>
-</ul>
+<header>
+    <div id="actionDelete_{{id}}" class="actionDelete"><i class="glyphicon glyphicon-remove"></i></div>
+    <strong>{{type}}</strong><br>
+    {{trigger}}
+</header>
+<div class="settings" style="display : none">
+    <div class="common-settings">
+        <form>
+            <label for="targetChoice_{{id}}">Target : </label>
+            <select id="targetChoice_{{id}}" class="targetChoice">
+                <option value="" disabled selected>Select the target</option>
+                {{#each objects}}
+                <option value="{{this.id}}" {{#ifEq this.id ../targetId}}selected{{/ifEq}}> {{this.attributes.type}}
+                </option>
+                {{/each}}
+            </select>
+            <br>
+            <label for="triggerChoice_{{id}}">Trigger : </label>
+            <select id="triggerChoice_{{id}}" class="triggerChoice">
+                <option value="" disabled selected>Select the trigger</option>
+                {{#each triggers}}
+                <option value="{{this.value}}" {{#ifEq ../trigger this.value}} selected {{/ifEq}}>{{this.info}}</option>
+                {{/each}}
+            </select>
+            <br>
+            <label for="durationChoice_{{id}}">Duration : </label>
+            <input type="number" value="{{duration}}" id="durationChoice_{{id}}" class="durationChoice"><br>
+        </form>
+    </div>
+    <div class="extra-settings">
+    </div>
+</div>
+
