@@ -1,6 +1,32 @@
 <div id="actionDelete_{{id}}" class="actionDelete"><i class="glyphicon glyphicon-remove"></i></div>
-<ul>
-	<li><strong>{{type}}</strong></li>
-	<li>Target : {{target}}</li>
-	<li>Trigger : {{trigger}}</li>
-</ul>
+<div class="headerAction">
+    <strong>{{type}}</strong><br>
+{{#unless isToggled}}
+    {{trigger}} - {{target}}
+</div>
+{{else}}
+</div>
+<form>
+    <label for="targetChoice">Target : </label>
+    <select id="targetChoice">
+        <option value="" disabled selected>Select the target</option>
+        {{#each objects}}
+        <option value="{{this.id}}" {{#ifEq ../target this.id}}selected{{/ifEq}}> {{this.attributes.type}} </option>
+        {{/each}}
+    </select>
+    <br>
+    <label for="triggerChoice">Trigger : </label>
+    <select id="triggerChoice">
+        <option value="" disabled selected>Select the trigger</option>
+        {{#each triggers}}
+        <option value="{{this.value}}" {{#ifEq ../trigger this.value}} selected {{/ifEq}}>{{this.info}}</option>
+        {{/each}}
+    </select>
+    <br>
+    <label id="durationChoice">Duration : </label>
+    <input type="number" value="{{duration}}" id="durationChoice"><br>
+</form>
+{{#if hasExtraParameters }}
+{{> (actionParametersPartial) }}
+{{/if}}
+{{/unless}}
