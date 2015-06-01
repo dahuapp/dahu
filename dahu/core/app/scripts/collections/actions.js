@@ -29,6 +29,10 @@ define([
                 default:
                     return new ActionModel(attrs, options);
             }
+        },
+        
+        getAvailableActions: function() {
+           return ["move","appear","disappear"];
         }
     });
 
