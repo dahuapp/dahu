@@ -6,10 +6,17 @@ define([
     'underscore',
     'handlebars',
     'backbone.marionette',
+    // views
     'views/workspace/screen',
     'views/workspace/actions',
+    'views/workspace/note',
+    // template
     'text!templates/layouts/workspace.html'
-], function(_, Handlebars, Marionette, screenView, actionsView, workspaceTemplate){
+], function(
+    _, Handlebars, Marionette, 
+    screenView, actionsView, noteView, // views
+    workspaceTemplate // template
+) {
 
     /**
      * Dahu workspace layout.

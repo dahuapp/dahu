@@ -107,6 +107,8 @@ define([
          */
         save: function() {
             if( this.screencast ) {
+                events.trigger("before:app:screencast:save");
+                events.trigger("app:screencast:save");
                 this.screencast.save();
             } else {
                 throw "No Dahu project loaded."
