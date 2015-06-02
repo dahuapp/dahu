@@ -67,9 +67,8 @@ define([
                actionsAvailable: this.collection.getAvailableActions(),
            }
         },
-        events: {
-          'click .buttonAdd': 'onCreateAction',
-          'change .addAction': 'addActionChoice'
+        triggers: {
+          "click .buttonAdd": "create:action"
         },
 
         onCreateAction: function() {
