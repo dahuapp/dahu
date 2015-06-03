@@ -19,7 +19,12 @@ define([
                 trigger: null,
                 duration: null
             }
+        },
+        //ajout
+        getActionId: function() {
+            return this.id;
         }
+        //
     });
 
     return ActionModel;

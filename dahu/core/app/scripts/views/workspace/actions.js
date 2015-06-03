@@ -73,9 +73,17 @@ define([
 
         onCreateAction: function() {
             var type= $('#addActionChoice').val();
+            Kernel.console.log(this);
+            //Kernel.console.log(this.$childViewContainer[0].lastChild);
             switch (type) {
                 case "move":{
-                    this.collection.add(new MoveModel());
+                    var actionModel=new MoveModel();
+                    this.collection.add(actionModel);
+                    Kernel.console.log("id="+ actionModel.getActionId());
+                    this.scrollOnAction(actionModel.getActionId());
+                   //var test= this.collection.children.findByIndex(this.collection.children.length - 1);
+                   //kernel.console.log("toto");
+                  // kernel.console.log(test);//.lastChild
                     break;
                 }
                 case "appear":{
@@ -94,7 +102,12 @@ define([
                     kernel.console.error("this type of action doesn't exist");  
                 }
             }
-            this.$childViewContainer[0].scrollTop=this.$childViewContainer[0].scrollHeight;
+            //this.$childViewContainer[0].scrollTop=this.$childViewContainer[0].scrollHeight;
+        },
+        
+        scrollOnAction: function(id){
+           
+            
         },
 
         getChildView: function(item){
