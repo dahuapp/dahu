@@ -74,24 +74,23 @@ define([
         onCreateAction: function() {
             var type= $('#addActionChoice').val();
             Kernel.console.log(this);
-            //Kernel.console.log(this.$childViewContainer[0].lastChild);
             switch (type) {
                 case "move":{
                     var actionModel=new MoveModel();
                     this.collection.add(actionModel);
-                    Kernel.console.log("id="+ actionModel.getActionId());
                     this.scrollOnAction(actionModel.getActionId());
-                   //var test= this.collection.children.findByIndex(this.collection.children.length - 1);
-                   //kernel.console.log("toto");
-                  // kernel.console.log(test);//.lastChild
                     break;
                 }
                 case "appear":{
-                    this.collection.add(new AppearModel());
+                    var actionModel=new AppearModel();
+                    this.collection.add(actionModel);
+                    this.scrollOnAction(actionModel.getActionId());
                     break;
                 }
                 case "disappear":{
-                    this.collection.add(new DisappearModel());
+                    var actionModel=new DisappearModel();
+                    this.collection.add(actionModel);
+                    this.scrollOnAction(actionModel.getActionId());
                     break;
                 }
                 default:{
@@ -105,8 +104,13 @@ define([
             //this.$childViewContainer[0].scrollTop=this.$childViewContainer[0].scrollHeight;
         },
         
-        scrollOnAction: function(id){
-           
+        scrollOnAction: function(actionId){
+            var mod=this.collection.findWhere({ id: actionId});
+            Kernel.console.log(mod);
+            var index=this.collection.indexOf(mod);
+            Kernel.console.log("index="+index);
+            //TODO récupérer children[index] quand on aura viré emptydiv
+            this.$childViewContainer[0].children[index+1].scrollIntoView(false);   
             
         },
 
