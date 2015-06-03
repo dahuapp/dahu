@@ -10,12 +10,12 @@ define([
     'models/actions/disappear',
     'models/actions/move',
     // views
-    'views/workspace/actions/appear',
-    'views/workspace/actions/disappear',
-    'views/workspace/actions/move',
     'views/workspace/actions/action',
     // templates
-    'text!templates/views/workspace/actions.html'
+    'text!templates/views/workspace/actions.html',
+    //modules
+    'modules/kernel/SCI',
+    'modules/utils/exceptions'
 ], function(
     Handlebars,
     Marionette,
@@ -24,22 +24,26 @@ define([
     DisappearModel,
     MoveModel,
     // views
-    AppearView,
-    DisappearView,
-    MoveView,
+
     ActionView,
     // templates
-    actionsTemplate
+    actionsTemplate,
+    //modules
+    Kernel,
+    Exceptions
 ) {
-
+    
     /**
      * Workspace actions view
      */
     return Marionette.CompositeView.extend({
 
         template: Handlebars.default.compile(actionsTemplate),
-
-        className: "ActionsList",
+        className: "actionsListContainer",
+        childViewContainer : ".actionsList",
+        onAddChild: function(viewInstance) {
+            this.scrollOnAction(viewInstance);
+        },
 
         initialize : function (options) {
             // mandatory arguments
@@ -47,7 +51,9 @@ define([
             this.screenId = options.screenId;
 
             this.collection = this.screencast.model.getScreenById(this.screenId).get('actions');
-
+            /*this.collection.on("add:child", function(viewInstance){
+                Kernel.console.log("debug toto");
+            });*/
             /*@remove
             // Specify that the collection we want to iterate, for the childView, is
             // given by the attribute actions.
@@ -60,6 +66,48 @@ define([
                     this.collection.on('change', this.onChanged(), this);
                 }
             }*/
+        },
+        templateHelpers: function () {
+           return{
+               actionsAvailable: this.collection.getAvailableActions(),
+           }
+        },
+        triggers: {
+          "click .buttonAdd": "create:action"
+        },
+
+        onCreateAction: function() {
+            var type= $('#addActionChoice').val();
+            Kernel.console.log(this);
+            switch (type) {
+                case "move":{
+                    var actionModel=new MoveModel();
+                    this.collection.add(actionModel);
+                    break;
+                }
+                case "appear":{
+                    var actionModel=new AppearModel();
+                    this.collection.add(actionModel);
+                    break;
+                }
+                case "disappear":{
+                    var actionModel=new DisappearModel();
+                    this.collection.add(actionModel);
+                    break;
+                }
+                default:{
+                    /*var filename=this.screencast.model.getProjectFilename();
+                    throw new Exceptions.IOError("this type of action doesn't exist.concerned project #{project}",{
+                    project:filename
+                    });*/
+                    kernel.console.error("this type of action doesn't exist");  
+                }
+            }
+            //this.$childViewContainer[0].scrollTop=this.$childViewContainer[0].scrollHeight;
+        },
+        scrollOnAction: function(view){
+            view.$el[0].scrollIntoView(false);
+            
         },
 
         getChildView: function(item){
