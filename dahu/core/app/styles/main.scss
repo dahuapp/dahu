@@ -7,136 +7,146 @@
 @import 'bootstrap';
 
 html, body {
-  height: 100%;
+    height: 100%;
+}
+
+body {
+    overflow-x: hidden;
+    overflow-y: hidden;
 }
 
 // Application layout
 
 %panel {
-  background-color: $dahu-panel-background-color;
+    background-color: $dahu-panel-background-color;
 }
 
 #main-toolbar {
-  position: absolute;
-  top: 0px;
-  height: 40px;
-  width: 100%;
+    position: absolute;
+    top: 0px;
+    height: 40px;
+    width: 100%;
 }
 
 #filmstrip {
-  @extend %panel;
-  position: absolute;
-  top: 40px;
-  left: 0px;
-  bottom: 0px;
-  width: 220px;
-  overflow-x: visible;
-  overflow-y: scroll;
+    @extend %panel;
+    position: absolute;
+    top: 40px;
+    left: 0px;
+    bottom: 0px;
+    width: 220px;
+    overflow-x: visible;
+    overflow-y: scroll;
 
-  .screen {
-    margin: 20px;
+    #filmstrip-screens {
+        position: relative;
+        height: 100%;
+        
+        .screen {
+            margin: 20px;
 
-    .image {
-      width: 150px;
+            .image {
+                width: 150px;
 
-      img {
-        width: 100%;
-      }
+                img {
+                    width: 100%;
+                }
+            }
+        }
     }
-  }
 }
 
 #workspace {
-  @extend %panel;
-  position: absolute;
-  top: 40px;
-  left: 220px;
-  right: 0px;
-  bottom: 0px;
-
-  #workspace-screen {
     @extend %panel;
     position: absolute;
-    top: 30px;
-    left: 0px;
-    right: 220px;
-    bottom: 220px;
-  }
-
-  #workspace-actions {
-    @extend %panel;
-    position: absolute;
-    top: 30px;
+    top: 40px;
+    left: 220px;
     right: 0px;
     bottom: 0px;
-    width: 220px;
-    padding-left: 15px;
-    border-left: 5px solid #e5e5e5;
-    overflow-x: visible;
-    overflow-y: scroll;
-  }
 
-  #workspace-note {
-    @extend %panel;
-    position: absolute;
-    height: 220px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    border-top: 5px solid #e5e5e5;
-  }
+    #workspace-screen {
+        @extend %panel;
+        position: absolute;
+        top: 30px;
+        left: 0px;
+        right: 220px;
+        bottom: 220px;
+    }
+
+    #workspace-actions {
+        @extend %panel;
+        position: absolute;
+        top: 30px;
+        right: 0px;
+        bottom: 0px;
+        width: 220px;
+        padding-left: 15px;
+        border-left: 5px solid #e5e5e5;
+        overflow-x: visible;
+        overflow-y: scroll;
+    }
+
+    #workspace-note {
+        @extend %panel;
+        position: absolute;
+        height: 220px;
+        left: 0px;
+        right: 220px;
+        bottom: 0px;
+        border-top: 5px solid #e5e5e5;
+    }
 }
 
 // Workspace content style
 
 #workspace-screen {
-  padding: 40px;
-  background-color: $dahu-workspace-screen-editor-background-color;
+    padding: 40px;
+    background-color: $dahu-workspace-screen-editor-background-color;
 
-  .screen {
-    position: relative;
-    width: 100%;
-    height: 100%;
-
-    .container {
-      // reset padding and margin added by bootstrap
-      padding: 0px;
-      margin: 0px;
-    }
-
-    .mouse, .image, .tooltip {
-      position: absolute;
-    }
-
-    // Image
-    .image.background {
-      z-index: 0;
-
-      img {
+    .screen {
+        position: relative;
         width: 100%;
-        height: auto;
-      }
-    }
+        height: 100%;
 
-    // Mouse
-    .mouse {
-      //@todo move it to model
-      z-index: 1000;
+        .container {
+            // reset padding and margin added by bootstrap
+            padding: 0px;
+            margin: 0px;
+        }
 
-      img {
-        border: 0px;
-        width: 10px;
-        height: 10px;
-      }
-    }
+        .mouse, .image, .tooltip {
+            position: absolute;
+        }
 
-    // Tooltip
-    .tooltip {
-      @include opacity(0.8);
-      min-width: 200px;
-      min-height: 50px;
-      background-color: yellow;
-      padding: 10px;
+        // Image
+        .image.background {
+            z-index: 0;
+
+            img {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        // Mouse
+        .mouse {
+            //@todo move it to model
+            z-index: 1000;
+
+            img {
+                border: 0px;
+                width: 10px;
+                height: 10px;
+            }
+        }
+
+        // Tooltip
+        .tooltip {
+            @include opacity(0.8);
+            min-width: 200px;
+            min-height: 50px;
+            background-color: yellow;
+            padding: 10px;
+        }
     }
-  }
 }
