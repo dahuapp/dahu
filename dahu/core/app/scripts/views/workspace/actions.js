@@ -32,7 +32,7 @@ define([
     Kernel,
     Exceptions
 ) {
-
+    
     /**
      * Workspace actions view
      */
@@ -41,6 +41,9 @@ define([
         template: Handlebars.default.compile(actionsTemplate),
         className: "actionsListContainer",
         childViewContainer : ".actionsList",
+        onAddChild: function(viewInstance) {
+            this.scrollOnAction(viewInstance);
+        },
 
         initialize : function (options) {
             // mandatory arguments
@@ -48,7 +51,9 @@ define([
             this.screenId = options.screenId;
 
             this.collection = this.screencast.model.getScreenById(this.screenId).get('actions');
-
+            /*this.collection.on("add:child", function(viewInstance){
+                Kernel.console.log("debug toto");
+            });*/
             /*@remove
             // Specify that the collection we want to iterate, for the childView, is
             // given by the attribute actions.
@@ -78,19 +83,16 @@ define([
                 case "move":{
                     var actionModel=new MoveModel();
                     this.collection.add(actionModel);
-                    this.scrollOnAction(actionModel.getActionId());
                     break;
                 }
                 case "appear":{
                     var actionModel=new AppearModel();
                     this.collection.add(actionModel);
-                    this.scrollOnAction(actionModel.getActionId());
                     break;
                 }
                 case "disappear":{
                     var actionModel=new DisappearModel();
                     this.collection.add(actionModel);
-                    this.scrollOnAction(actionModel.getActionId());
                     break;
                 }
                 default:{
@@ -103,14 +105,8 @@ define([
             }
             //this.$childViewContainer[0].scrollTop=this.$childViewContainer[0].scrollHeight;
         },
-        
-        scrollOnAction: function(actionId){
-            var mod=this.collection.findWhere({ id: actionId});
-            Kernel.console.log(mod);
-            var index=this.collection.indexOf(mod);
-            Kernel.console.log("index="+index);
-            //TODO récupérer children[index] quand on aura viré emptydiv
-            this.$childViewContainer[0].children[index+1].scrollIntoView(false);   
+        scrollOnAction: function(view){
+            view.$el[0].scrollIntoView(false);
             
         },
 
