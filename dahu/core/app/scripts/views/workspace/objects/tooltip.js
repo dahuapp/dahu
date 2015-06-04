@@ -24,7 +24,8 @@ define([
     ResizableBehavior,
     DraggableBehavior,
     // templates
-    tooltipTemplate){
+    tooltipTemplate
+) {
 
     /**
      * Tooltip view
@@ -34,6 +35,10 @@ define([
 
         className: 'object tooltip ui-widget-content',
 
+        initialize: function() {
+            this.changeBackgroundColor();
+        },
+
         triggers: {
             "dblclick": {
                 event: 'app:workspace:tooltip:edit',
@@ -42,7 +47,8 @@ define([
         },
 
         modelEvents: {
-            'change': 'render'
+            'change': 'render',
+            'change:color': 'changeBackgroundColor'
         },
 
         behaviors: {
@@ -64,8 +70,8 @@ define([
             this.model.set('posy', position.y);
         },
 
-        onAppWorkspaceTooltipEdit: function() {
-            console.log("TooltipView clicked");
+        changeBackgroundColor: function() {
+            this.el.style.backgroundColor = this.model.get('color');
         }
     });
 });
