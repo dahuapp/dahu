@@ -24,7 +24,8 @@ define([
     ResizableBehavior,
     DraggableBehavior,
     // templates
-    tooltipTemplate){
+    tooltipTemplate
+) {
 
     /**
      * Tooltip view
@@ -42,7 +43,8 @@ define([
         },
 
         modelEvents: {
-            'change': 'render'
+            'change': 'render',
+            'change:color': 'onChangeColor'
         },
 
         behaviors: {
@@ -52,6 +54,10 @@ define([
             DraggableBehavior: {
                 behaviorClass: DraggableBehavior
             }
+        },
+
+        updateColor: function() {
+            this.$el.css("background-color", this.model.get('color'));
         },
 
         onResizeCompleted: function(size) {
@@ -64,8 +70,12 @@ define([
             this.model.set('posy', position.y);
         },
 
-        onAppWorkspaceTooltipEdit: function() {
-            console.log("TooltipView clicked");
+        onChangeColor: function() {
+            this.updateColor();
+        },
+
+        onRender: function() {
+            this.updateColor();
         }
     });
 });

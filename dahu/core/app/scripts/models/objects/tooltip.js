@@ -18,7 +18,8 @@ define([
                 type: 'tooltip',
                 text: "",
                 //@todo use only %, see #91
-                width: "240px"
+                width: "240px",
+                color: "#FFFFFF"
             });
         },
 
