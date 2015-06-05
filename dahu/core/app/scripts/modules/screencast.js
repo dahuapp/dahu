@@ -157,6 +157,11 @@ define([
                 'classpath:///io/dahuapp/core/components/deck.js', // origin
                 Paths.join([this.getBuildDirectoryAbsPath(), LIBRARIES_DIRECTORY_NAME]) // destination
             );
+            //// copy fit.js folder to build/libs/fit.js
+            Kernel.module('filesystem').copyResourceDir(
+                'classpath:///io/dahuapp/core/components/fit.js', // origin
+                Paths.join([this.getBuildDirectoryAbsPath(), LIBRARIES_DIRECTORY_NAME]) // destination
+            );
             Kernel.console.info("done.");
         },
 
