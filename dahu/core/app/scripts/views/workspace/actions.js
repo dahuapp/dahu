@@ -17,7 +17,9 @@ define([
     // templates
     'text!templates/views/workspace/actions.html',
     //modules
-    'modules/utils/exceptions'
+    'modules/utils/exceptions',
+    // behaviors
+    'behaviors/workspace/actions/sortable'
 ], function(
     Handlebars,
     Marionette,
@@ -33,7 +35,9 @@ define([
     // templates
     actionsTemplate,
     //modules
-    Exceptions
+    Exceptions,
+    // behaviors
+    SortableBehavior
 ) {
 
     /**
@@ -100,6 +104,12 @@ define([
 
         modelEvents: {
             'change': 'onChanged'
+        },
+
+        behaviors: {
+            SortableBehavior: {
+                behaviorClass: SortableBehavior
+            }
         }
     });
 });
