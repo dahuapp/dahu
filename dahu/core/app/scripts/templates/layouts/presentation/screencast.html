@@ -53,25 +53,31 @@
             {{#if this.screencast.attributes.screens.models}}
                 <!-- iterate on all the screens -->
                 {{#each this.screencast.attributes.screens.models}}
-                <section class="slide" id="screen_{{id}}">
+                <section class="slide" id="{{id}}" data-dahu-animator="anim_{{removeDashes id}}">
                     <!-- iterate on all objects, show only images -->
                     {{#each attributes.objects.models}}
                     {{#if isImage }}
                     <img src="{{attributes.img}}" class="background" style="width:{{screencastWidth}}; height:{{screencastHeight}};">
                     {{/if}}
                     {{#if isTooltip }}
-                    <div class="slide">
-                        <div class="tooltip"
-                             style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
-                            {{{attributes.text}}}
-                        </div>
+                    <div class="tooltip" id="{{attributes.id}}"
+                        style="background-color: {{attributes.color}}; width: {{attributes.width}}; top:{{normalizedToPixel (screencastHeight) attributes.posy}}; left: {{normalizedToPixel (screencastWidth) attributes.posx}};">
+                        {{{attributes.text}}}
                     </div>
                     {{/if}}
                     {{#if isMouse}}
-                    <img src="./img/cursor.png" class="mouse"
+                    <img src="./img/cursor.png" class="mouse" id="{{attributes.id}}"
                          style="top: {{normalizedToPixel (screencastHeight) attributes.posy}}; left:{{normalizedToPixel (screencastWidth) attributes.posx}};">
                     {{/if}}
                     {{/each}}
+                    <script>
+                        var anim_{{removeDashes id}} =
+                        {
+                            "target": "#{{id}}",
+                            "actions":
+{{{dumpJSON attributes.actions 4 7}}}
+                        };
+                    </script>
                 </section>
                 {{/each}}
             {{else}}
@@ -90,6 +96,8 @@
     <script src="./libs/deck.js/extensions/status/deck.status.js"></script>
     <script src="./libs/deck.js/extensions/navigation/deck.navigation.js"></script>
     <script src="./libs/deck.js/extensions/scale/deck.scale.js"></script>
+    <script src="./libs/deck.js/extensions/animator/animator.js"></script>
+    <script src="./libs/deck.js/extensions/animator/deck.animator.js"></script>
 
     <!-- Initialize the deck. You can put this in an external file if desired. -->
     <script>
