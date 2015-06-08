@@ -350,6 +350,14 @@ module.exports = function (grunt) {
                     src: ['**'],
                     dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/deck.js/'
                 }]
+            },
+            fitjs: {
+                files: [{
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/<%= yeoman.bower %>/fit.js/',
+                    src: ['**'],
+                    dest: '<%= yeoman.dist %>/<%= yeoman.bower %>/fit.js/'
+                }]
             }
         },
         // Remove logging from generated files.
