@@ -345,6 +345,12 @@ module.exports = function (grunt) {
             },
             deckjs: {
                 files: [{
+                    // copy animator extension into the extensions directory of deck.js
+                    expand: true,
+                    cwd: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.ext.js/extensions/animator/',
+                    src: ['**'],
+                    dest: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.js/extensions/animator/'
+                }, {
                     expand: true,
                     cwd: '<%= yeoman.app %>/<%= yeoman.bower %>/deck.js/',
                     src: ['**'],
