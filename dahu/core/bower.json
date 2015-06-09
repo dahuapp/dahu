@@ -16,6 +16,7 @@
     "backbone.marionette": "~2.4.1",
     "summernote": "~0.6.6",
     "deck.js": "~1.1.0",
+    "deck.ext.js": "~0.1.1",
     "jqueryui": "~1.10.4",
     "lodash": "~3.8.0",
     "fit.js": "*",
