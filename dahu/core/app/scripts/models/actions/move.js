@@ -14,8 +14,8 @@ define([
         defaults: function() {
             return _.extend({}, ActionModel.prototype.defaults(), {
                 type: 'move',
-                finalAbs: null,
-                finalOrd: null
+                trX: null,
+                trY: null
             });
         }
     });
