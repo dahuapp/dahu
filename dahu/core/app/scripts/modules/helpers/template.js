@@ -59,6 +59,28 @@ define([
             // return URL
             return options.type + '://' + Paths.join(parts);
         });
+        
+        /**
+         * Return a string matching the JSON object of 'element'.
+         *
+         * @param element Element to turn into a String
+         * @param indentNb Number of spaces in an indentation
+         * @param initiaIndent Number of indentations to add at the beginning of each line
+         * @returns {string} a formatted JSON object as a String.
+         */
+        Handlebars.default.registerHelper('stringify', function (element, indentNb, initialIndent) {
+            var res = JSON.stringify(element, null, indentNb);
+            res = res.replace(/^/gm, Array(initialIndent*indentNb+1).join(' '));
+            return res;
+        });
+
+        /**
+         * Return a string without any dashes, since they are unauthorized
+         * in variable names in JavaScript.
+         */
+        Handlebars.default.registerHelper('slugify', function (str) {
+            return str.replace(/-/g, "");
+        });
     }
 
     return {
