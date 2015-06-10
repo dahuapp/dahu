@@ -69,6 +69,10 @@ define([
                     });
                 }
             });
+        },
+
+        onScaleChange: function(scale) {
+            this.scale = scale;
         }
     });
 

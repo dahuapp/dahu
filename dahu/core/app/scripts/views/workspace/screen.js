@@ -35,7 +35,8 @@ define([
     MouseView,
     TooltipView,
     // templates
-    screenTemplate){
+    screenTemplate
+) {
 
     /**
      * Workspace screen view
@@ -56,6 +57,13 @@ define([
             // so that we can render the collection as children
             // of this parent node
             this.collection = this.screencast.model.getScreenById(this.screenId).get('objects');
+
+            // we save the value to update the new tooltips
+            this.lastScaleFactor = 1.0;
+        },
+
+        onAddChild: function(view) {
+            view.triggerMethod("scale:change", this.lastScaleFactor);
         },
 
         // We select the ChildView depending on the object type.
@@ -72,6 +80,7 @@ define([
         onShow: function() {
             // setup UI
             //@remove var ctrl = reqres.request('app:screencast:controller');
+            var self = this;
 
             this.$('.container').css({
                 //@remove width: ctrl.getScreencastWidth(),
@@ -88,8 +97,10 @@ define([
             }, function( transform, element ) {
                 // scale the workspace
                 fit.cssTransform(transform, element);
+                // we save the value to update the new tooltips
+                self.lastScaleFactor = transform.scale;
                 // notify listener that workspace was scaled
-                events.trigger('app:workspace:onScaleChanged', transform.scale);
+                events.trigger('app:workspace:onScaleChanged', self.lastScaleFactor);
             });
         },
 
