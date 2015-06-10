@@ -6,11 +6,17 @@ define([
     'handlebars',
     'backbone.marionette',
     // views
-    'views/filmstrip/screen'
+    'views/filmstrip/screen',
+    // behaviors
+    'behaviors/workspace/actions/sortable'
 ], function(
-    Handlebars, Marionette,
+    Handlebars,
+    Marionette,
     // views
-    FilmstripScreenView){
+    FilmstripScreenView,
+    // behaviors
+    SortableBehavior
+) {
 
     /**
      * Filmstrip screen view
@@ -25,6 +31,12 @@ define([
 
             // we render screens collection from screencast model.
             this.collection = this.screencast.model.get('screens');
+        },
+
+        behaviors: {
+            SortableBehavior: {
+                behaviorClass: SortableBehavior
+            }
         },
 
         /**

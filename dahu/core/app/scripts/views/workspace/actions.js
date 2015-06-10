@@ -17,6 +17,8 @@ define([
     'views/workspace/actions/action',
     // templates
     'text!templates/views/workspace/actions.html',
+    // behaviors
+    'behaviors/workspace/actions/sortable',
     //modules
     'modules/utils/exceptions'
 ], function(
@@ -34,6 +36,8 @@ define([
     ActionView,
     // templates
     actionsTemplate,
+    // behaviors
+    SortableBehavior,
     //modules
     Exceptions
 ) {
@@ -62,6 +66,12 @@ define([
                 screenId: this.screenId
             };
 
+        },
+
+        behaviors: {
+            SortableBehavior: {
+                behaviorClass: SortableBehavior
+            }
         },
 
         onAddChild: function(viewInstance) {
